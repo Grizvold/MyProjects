@@ -1,8 +1,9 @@
 #!/bin/bash
-*
 !.gitignore
 !.c
 !.h
 !.o
 !.md
 !.sh
+*
+

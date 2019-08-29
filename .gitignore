@@ -2,9 +2,7 @@
 !.gitignore
 !*.c
 !*.h
-!*.o
-!*.md
-!*.sh
+/MyProjectTests
 
 
 

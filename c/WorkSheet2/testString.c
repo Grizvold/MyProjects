@@ -45,13 +45,12 @@ int main(int  argc, char **argv)
                 break;
             case (3):
 		printf("%*c    (StrCpy)The result of StrCpy is %s\n", 5, ' ', StrCpy(string_num_1, string_num_2));    
-  
-		/*printf("%*c    (strcpy)The result of strcpy is %s\n", 5, ' ', strcpy(string_num_1, string_num_2));*/         
+		printf("%*c    (strcpy)The result of strcpy is %s\n", 5, ' ', strcpy(string_num_1, string_num_2));    
                 break;
             case (4):
 
 		printf("%*c    (strcat)The result of strcat is %s\n", 5, ' ', strcat(string_num_1, string_num_2));          
-		/*printf("%*c    (StrCat)The result of StrCat is %s\n", 5, ' ', StrCat(string_num_1, string_num_2));*/      
+		printf("%*c    (StrCat)The result of StrCat is %s\n", 5, ' ', StrCat(string_num_1, string_num_2));     
                 break;
             default:
                 break;

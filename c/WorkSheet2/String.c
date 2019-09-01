@@ -5,12 +5,12 @@
 size_t StrLen(const char *tested_string)
 {
 	const char *string_iterator = tested_string;
-	while(NULL != *string_iterator)
+	while('\0' != *string_iterator)
 	{
 		string_iterator++;
 	}
 
-	return string_iterator - tested_string - 1; 
+	return string_iterator - tested_string; 
 }
 
 /* strcmp Implementation */
@@ -38,38 +38,38 @@ int StrCmp(const char *first_string, const char *second_string)
 char *StrCpy(char *destination_string, const char *source_string)
 {
 	char *string_result = destination_string;
-	if ((NULL != destination_string) && (NULL != source_string))
+	if (('\0' != *destination_string) && ('\0' != *source_string))
 	{
 	/* copying src string to dest string */
-		while(NULL != *source_string)
+		while('\0' != *source_string)
 		{
 			*destination_string++ = *source_string++;
 		}
 		/* put NULL termination so it doesnt point to our string anymore */
-		*destination_string = NULL;
+		*destination_string = '\0';
 	}
 	
 	return string_result;
 }
 
 /* strat Implementation */
-char *StrCat(chr *destination_string, const char *source_string)
+char *StrCat(char *destination_string, const char *source_string)
 {
 	char *string_result = destination_string;
-	if ((NULL != destination_string) && (NULL != source_string))
+	if (('\0' != *destination_string) && ('\0' != *source_string))
 	{
 		/* run untill the end of destination_string */
-		while(NULL != *destination_string)
+		while('\0' != *destination_string)
 		{
 			destination_string++;
 		}
 		/* copy source string starting from the end NULL of dest */
-		while(NULL != *source_string)
+		while('\0' != *source_string)
 		{
 			*destination_string++ = *source_string++;
 		}
 		/* put NULL termination */
-		*destination_string = NULL;
+		*destination_string = '\0';
 	}
 	
 	return string_result;

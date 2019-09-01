@@ -69,3 +69,5 @@ char *StrCat(chr *destination_string, const char *source_string)
 	
 	return string_result;
 }
+
+

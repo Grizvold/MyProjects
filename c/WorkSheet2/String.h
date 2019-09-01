@@ -1,9 +1,13 @@
-#include <stdio.h>
+/* string strlen/strcmp/strcpy/strcat implantation */
+#ifndef __STRING_H__
+#define __STRING_H__
+#include <stddef.h> /* size_t */
 
-int StrLen(const char *test);
+extern  size_t StrLen(const char *test);
 
-int StrCmp(const char *first, const char *second);
+extern int StrCmp(const char *first, const char *second);
 
-char *StrCpy(char *dest_string, const char *src_string);
+extern char *StrCpy(char *dest_string, const char *src_string);
 	
-char *StrCat(chr *dest_string, const char *src_string);
+extern char *StrCat(char *dest_string, const char *src_string);
+#endif

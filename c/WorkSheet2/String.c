@@ -1,11 +1,16 @@
+#include <stddef.h> /* size_t */
 
 /* strlen Implementation */
 /* Counting string elements untill we reach \0 */
-int StrLen(const char *tested_string)
+size_t StrLen(const char *tested_string)
 {
-	int i = 0;
-	for(i = 0; req_string[i] != '\0'; i++);
-	return i; 
+	const char *string_iterator = tested_string;
+	while(NULL != *string_iterator)
+	{
+		string_iterator++;
+	}
+
+	return string_iterator - tested_string - 1; 
 }
 
 /* strcmp Implementation */
@@ -19,11 +24,11 @@ int StrCmp(const char *first_string, const char *second_string)
 			break;
 		
 		/* moving forward to the next characters */
-		first_string;
-		second_string;
+		first_string++;
+		second_string++;
 	}
 	
-	/* return the difference */
+	/* return the difference (ASCII difference)*/
 	return *(const unsigned char*)first_string - *(const unsigned char*)second_string;
 }
 
@@ -38,7 +43,7 @@ char *StrCpy(char *destination_string, const char *source_string)
 	/* copying src string to dest string */
 		while(NULL != *source_string)
 		{
-			*destination_string ++ = *source_string++;
+			*destination_string++ = *source_string++;
 		}
 		/* put NULL termination so it doesnt point to our string anymore */
 		*destination_string = NULL;

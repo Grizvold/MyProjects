@@ -1,18 +1,24 @@
 #include <stdio.h> /* printfscanf */
 #include <string.h> /* strcmp/strcpy/strcat/strlen  */
 #include "String.h" /* StrLen/StrCmp/StrCpy/StrCat */
+#include <stdlib.h> /* atoi(string argument to int) */
 
 int main(int  argc, char **argv)
 {
-	char *string_num_1 = '\0', *string_num_2 = '\0';
+	/* definition of our commandline input string1 string2 num */
+	char *string_num_1 = NULL, *string_num_2 = NULL, *string_number = NULL;
 	int usr_input = 10;
+	int num_for_strings = 0;
 	/*char *temp_string;*/
 
 	/* get input from command line or declare yourself */
 	string_num_1 = argv[1];
 	string_num_2 = argv[2];
+	string_number = argv[3];
+	/* int atoi(const char *str) -> converts string argument str to an integer */
+	num_for_strings = atoi(string_number);
 	/* end of command line  */
-	
+
 	/*
 	string_num_1 = "";
 	string_num_2 = "";
@@ -28,17 +34,19 @@ int main(int  argc, char **argv)
         printf("%*c 3. To strcpy\n", 5, ' ');
         printf("%*c 4. To strcat\n", 5, ' ');
         printf("%*c 5. To strdup\n", 5, ' ');
+	printf("%*c 6. To strncpy\n", 5, ' ');
+	
         
         scanf("%d", &usr_input);
         
         switch(usr_input)
 		{
             case (1):
-		printf("%*c    (strlen)The lenght of str1 = %ld and str2 = %ld\n\n\n\n\n", 5, ' ',
-								 strlen(string_num_1)
+		printf("%*c    (strlen)The lenght of str1 = %ld and str2 = %ld\n\n\n\n\n", 5, ' '
+								, strlen(string_num_1)
 								, strlen(string_num_2));
-		printf("%*c    (StrLen)The lenght of str1 = %ld and str2 = %ld\n\n\n\n\n", 5, ' ',
-								 StrLen(string_num_1)
+		printf("%*c    (StrLen)The lenght of str1 = %ld and str2 = %ld\n\n\n\n\n", 5, ' '
+								, StrLen(string_num_1)
 								, StrLen(string_num_2));
                 break;
             case (2):
@@ -57,8 +65,14 @@ int main(int  argc, char **argv)
 		/*temp_string = strdup(string_num_1);
 		printf("%*c    (strdup)The result of strdup is %s\n", 5, ' ', temp_string); */
 		/*printf("%*c    (strdup)The result of strdup is %s\n", 5, ' ', strdup(string_num_1));         */
-		printf("%*c    (StrDup)The result of StrDup is %s\n", 5, ' ', StrDup(string_num_1));  	
-            default:
+		printf("%*c    (StrDup)The result of StrDup is %s\n", 5, ' ', StrDup(string_num_1));
+		break;
+	    case (6):
+		printf("%*c    (StrNCpy)The result of StrNCpy is %s\n", 5, ' ', StrNCpy(string_num_1
+											, string_num_2
+											, num_for_strings));
+            	break;
+	    default:
                 break;
        		}
     	}

@@ -12,4 +12,6 @@ extern char *StrCpy(char *dest_string, const char *src_string);
 extern char *StrCat(char *dest_string, const char *src_string);
 
 extern char *StrDup(const char *src_string);
+
+extern char *StrNCpy(char *dest_string, const char *src_string, size_t n);
 #endif

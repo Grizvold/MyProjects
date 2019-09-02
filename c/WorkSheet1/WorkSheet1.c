@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
 
 
@@ -18,23 +18,20 @@ float ten_pow_number(int user_num)
        result = result * 10;
    }
    
-   /* negative pow */ 
-   if(user_num < 0)
-          result = 1 / result;
-
-    return result;
+   /* negative pow */
+    return (user_num ? 1 / result : result);
        
 }
 
 void number_flip(int *num)
 {
-    int flipped_num = 0, shaarit = 0, original_num = 0;
+    int flipped_num = 0, remainder = 0, original_num = 0;
     
     original_num = *num;
     while(original_num > 0)
     {
-        shaarit = original_num % 10;
-        flipped_num = (flipped_num * 10) + shaarit;
+        remainder = original_num % 10;
+        flipped_num = (flipped_num * 10) + remainder;
         original_num = original_num / 10;
     }
     

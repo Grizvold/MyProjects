@@ -10,4 +10,6 @@ extern int StrCmp(const char *first, const char *second);
 extern char *StrCpy(char *dest_string, const char *src_string);
 	
 extern char *StrCat(char *dest_string, const char *src_string);
+
+extern char *StrDup(const char *src_string);
 #endif

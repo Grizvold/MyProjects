@@ -6,12 +6,13 @@ int main(int  argc, char **argv)
 {
 	char *string_num_1 = '\0', *string_num_2 = '\0';
 	int usr_input = 10;
+	/*char *temp_string;*/
 
 	/* get input from command line or declare yourself */
 	string_num_1 = argv[1];
 	string_num_2 = argv[2];
 	/* end of command line  */
-
+	
 	/*
 	string_num_1 = "";
 	string_num_2 = "";
@@ -26,6 +27,7 @@ int main(int  argc, char **argv)
         printf("%*c 2. To strcmp\n", 5, ' ');
         printf("%*c 3. To strcpy\n", 5, ' ');
         printf("%*c 4. To strcat\n", 5, ' ');
+        printf("%*c 5. To strdup\n", 5, ' ');
         
         scanf("%d", &usr_input);
         
@@ -48,10 +50,14 @@ int main(int  argc, char **argv)
 		printf("%*c    (strcpy)The result of strcpy is %s\n", 5, ' ', strcpy(string_num_1, string_num_2));    
                 break;
             case (4):
-
 		printf("%*c    (strcat)The result of strcat is %s\n", 5, ' ', strcat(string_num_1, string_num_2));          
 		printf("%*c    (StrCat)The result of StrCat is %s\n", 5, ' ', StrCat(string_num_1, string_num_2));     
                 break;
+	    case (5):
+		/*temp_string = strdup(string_num_1);
+		printf("%*c    (strdup)The result of strdup is %s\n", 5, ' ', temp_string); */
+		/*printf("%*c    (strdup)The result of strdup is %s\n", 5, ' ', strdup(string_num_1));         */
+		printf("%*c    (StrDup)The result of StrDup is %s\n", 5, ' ', StrDup(string_num_1));  	
             default:
                 break;
        		}

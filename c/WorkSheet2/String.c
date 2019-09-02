@@ -1,5 +1,5 @@
 #include <stddef.h> /* size_t */
-
+#include <stdlib.h> /* malloc */
 /* strlen Implementation */
 /* Counting string elements untill we reach \0 */
 size_t StrLen(const char *tested_string)
@@ -74,5 +74,29 @@ char *StrCat(char *destination_string, const char *source_string)
 	
 	return string_result;
 }
+
+/* strdup Implementation */
+char *StrDup(const char *source_string)
+{
+	/* put iterator at the start of our string, and declare pointer for copied string */
+	const char *iterator = source_string;
+	char *destination_string = NULL;
+	/* counting size of source string for malloc declaration */	
+	while('\0' != *iterator)
+		iterator++;
+
+	destination_string = (char *) malloc(iterator - source_string);	
+	/* reset iterator to the start of string */ 	
+	iterator = source_string;
+	/* copy the source string to allocated memory */
+	while('\0' != *iterator)
+		*destination_string++ = *iterator++;
+
+	 *destination_string = '\0';
+ 
+	return destination_string - (destination_string - source_string);
+}
+
+
 
 

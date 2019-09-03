@@ -1,6 +1,8 @@
 #include <stddef.h> /* size_t */
 #include <stdlib.h> /* malloc */
 
+#include <stdio.h>
+#include <string.h> /*  */
 /* strlen Implementation 			*/
 /* Counting string elements untill we reach \0	*/
 /* return size_t sizeofstring 			*/
@@ -32,6 +34,22 @@ int StrCmp(const char *first_string, const char *second_string)
 	/* can also return *first_string - *second_string (int value) */
 	/*return *(const unsigned char*)first_string - *(const unsigned char*)second_string;*/
 	return (*first_string - *second_string);
+}
+
+/* strncmp Implementation 										  */
+/* run on strings and compare if they differ of second string num bytes of first_string and second_string */ 
+/* return the difference (ASCII difference)								  */
+int StrNCmp(const char *first_string, const char *second_string, size_t num)
+{
+	while(num--)
+	{
+		if(*first_string++ != *second_string++)
+		{
+			return (*(first_string - 1) - *(second_string - 1));
+		}
+	}
+
+	return 0;	
 }
 
 /* strcasecmp Implementation 					 	    */
@@ -141,11 +159,8 @@ char *StrCat(char *destination_string, const char *source_string)
 	char *string_result = destination_string;
 	if (('\0' != *destination_string) && ('\0' != *source_string))
 	{
-		/* run untill the end of destination_string */
-		while('\0' != *destination_string)
-		{
-			destination_string++;
-		}
+		/* bring destination string to the end(points to empty cell) */
+		destination_string = destination_string + StrLen(destination_string);
 		/* copy source string starting from the end NULL of dest */
 		while('\0' != *source_string)
 		{
@@ -158,4 +173,47 @@ char *StrCat(char *destination_string, const char *source_string)
 	return string_result;
 }
 
+/* strncat Implementation  								*/ 
+/* add the [num] number of elemets from source string to the end of destination string	*/
+/* returns destination string 								*/ 
+char *StrNCat(char *destination_string, const char *source_string, size_t num)
+{
+	char *string_result = destination_string;
+	if (('\0' != *destination_string) && ('\0' != *source_string))
+	{
+		/* bring destination string to the end(points to empty cell) */
+		destination_string = destination_string + StrLen(destination_string);
+		/* copy  [num] elements from source string to end of destination string */
+		while('\0' != *source_string && num)
+		{
+			*destination_string++ = *source_string++;
+			num--;
+		}
+		 *destination_string = '\0';
+	}
+	
+	return string_result;
+}
+
+/* strstr Implementation								 */ 
+/* function  finds  the first occurrence of the substring needle in the string haystack. */
+/* return return a pointer to the beginning of the located substring, or NULL if the	 */
+/* substring is not found. 								 */
+char *StrStr(const char *haystack, const char *needle)
+{
+	const char *iterator_haystack =  haystack, *iterator_needle = needle;
+
+	while(*iterator_haystack)
+	{
+		
+		if((*iterator_needle == *iterator_haystack) && (0 == StrNCmp(iterator_haystack, iterator_needle, StrLen(iterator_needle))))
+		{
+			return (char *)iterator_haystack;
+		}
+
+		iterator_haystack++;
+	}
+
+	return NULL;
+}
 

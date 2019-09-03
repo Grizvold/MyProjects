@@ -5,8 +5,9 @@
 
 int main(int  argc, char **argv)
 {
-	/* definition of our commandline input string1 string2 num */
+	/* definition of our commandline input [string1] [string2] [num_for_strN_functions char] [char for strchr] */
 	char *string_num_1 = NULL, *string_num_2 = NULL, *string_number = NULL;
+	char *str_char = NULL;
 	int usr_input = 10;
 	int num_for_strings = 0;
 	/*char *temp_string;*/
@@ -15,6 +16,7 @@ int main(int  argc, char **argv)
 	string_num_1 = argv[1];
 	string_num_2 = argv[2];
 	string_number = argv[3];
+	str_char =  argv[4];
 	/* int atoi(const char *str) -> converts string argument str to an integer */
 	num_for_strings = atoi(string_number);
 	/* end of command line  */
@@ -29,12 +31,14 @@ int main(int  argc, char **argv)
    	{
         printf("\n%*c Worksheet2 Menu:\n", 5, ' ');
 	printf("%*c 0. To Exit and Stop\n", 5, ' ');
-        printf("%*c 1. To strlen\n", 5, ' ');
-        printf("%*c 2. To strcmp\n", 5, ' ');
-        printf("%*c 3. To strcpy\n", 5, ' ');
-        printf("%*c 4. To strcat\n", 5, ' ');
-        printf("%*c 5. To strdup\n", 5, ' ');
-	printf("%*c 6. To strncpy\n", 5, ' ');
+        printf("%*c 1. To StrLen\n", 5, ' ');
+        printf("%*c 2. To StrCmp\n", 5, ' ');
+        printf("%*c 3. To StrCpy\n", 5, ' ');
+        printf("%*c 4. To StrCat\n", 5, ' ');
+        printf("%*c 5. To StrDup\n", 5, ' ');
+	printf("%*c 6. To StrNCpy\n", 5, ' ');
+	printf("%*c 7. To StrCaseCmp\n", 5, ' ');
+	printf("%*c 8. To StrChr\n", 5, ' ');
 	
         
         scanf("%d", &usr_input);
@@ -71,7 +75,14 @@ int main(int  argc, char **argv)
 		printf("%*c    (StrNCpy)The result of StrNCpy is %s\n", 5, ' ', StrNCpy(string_num_1
 											, string_num_2
 											, num_for_strings));
-            	break;
+		break;
+	    case (7):
+		printf("%*c    (StrCaseCmp)The result of StrCaseCmp is %d\n", 5, ' ', StrCaseCmp(string_num_1, string_num_2));  
+		break;
+	    case (8):
+		printf("%*c    (strchr)The result of strchr is %s\n", 5, ' ', strchr(string_num_1, *str_char));
+		printf("%*c    (StrChr)The result of StrChr is %s\n", 5, ' ', StrChr(string_num_1, *str_char));
+		break;
 	    default:
                 break;
        		}

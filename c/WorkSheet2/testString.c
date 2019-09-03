@@ -41,6 +41,7 @@ int main(int  argc, char **argv)
 	printf("%*c 8. To StrChr\n", 5, ' ');
 	printf("%*c 9. To StrNCat\n", 5, ' ');
 	printf("%*c10. To StrStr\n", 5, ' ');        
+	printf("%*c11. To StrSpn\n", 5, ' '); 
 
         scanf("%d", &usr_input);
         
@@ -103,6 +104,11 @@ int main(int  argc, char **argv)
 		printf("%*c    (StrStr)The result of StrCat is %s\n", 5, ' ', StrStr(string_num_1
 											, string_num_2)); 
 		break;
+	   case (11):
+		printf("%*c    (StrSpn)The result of StrSpn is %ld\n", 5, ' ', StrSpn(string_num_1
+												, string_num_2)); 
+		printf("%*c    (strspn)The result of strspn is %ld\n", 5, ' ', strspn(string_num_1
+												, string_num_2));   
 	    default:
                 break;
        		}

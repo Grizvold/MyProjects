@@ -22,4 +22,8 @@ extern char *StrChr(const char *src, int ch);
 extern char *StrNCat(char *dest_string, const char *src_string, size_t n);
 
 extern char *StrStr(const char *hay_stack, const char *needle_);
+
+extern int StrNCmp(const char *first, const char *second, size_t n);
+
+extern size_t StrSpn(const char *source_string, const char *accept);
 #endif

@@ -1,8 +1,6 @@
 #include <stddef.h> /* size_t */
 #include <stdlib.h> /* malloc */
 
-#include <stdio.h>
-#include <string.h> /*  */
 /* strlen Implementation 			*/
 /* Counting string elements untill we reach \0	*/
 /* return size_t sizeofstring 			*/
@@ -197,15 +195,16 @@ char *StrNCat(char *destination_string, const char *source_string, size_t num)
 
 /* strstr Implementation								 */ 
 /* function  finds  the first occurrence of the substring needle in the string haystack. */
-/* return return a pointer to the beginning of the located substring, or NULL if the	 */
+/* return a pointer to the beginning of the located substring, or NULL if the		 */
 /* substring is not found. 								 */
 char *StrStr(const char *haystack, const char *needle)
 {
 	const char *iterator_haystack =  haystack, *iterator_needle = needle;
-
+	/* run untill end of haystack */
 	while(*iterator_haystack)
 	{
-		
+		/* when match between 1 char has been found -> perform block check	*/
+		/* of size needle between haystack and needle 				*/
 		if((*iterator_needle == *iterator_haystack) && (0 == StrNCmp(iterator_haystack, iterator_needle, StrLen(iterator_needle))))
 		{
 			return (char *)iterator_haystack;
@@ -215,5 +214,33 @@ char *StrStr(const char *haystack, const char *needle)
 	}
 
 	return NULL;
+}
+
+/* strspn Implementation 								*/
+/* func calc the lenght of the initial substring of string pointed to by first_string	*/ 
+/* that is made up of only chars that are in second_string 				*/
+/* return the lenght of substring							*/			
+size_t StrSpn(const char *first_string, const char *second_string)
+{
+	size_t num = 0;
+	const char *iterator = NULL;
+
+	while(*first_string)
+	{
+		for(iterator = second_string; *iterator && *iterator != *first_string; iterator++)
+		{
+			;
+		}
+
+		if(!*iterator)
+		{
+			break;
+		}
+		
+		num++;
+		first_string++;
+	}
+
+  	return num;
 }
 

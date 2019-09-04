@@ -5,12 +5,14 @@
 
 int main(int  argc, char **argv)
 {
-	/* definition of our commandline input:						*/
-	/* [string1] [string2] [num_to_string_strN_functions] [char for strchr] 	*/
+	/* definition of our commandline input:								*/
+	/* [string1] [string2] [num_to_string_strN_functions] [char for strchr or token for strtok] 	*/
 	char *string_num_1 = NULL, *string_num_2 = NULL, *string_number = NULL;
 	char *str_char = NULL;
+	char *token = NULL;
 	int usr_input = 10;
 	int num_to_string = 0;
+	
 	/*char *temp_string;*/
 
 	/* get input from command line or declare yourself */
@@ -43,6 +45,7 @@ int main(int  argc, char **argv)
 	printf("%*c 9. To StrNCat\n", 5, ' ');
 	printf("%*c10. To StrStr\n", 5, ' ');        
 	printf("%*c11. To StrSpn\n", 5, ' '); 
+	printf("%*c12. To StrTok\n", 5, ' '); 
 
         scanf("%d", &usr_input);
         
@@ -109,8 +112,33 @@ int main(int  argc, char **argv)
 		printf("%*c    (StrSpn)The result of StrSpn is %ld\n", 5, ' ', StrSpn(string_num_1
 												, string_num_2)); 
 		printf("%*c    (strspn)The result of strspn is %ld\n", 5, ' ', strspn(string_num_1
-												, string_num_2));   
-	    default:
+												, string_num_2)); 
+		break;  
+	   case (12):
+		/*printf("%*c    The result of strtok is: \n", 5, ' ');
+		token = strtok(string_num_1, str_char);
+
+		while(token != NULL)
+		{
+			printf("%*c    %s\n", 5, ' ', token);
+			token = strtok(NULL, str_char);
+		}
+		*/
+		printf("%*c    The result of StrTok is: \n", 5, ' ');
+		token = StrTok(string_num_1, str_char);
+
+		while(token != NULL)
+		{
+			printf("%*c    %s\n", 5, ' ', token);
+			token = StrTok(NULL, str_char);
+		}
+
+ 		/*printf("%*c    (StrTok)The result of StrTok is %s\n", 5, ' ', StrTok(string_num_1
+												, str_char)); 
+		printf("%*c    (strtok)The result of strtok is %s\n", 5, ' ', strtok(string_num_1
+												, str_char));*/
+		break;
+	   default:
                 break;
        		}
     	}

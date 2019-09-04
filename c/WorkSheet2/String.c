@@ -1,6 +1,8 @@
 #include <stddef.h> /* size_t */
 #include <stdlib.h> /* malloc */
 
+#include <string.h> /* delim check */
+
 /* strlen Implementation 			*/
 /* Counting string elements untill we reach \0	*/
 /* return size_t sizeofstring 			*/
@@ -227,7 +229,7 @@ size_t StrSpn(const char *first_string, const char *second_string)
 
 	while(*first_string)
 	{
-		for(iterator = second_string; *iterator && *iterator != *first_string; iterator++)
+		for(iterator = second_string; (*iterator) && (*iterator != *first_string); iterator++)
 		{
 			;
 		}
@@ -244,3 +246,51 @@ size_t StrSpn(const char *first_string, const char *second_string)
   	return num;
 }
 
+/* strcspn Implementation					*/
+/* function computes the length of the maximum initial segment	*/
+/* of the string pointed to by s1 which consists entirely	*/
+/* of characters not from the string pointed to by s2		*/
+/* returns the length of the segment.  				*/
+size_t StrCSpn(const char *s1, const char *s2)
+{
+    size_t ret=0;
+    while(*s1)
+        if(strchr(s2,*s1))
+            return ret;
+        else
+            s1++,ret++;
+    return ret;
+}
+
+
+/* strtok Implementation 							*/
+/* function  breaks a string into a sequence of zero or more nonempty tokens.	*/
+/* returns pointer to the next token, or NULL if there are no more tokens.	*/
+char *StrTok(char *str, const char* delim) 
+{
+	static char *p = 0;
+
+	if(str)
+	{
+		p = str;
+	}
+	else if(!p)
+	{
+       		return 0;
+	} 
+	
+	str = p + StrSpn(p, delim);
+	p = str + StrCSpn(str, delim);
+	if(p==str)
+	{
+        	return p=0;
+	}
+
+	if(*p)
+	{
+		*p = 0;
+		p++;
+	}
+    	
+    	return str;
+}

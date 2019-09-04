@@ -5,7 +5,8 @@
 
 int main(int  argc, char **argv)
 {
-	/* definition of our commandline input [string1] [string2] [num_to_string_strN_functions char] [char for strchr] */
+	/* definition of our commandline input:						*/
+	/* [string1] [string2] [num_to_string_strN_functions] [char for strchr] 	*/
 	char *string_num_1 = NULL, *string_num_2 = NULL, *string_number = NULL;
 	char *str_char = NULL;
 	int usr_input = 10;

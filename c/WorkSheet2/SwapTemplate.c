@@ -11,7 +11,6 @@ void Swap_##T(T* aptr, T* bptr)	\
 }				\
 
 SWAP_DEF(int_ptr)
-
 SWAP_DEF(int)
 
 int main()

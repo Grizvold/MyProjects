@@ -1,4 +1,6 @@
-/* string strlen/strcmp/strcpy/strcat implantation */
+/*	string strlen/strcmp/strcpy/strcat/strdup/strncpy/	*/
+/*	strcasecmp/strchar/strncat/strstr/strncmp/strspn	*/
+/*	 implantation						*/
 #ifndef __STRING_H__
 #define __STRING_H__
 #include <stddef.h> /* size_t */

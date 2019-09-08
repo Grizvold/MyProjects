@@ -269,23 +269,30 @@ size_t StrCSpn(const char *s1, const char *s2)
 char *StrTok(char *str, const char* delim) 
 {
 	static char *p = 0;
-
+	
+	/* Initialization of static */
 	if(str)
 	{
 		p = str;
 	}
+	/* check if we reached end of string */
 	else if(!p)
 	{
        		return 0;
 	} 
 	
+	/* remove delim that appear before our word */ 
 	str = p + StrSpn(p, delim);
+	/* run on chars that are NOT delim untill we	*/
+	/* find delim, this way we isolating the word	*/
+	/* between delims				*/
 	p = str + StrCSpn(str, delim);
 	if(p==str)
 	{
         	return p=0;
 	}
 
+	/* replace the delim after a word with '\0'	*/
 	if(*p)
 	{
 		*p = 0;

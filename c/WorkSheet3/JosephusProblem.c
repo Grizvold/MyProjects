@@ -6,6 +6,8 @@ int JosephusArray(int *, size_t);
 int JosephusRecursive(int , int ); 
 size_t GetNextPosition(int *, size_t, size_t);
 
+/*  */
+
 /* getting next position in our array */
 size_t GetNextPosition(int *arr, size_t position, size_t size_arr)
 {
@@ -30,7 +32,7 @@ int JosephusArray(int *arr, size_t arr_size)
 	size_t amount_of_dead = 0, position_in_array = 0;
 	int is_dead = 0;
  	
-	/* run on array untill 1 person left "alive" 	*/
+	/* run on array <stdlib.h> / untill 1 person left "alive" 	*/
 	/* 1 - dead, 0 - alive				*/
 	while(amount_of_dead < arr_size) 
 	{
@@ -69,11 +71,12 @@ int JosephusRecursive(int n, int k)
   
 
 
-int main() 
+int main(int argc, char **argv) 
 { 
   int n = 100; 
   int k = 2; 
   int arr_joseph[ARR_SIZE] = {0};
+  char *num_from_string = 
   
   /* result of Josephus problem using array */ 
   printf("\nThe last standing is %d\n", JosephusArray(arr_joseph, ARR_SIZE));

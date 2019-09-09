@@ -1,12 +1,13 @@
 #include <stdio.h> /* printf */
- 
+#include <stdlib.h> /* atoi(string argument to int) */ 
+
 #define ARR_SIZE  100
 
 int JosephusArray(int *, size_t);
 int JosephusRecursive(int , int ); 
 size_t GetNextPosition(int *, size_t, size_t);
-
-/*  */
+void InitializeArrayForFreeList(int *, int);
+int JosephusUsingFreeList(int *);
 
 /* getting next position in our array */
 size_t GetNextPosition(int *arr, size_t position, size_t size_arr)
@@ -68,22 +69,69 @@ int JosephusRecursive(int n, int k)
        k%n + 1 as position 1 */
     return (JosephusRecursive(n - 1, k) + k-1) % n + 1; 
 } 
-  
+
+/* Initialize array so the last cell [n-1] = 0, [0] = 1, [1] = 2 and so on */ 
+void InitializeArrayForFreeList(int *soldr_arr, int num_of_soldr)
+{
+	int i = 0;
+	for(; i < num_of_soldr - 1; ++i)
+	{
+		soldr_arr[i] = i + 1;
+	}
+	
+  	/* put 0 in last cell */
+	soldr_arr[num_of_soldr - 1] = 0;
+}
+
+
+int JosephusUsingFreeList(int *soldr_array)
+{
+	int  i = 0;
+	/* if value inside arr == index => this is the last	*/
+	/* soldier left alive	(laststanding)			*/
+	while(i != soldr_array[i])
+	{
+		soldr_array[i] = soldr_array[soldr_array[i]];
+		i = soldr_array[i];
+	}
+	
+	return i + 1;
+}
 
 
 int main(int argc, char **argv) 
 { 
+  /* var for recursive Joseph */
   int n = 100; 
   int k = 2; 
+  /* arr for "long version" of Joseph */
   int arr_joseph[ARR_SIZE] = {0};
-  char *num_from_string = 
+  /* var for "free list" Joseph */
+  int num_of_soldiers = 0;
+  int *soldiers_arr = NULL;
+
+  /* check for user input of number of soldiers */	
+  if(argc == 2)
+  {
+	num_of_soldiers = atoi(argv[1]);
+  	soldiers_arr = (int *)calloc(num_of_soldiers, sizeof(int));
+	/* initializing array so the value of last cell [n-1] = 0, and [0] = 1, [1] = 2 and so on... */
+ 	InitializeArrayForFreeList(soldiers_arr, num_of_soldiers);
+	printf("%*c    The position of soldier left alive is: %d if amount of soldiers is: %d\n", 5, ' ', JosephusUsingFreeList(soldiers_arr)
+													, num_of_soldiers);
+  }
+  else
+  {
+  	printf("%*c    No input from command line, or wrong input\n", 5, ' ');
+  }
   
   /* result of Josephus problem using array */ 
-  printf("\nThe last standing is %d\n", JosephusArray(arr_joseph, ARR_SIZE));
+  	printf("%*c    The position of soldier left alive is: %d if amount of soldiers is: %d\n", 5, ' ', JosephusArray(arr_joseph, ARR_SIZE)
+													, ARR_SIZE);
 
   
   /* Recursive Josephus */
-  printf("\nThe chosen place is %d\n", JosephusRecursive(n, k)); 
+  	printf("%*c    The position of soldier left alive is: %d if amount of soldiers is: %d\n", 5, ' ', JosephusRecursive(n, k), n);
   
   return 0; 
 } 

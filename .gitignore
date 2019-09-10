@@ -10,5 +10,5 @@
 # Don't ignore c, h files
 !*.c
 !*.h
-
+!*.txt
 

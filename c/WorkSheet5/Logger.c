@@ -6,7 +6,7 @@
 #define MAX_USER_INPUT 100
 #define UNUSED (void)
 
-
+/********************** typedefs and enum **********************/
 /* create enum for status to return from function */
 enum status{success, failure};
 
@@ -24,41 +24,76 @@ typedef struct operation
 	char *option;
 	Action_t action;
 }operation_t;
+/***************************************************************/
 
-
+/********************** func declaration ***********************/
 status_t RemoveOperation(const char *filename,const  char *usr_str);
 status_t CountOperation(const char *filename,const  char *usr_str);
 status_t ExitOperation(const char *filename,const  char *usr_str);
 status_t AppendOperation(const char *filename,const  char *usr_str);
 status_t WriteToStartOperation(const char *filename,const  char *usr_str);
 int ParserForInput(const char *usr_str, operation_t *);
+/***************************************************************/
+
 
 /***** append usr_string to end of file *****/
 status_t AppendOperation(const char *filename,const char *usr_str)
 {
-	FILE *file_p = fopen(filename, "a+"); 
+	FILE *file_p = NULL;
+
+	file_p = fopen(filename, "a+"); 
+	if(NULL == file_p)
+	{
+		printf("\n\nFailed to open %s\n\n", filename);
+		return failure;
+	}
 
 	fprintf(file_p, "%s", usr_str);
-	printf("\n\nAppendation was  successful \n\n");
-	fclose(file_p);	
+	printf("\n\nAppendation was  successful\n\n");
+
+	if(0 != fclose(file_p))
+	{
+		printf("\n\nFailed to close %s\n\n", filename);
+		return failure;
+	}	
+
 	return success;
 }
 
 /***** write string to start of file *****/
 status_t WriteToStartOperation(const char *filename,const char *usr_str)
 {
+	FILE *file_p = NULL;
+	FILE *temp_p = NULL;
+	char *buffer = NULL;
 	char *temp_file = "temp.txt";
 	size_t size_of_buffer = 1000;
-/* !!! check if succesfull */	
-char *buffer = (char *)malloc(sizeof(char) * size_of_buffer);
-/* !!!!!!!!!!!!!! */
-	
 	size_t size_of_copied_data = 0;
 
-/* !!!!! add test for open !!!!! */
-FILE *file_p = fopen(filename, "r");
-FILE *temp_p = fopen(temp_file, "a");
-/* !!!!!!!!!!!!!!!!!!!!!! */	
+
+	buffer = (char *)malloc(sizeof(char) * size_of_buffer);
+	if(NULL == buffer)
+	{
+		printf("\n\nFailed to allocate memory for the buffer by using malloc\n\n");				
+		return failure;
+	}
+
+	
+	/*------------- open files and confirm success -------------*/
+	file_p = fopen(filename, "r");
+	if(NULL == file_p)
+	{
+		printf("\n\nFailed to open %s\n\n", filename);
+		return failure;
+	}
+
+	temp_p = fopen(temp_file, "a");
+	if(NULL == temp_p)
+	{
+		printf("\n\nFailed to open %s\n\n", temp_file);
+		return failure;
+	}
+	/*----------------------------------------------------------*/
 
 	/****** Write usr_string to first line of our temp_file ******/
 	fprintf(temp_p, "%s", ++usr_str);
@@ -73,19 +108,29 @@ FILE *temp_p = fopen(temp_file, "a");
 	/*=========================================================*/
 
 	/*===== closing both file =====*/ 
-	fclose(file_p);
-	fclose(temp_p);
+
+	if(0 != fclose(file_p))
+	{
+		printf("\n\n Failed to close %s\n\n", filename);
+		return failure;
+	}
+
+	if(0 != fclose(temp_p))
+	{
+		printf("\n\nFailed to close %s\n\n", filename);
+		return failure;
+	}		
 	/*=============================*/ 
 
 	/*=========== deleting temp file ===========*/
 	if(0 == remove(filename))
 	{
-		printf("\n\n Deleted original file successfully  \n\n");
+		printf("\n\nDeleted original file successfully\n\n");
 	}
 
 	else
 	{
-		printf("\n\n Failed to delete the original file  \n\n");
+		printf("\n\nFailed to delete the original file\n\n");
 		return failure;
 	}
 	/*==========================================*/
@@ -93,17 +138,18 @@ FILE *temp_p = fopen(temp_file, "a");
 	/*=========== renaming temp file to old file name ===========*/
 	if(0 == rename(temp_file, filename))
 	{
-		printf("\n\n Renaming temp file was successfull  \n\n");
+		printf("\n\nRenaming temp file was successfull\n\n");
 	}
 
 	else
 	{
-		printf("\n\n Failed to rename the temp file  \n\n");
+		printf("\n\nFailed to rename the temp file\n\n");
 		return failure;
 	}
 	/*===========================================================*/
 	
-	printf("\n\nappendoperator success\n\n");
+	printf("\n\nAppendoperator success\n\n");
+
 	free(buffer);
 
 	return success;
@@ -116,17 +162,27 @@ status_t ExitOperation(const char *filename,const char *usr_str)
 	UNUSED usr_str;
 
 	printf("\n\nExiting program\n\n");
+
 	return failure;
 }
 
 /***** counting lines in file *****/
 status_t CountOperation(const char *filename,const char *usr_str)
 {
-	FILE *file_p = fopen(filename, "r");
+	FILE *file_p = NULL;
 	char char_from_file = 0;
 	int line_counter = 0;
 	UNUSED usr_str;
 	
+
+	file_p = fopen(filename, "r");
+	if(NULL == file_p)
+	{
+		printf("\n\nFailed to open %s\n\n", filename);
+	}
+
+
+
 	while(EOF != char_from_file)
 	{
 		char_from_file = getc(file_p);
@@ -136,9 +192,13 @@ status_t CountOperation(const char *filename,const char *usr_str)
 			}
 	}
 
-	fclose(file_p);
+	if(0 != fclose(file_p))
+	{
+		printf("\n\nFailed to close %s\n\n", filename);
+	}	
 
 	printf("\n\nThe number of lines in current file is: %d.\n\n", line_counter);
+
 	return success;
 }
 
@@ -149,13 +209,13 @@ status_t RemoveOperation(const char *filename,const  char *usr_str)
 
 	if(0 == remove(filename))
 	{
-		printf("\n\n Deleted successfully  \n\n");
+		printf("\n\nDeleted successfully  \n\n");
 		return success; 
 	}
 	
 	else
 	{
-		printf("\n\n Failed to delete the file  \n\n");
+		printf("\n\nFailed to delete the file  \n\n");
 		return failure;
 	}
 }
@@ -184,7 +244,6 @@ int ParserForInput(const char *usr_input, operation_t *strct_ptr)
 				{
 					if(strncmp(usr_input, strct_ptr[action_num].option, len_of_operation) == 0)
 					{
-						printf("\ninside if%s\n", strct_ptr[action_num].option);
 						break;
 					}					
 				}
@@ -201,7 +260,6 @@ int ParserForInput(const char *usr_input, operation_t *strct_ptr)
 			break;
 	}
 
-	printf("\nparser result:%d\n", action_num);
 	return action_num;
 }
 
@@ -231,6 +289,15 @@ int main(int argc, char **argv)
 	logger_operations[4].option = "<";
 	logger_operations[4].action = WriteToStartOperation;
 	/*===================================*/
+
+	/*-------------------- operation options -------------------*/
+	printf("%*c Worksheet5 Files Menu:\n", 5, ' ');
+    printf("%*c 1. -remove the file\n", 5, ' ');
+	printf("%*c 2. -exit exit program\n", 5, ' ');
+    printf("%*c 3. -count lines in file\n", 5, ' ');
+    printf("%*c 4. < move string input to start of file\n", 5, ' ');
+    printf("%*c 5. anyother option - append string to the end of file\n\n\n", 5, ' ');
+	/*----------------------------------------------------------*/
 
 	/*======= while -exit wasnt typed =======*/
 	while(program_stat != failure)

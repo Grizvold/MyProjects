@@ -1,11 +1,11 @@
 #include <stdio.h> /* fopen */
 #include <string.h> /* strlen/strncmp */
+#include <stdlib.h> /* malloc */
 
 #define OPTION_COUNT 5
 #define MAX_USER_INPUT 100
+#define UNUSED (void)
 
-/* unused variables */
-typedef void UNUSED_t;
 
 /* create enum for status to return from function */
 enum status{success, failure};
@@ -19,84 +19,203 @@ typedef status_t (*Action_t)(const char *, const char *);
 
 /* creating struct with string (probably operation)	*/
 /* and proper function to this string			*/ 
-struct operation
+typedef struct operation
 {
 	char *option;
 	Action_t action;
-}operation[OPTION_COUNT];
+}operation_t;
 
-typedef struct operation operation_t;
 
 status_t RemoveOperation(const char *filename,const  char *usr_str);
 status_t CountOperation(const char *filename,const  char *usr_str);
 status_t ExitOperation(const char *filename,const  char *usr_str);
 status_t AppendOperation(const char *filename,const  char *usr_str);
 status_t WriteToStartOperation(const char *filename,const  char *usr_str);
-int ParserForInput(const char *usr_str);
+int ParserForInput(const char *usr_str, operation_t *);
 
+/***** append usr_string to end of file *****/
 status_t AppendOperation(const char *filename,const char *usr_str)
 {
 	FILE *file_p = fopen(filename, "a+"); 
-	fprintf(file_p, usr_str);
-	printf("\nappendoperator success\n");
+
+	fprintf(file_p, "%s", usr_str);
+	printf("\n\nAppendation was  successful \n\n");
+	fclose(file_p);	
 	return success;
 }
 
+/***** write string to start of file *****/
 status_t WriteToStartOperation(const char *filename,const char *usr_str)
 {
-	printf("\nappendoperator success\n");
+	char *temp_file = "temp.txt";
+	size_t size_of_buffer = 1000;
+/* !!! check if succesfull */	
+char *buffer = (char *)malloc(sizeof(char) * size_of_buffer);
+/* !!!!!!!!!!!!!! */
+	
+	size_t size_of_copied_data = 0;
+
+/* !!!!! add test for open !!!!! */
+FILE *file_p = fopen(filename, "r");
+FILE *temp_p = fopen(temp_file, "a");
+/* !!!!!!!!!!!!!!!!!!!!!! */	
+
+	/****** Write usr_string to first line of our temp_file ******/
+	fprintf(temp_p, "%s", ++usr_str);
+
+	/*=========== Copy rest of old file to new file ===========*/
+	do
+	{
+		size_of_copied_data = fread(buffer, 1, size_of_buffer, file_p);
+		fwrite(buffer, 1, size_of_copied_data, temp_p);
+	}
+	while(size_of_copied_data == size_of_buffer);
+	/*=========================================================*/
+
+	/*===== closing both file =====*/ 
+	fclose(file_p);
+	fclose(temp_p);
+	/*=============================*/ 
+
+	/*=========== deleting temp file ===========*/
+	if(0 == remove(filename))
+	{
+		printf("\n\n Deleted original file successfully  \n\n");
+	}
+
+	else
+	{
+		printf("\n\n Failed to delete the original file  \n\n");
+		return failure;
+	}
+	/*==========================================*/
+	
+	/*=========== renaming temp file to old file name ===========*/
+	if(0 == rename(temp_file, filename))
+	{
+		printf("\n\n Renaming temp file was successfull  \n\n");
+	}
+
+	else
+	{
+		printf("\n\n Failed to rename the temp file  \n\n");
+		return failure;
+	}
+	/*===========================================================*/
+	
+	printf("\n\nappendoperator success\n\n");
+	free(buffer);
+
 	return success;
 }
 
-
+/***** exit program *****/
 status_t ExitOperation(const char *filename,const char *usr_str)
 {
-	printf("\nexitoperator success\n");
-	return success;
+	UNUSED filename;
+	UNUSED usr_str;
+
+	printf("\n\nExiting program\n\n");
+	return failure;
 }
 
+/***** counting lines in file *****/
 status_t CountOperation(const char *filename,const char *usr_str)
 {
-	printf("\ncountoperator success\n");
+	FILE *file_p = fopen(filename, "r");
+	char char_from_file = 0;
+	int line_counter = 0;
+	UNUSED usr_str;
+	
+	while(EOF != char_from_file)
+	{
+		char_from_file = getc(file_p);
+			if(char_from_file == '\n')
+			{
+				line_counter++;
+			}
+	}
+
+	fclose(file_p);
+
+	printf("\n\nThe number of lines in current file is: %d.\n\n", line_counter);
 	return success;
 }
 
+/***** remove file *****/
 status_t RemoveOperation(const char *filename,const  char *usr_str)
 {
-	printf("\nremoveoperator success\n");
-	return success;
+	UNUSED usr_str;
+
+	if(0 == remove(filename))
+	{
+		printf("\n\n Deleted successfully  \n\n");
+		return success; 
+	}
+	
+	else
+	{
+		printf("\n\n Failed to delete the file  \n\n");
+		return failure;
+	}
 }
 
-/* parser for user input string */
-int ParserForInput(const char *usr_input)
+/***** parser for user input string *****/
+int ParserForInput(const char *usr_input, operation_t *strct_ptr)
 {
 	int action_num = 0;
+	size_t len_of_input = 0;
+	size_t len_of_operation = 0;
 
 	switch (*usr_input)
 	{
 		case '-':
-			
+			/* one of "-" options (remove/exit/count) */
+			/* if none of the options action_num = 3  */
+			/* which is "append" function in struct   */
+			len_of_input = strlen(usr_input);
+	
+			for(action_num = 0; action_num < 3; action_num++)
+			{
+				/* because of fgets we compare to strlen + 1 (adds \n) */
+				len_of_operation = strlen(strct_ptr[action_num].option);				
+				
+				if(len_of_input == (len_of_operation + 1))	
+				{
+					if(strncmp(usr_input, strct_ptr[action_num].option, len_of_operation) == 0)
+					{
+						printf("\ninside if%s\n", strct_ptr[action_num].option);
+						break;
+					}					
+				}
+			}
+
 			break;
 		case '<':
+			action_num = 4;
+
 			break;
 		default:
-			action_num = 4;
+			action_num = 3;
+
 			break;
 	}
 
-	printf("\n%d\n", action_num);
+	printf("\nparser result:%d\n", action_num);
 	return action_num;
 }
 
 int main(int argc, char **argv)
 {	
+	/******* Data declaration and initialization *******/
 	operation_t logger_operations[OPTION_COUNT];
-	/* file name from user */
 	char *file_name = argv[1];
 	char usr_string[MAX_USER_INPUT] = {0};
 	int operation_num = 0;
+	status_t program_stat = success;
+	UNUSED argc;
 
-	/* struct of functions  */
+	/*======= struct of functions =======*/
 	logger_operations[0].option = "-remove";
 	logger_operations[0].action = RemoveOperation;
 
@@ -106,18 +225,23 @@ int main(int argc, char **argv)
 	logger_operations[2].option = "-exit";
 	logger_operations[2].action = ExitOperation;
 
-	logger_operations[3].option = "<";
-	logger_operations[3].action = WriteToStartOperation;
+	logger_operations[3].option = "";
+	logger_operations[3].action = AppendOperation;
 
-	logger_operations[4].option = "";
-	logger_operations[4].action = AppendOperation;
+	logger_operations[4].option = "<";
+	logger_operations[4].action = WriteToStartOperation;
+	/*===================================*/
 
-/******************* my while **********************************/ 
+	/*======= while -exit wasnt typed =======*/
+	while(program_stat != failure)
+	{
 	fgets(usr_string, MAX_USER_INPUT, stdin);
-	operation_num = ParserForInput(usr_string);
+	operation_num = ParserForInput(usr_string, logger_operations);
 
-	logger_operations[operation_num].action(file_name, usr_string);		
-/****************************************************************/	
+	program_stat = logger_operations[operation_num].action(file_name, usr_string);	
+	}	
+	/*=======================================*/
+	
 	return 0;
 }
 

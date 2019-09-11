@@ -292,11 +292,11 @@ int main(int argc, char **argv)
 
 	/*-------------------- operation options -------------------*/
 	printf("%*c Worksheet5 Files Menu:\n", 5, ' ');
-    printf("%*c 1. -remove the file\n", 5, ' ');
+ 	printf("%*c 1. -remove the file\n", 5, ' ');
 	printf("%*c 2. -exit exit program\n", 5, ' ');
-    printf("%*c 3. -count lines in file\n", 5, ' ');
-    printf("%*c 4. < move string input to start of file\n", 5, ' ');
-    printf("%*c 5. anyother option - append string to the end of file\n\n\n", 5, ' ');
+ 	printf("%*c 3. -count lines in file\n", 5, ' ');
+	printf("%*c 4. < move string input to start of file\n", 5, ' ');
+	printf("%*c 5. anyother option - append string to the end of file\n\n\n", 5, ' ');
 	/*----------------------------------------------------------*/
 
 	/*======= while -exit wasnt typed =======*/

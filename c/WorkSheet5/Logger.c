@@ -122,7 +122,7 @@ status_t WriteToStartOperation(const char *filename,const char *usr_str)
 	}		
 	/*=============================*/ 
 
-	/*=========== deleting temp file ===========*/
+	/*=========== deleting original file ===========*/
 	if(0 == remove(filename))
 	{
 		printf("\n\nDeleted original file successfully\n\n");

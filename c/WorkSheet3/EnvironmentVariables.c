@@ -81,6 +81,7 @@ int main(int argc, char* argv[], char* envp[])
 
 	/* free buffer itself */
 	free(buffer);
+	buffer = NULL;
 
 	return 0;
 }

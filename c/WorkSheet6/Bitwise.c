@@ -283,7 +283,7 @@ int main()
 
     printf("\nnumber is %d, is it power of 2? %d \n", num, IsPowerOfTwo(num));
     
-    printf("\n %d * (2 ^ %d) is %ld\n", num, num2, Pow2(num, num2));
+    printf("\n %d * (2 ^ %d) is %ld\n", num, num2, Pow2(num, num2)); 
     
     return 0;
 }

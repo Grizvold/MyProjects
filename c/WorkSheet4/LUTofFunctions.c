@@ -94,6 +94,7 @@ static void SwitchCase(char usr_inpt)
 int main()
 {
 	char usr_char_input = 0;
+	int usr_int_input = 0;
 	lut_ptr_char_t lut_table[ARR_SIZE] = {NULL};
 
 	/* init lut table */

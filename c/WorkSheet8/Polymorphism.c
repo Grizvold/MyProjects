@@ -84,9 +84,8 @@ void PrintVal(const data_s_t *element)
 
 void AddVal(data_s_t *element, int i)
 {
-	char *usr_string = NULL;
+	char usr_string[] = "10";
 	
-	usr_string = (char *)i;
 	assert(NULL != usr_string);
 
 	switch(element->e_type)
@@ -103,7 +102,7 @@ void AddVal(data_s_t *element, int i)
 				element->u_type.sVar = (char *)realloc(element->u_type.sVar, strlen(element->u_type.sVar) + strlen(usr_string) + 1);
 
 				assert(NULL != element->u_type.sVar);
-				strcpy(element->u_type.sVar, usr_string);
+				strcat(element->u_type.sVar, usr_string);
 				break;
 
 		default:

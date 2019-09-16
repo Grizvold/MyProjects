@@ -20,7 +20,7 @@ int main()
 
 	AddVal(&elements[0], i_to_add);
 	AddVal(&elements[1], i_to_add);
-	AddVal(&elements[2], i_to_add);
+	/*AddVal(&elements[2], i_to_add);*/
 
 	printf("\n %d \n", *(int *)GetVal(&elements[0]));
 	printf("\n %f \n", *(float *)GetVal(&elements[1]));

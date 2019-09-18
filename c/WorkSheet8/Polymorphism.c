@@ -86,7 +86,7 @@ void AddVal(data_s_t *element, int i)
 {
 	char usr_string[] = "10";
 	
-	assert(NULL != usr_string);
+	assert(NULL != usr_string); 
 
 	switch(element->e_type)
 	{

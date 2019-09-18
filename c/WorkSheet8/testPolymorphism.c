@@ -20,7 +20,7 @@ int main()
 
 	AddVal(&elements[0], i_to_add);
 	AddVal(&elements[1], i_to_add);
-	AddVal(&elements[2], i_to_add);
+	AddVal(&elements[2], i_to_add); 
 
 	PrintVal(&elements[0]);
 	PrintVal(&elements[1]);

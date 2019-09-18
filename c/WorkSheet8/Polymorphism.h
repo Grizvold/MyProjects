@@ -33,7 +33,7 @@ void AddVal(data_s_t *element, int i);
 #endif
 
 /*
-typedef struct
+typedef struct 
 {
 	typedef enum{INT, FLOAT, STRING}data_e_t;
 	typedef union

@@ -23,8 +23,9 @@ void *GetVal(const data_s_t *element)
 		default:
 				break;
 
-	return 0;
 	}
+
+	return 0;
 }
 
 void SetVal(data_s_t *element, data_e_t var_type, const void *val)
@@ -84,9 +85,8 @@ void PrintVal(const data_s_t *element)
 
 void AddVal(data_s_t *element, int i)
 {
-	char usr_string[] = "10";
+	char *usr_string = NULL;
 	
-	assert(NULL != usr_string); 
 
 	switch(element->e_type)
 	{
@@ -99,10 +99,24 @@ void AddVal(data_s_t *element, int i)
 				break;
 
 		case STRING:
+				assert (0 != i);
+				assert (NULL != element->u_type.sVar);
+				
+				usr_string = (char *)malloc(INPUT_NUM_LENGTH);
+				if (NULL == usr_string)
+				{
+					return;
+				}
+
+				sprintf(usr_string, "%d", i);
+				
 				element->u_type.sVar = (char *)realloc(element->u_type.sVar, strlen(element->u_type.sVar) + strlen(usr_string) + 1);
 
 				assert(NULL != element->u_type.sVar);
 				strcat(element->u_type.sVar, usr_string);
+
+				free(usr_string);
+				usr_string = NULL;
 				break;
 
 		default:
@@ -110,4 +124,13 @@ void AddVal(data_s_t *element, int i)
 	}
 }
 
+void ClearStringElement(data_s_t *element)
+{
+	if (STRING == element->e_type)
+	{
+		free(element->u_type.sVar);
+		element->u_type.sVar = NULL;
+		printf("\nsuccessfully freed string element\n");		
+	}
+}
 

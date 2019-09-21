@@ -7,7 +7,7 @@ int main()
 	int i_int = 12;
 	float f_float = 13.4;
 	char *s_string = "ruslan";
-	int i_to_add = 10;
+	int i_to_add = 20;
 
 	
 	SetVal(&elements[0], INT, &i_int);
@@ -31,6 +31,7 @@ int main()
 	printf("\n %f \n", *(float *)GetVal(&elements[1]));
 	printf("\n %s \n", (char *)GetVal(&elements[2]));	
 
-	return 0;
+	ClearStringElement(&elements[2]);
 
+	return 0;
 }

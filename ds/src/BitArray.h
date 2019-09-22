@@ -1,9 +1,6 @@
 
 
-typedef struct
-{
-	unsigned int arr : size;
-}bit_array_t;
+typedef  bit_arr_t;
 
 int IsOn(int index);
 int IsOff(int index);

@@ -24,9 +24,10 @@ bit_array_t BitArrFlip(bit_array_t bit_arr, int index);
 bit_array_t BitArrSetOn(bit_array_t bit_arr, int index);
 bit_array_t BitArrSetOff(bit_array_t bit_arr, int index);
 
+bit_array_t BitArrSet(bit_array_t bit_arr, int index, int val);
+
 bit_array_t BitArrRotR(bit_array_t bit_arr, size_t num_rotations);
 bit_array_t BitArrRotL(bit_array_t bit_arr, size_t num_rotations);
-
 
 
 #endif /* end of __bit_array_h__ */

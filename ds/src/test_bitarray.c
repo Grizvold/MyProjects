@@ -53,8 +53,9 @@ int main()
 	printf("\n%lu\n", BitArrCountOn(test_arr));
 	printf("\n%lu\n", BitArrCountOff(test_arr));	*/
 	
-	test_arr = 892453;
-	test_arr = BitArrRotR(test_arr, 5);
+	test_arr = 0x5800000000000000;
+	/*test_arr = BitArrRotR(test_arr, 5);*/
+	printf("\n%lu\n", test_arr);
 	test_arr = BitArrRotL(test_arr, 5);
 	printf("\n%lu\n", test_arr);	
 	

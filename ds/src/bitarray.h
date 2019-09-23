@@ -37,4 +37,6 @@ bit_arr_t BitArrSet(bit_arr_t bit_arr, int index, int val);
 bit_arr_t BitArrRotR(bit_arr_t bit_arr, size_t num_rotations);
 bit_arr_t BitArrRotL(bit_arr_t bit_arr, size_t num_rotations);
 
+size_t BitArrCountOnLUT(bit_arr_t bit_arr);
+
 #endif /* end of __bit_array_h__ */

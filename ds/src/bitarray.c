@@ -57,11 +57,11 @@ bit_arr_t BitArrMirror(bit_arr_t bit_arr)
 	
 	for (i = 0; i < word_size / 2 ; i++)
 	{
-		first = ((bit_arr & mask_r) == mask_r); /* first will receive arr's lsb value, 1 if the bit is on 0 if off */
-		last = ((bit_arr & mask_l) == mask_l); /* last will receive arr's msb value, 1 if the bit is on 0 if off */
+		first = ((bit_arr & mask_r) == mask_r); 
+		last = ((bit_arr & mask_l) == mask_l); 
 		
-		bit_arr = BitArrSet(bit_arr, i, last); /* move value of last to first */
-		bit_arr = BitArrSet(bit_arr, (word_size - i - 1), first); /* move value of first to last */
+		bit_arr = BitArrSet(bit_arr, i, last); 
+		bit_arr = BitArrSet(bit_arr, (word_size - i - 1), first); 
 		
 		mask_r <<= 1; /* forward mask_r to left bit */
 		mask_l >>= 1; /* forward mask_l to right bit */

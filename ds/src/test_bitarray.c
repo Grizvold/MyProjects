@@ -4,8 +4,8 @@
 #include <stdlib.h> /* malloc */
 
 int main()
-{
-	bit_arr_t test_arr;	
+{ 
+	bit_arr_t test_arr = 43;	
 	char *str = (char *)malloc(65);
 	
 	assert(NULL != str);
@@ -34,7 +34,7 @@ int main()
 	
 /*	test_arr = BitArrSet(test_arr, 15, 1);
 	printf("\n%lu\n", test_arr);
-	printf("\nIs on: %d\n", BitArrIsOn(test_arr, 15));
+	printf("\nIs on: %d\n", BitArrIsOn(test_arr, 15));	
 	
 	test_arr = BitArrSet(test_arr, 15, 0);
 	printf("\n%lu\n", test_arr);	
@@ -56,11 +56,7 @@ int main()
 	test_arr = 892453;
 	test_arr = BitArrRotR(test_arr, 5);
 	test_arr = BitArrRotL(test_arr, 5);
-	printf("\n%lu\n", test_arr);
-	
-	
-	
-	
+	printf("\n%lu\n", test_arr);	
 	
 	return 0;
 }

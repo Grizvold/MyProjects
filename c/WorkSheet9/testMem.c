@@ -24,7 +24,7 @@ void testMemSet()
 	
 	test_str = (char *)calloc(70, sizeof(char));	
 	test_str += 1;
-	test_str = (char *)MemSet(test_str, '.', 64);
+	test_str = (char *)MemSet(test_str, '.', 65);
 	
 	printf("\nnew string using MemSet: %s\n", test_str);
 	test_str -= 1;
@@ -36,11 +36,11 @@ void testMemSet()
 void testMemCpy()
 {
 	char *dest_str = NULL;
-	char source_str[] = "abc";
+	char source_str[] = "123456789xxxxxxxxxx123456789rrrrr123456789";
 	
 	dest_str =  (char *)calloc(70, sizeof(char));	
 	dest_str += 1;
-	dest_str = MemCpy(dest_str, source_str, 3);
+	dest_str = MemCpy(dest_str, source_str, 42);
 	printf("\nnew string using MemCpy:%s\n", dest_str);
 	
 	dest_str -= 1;

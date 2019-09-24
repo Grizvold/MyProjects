@@ -3,8 +3,10 @@
 #include <stddef.h> /* size_t */
 
 /* fills first n bytes of the memory area pointed to by s with byte c */
-extern void *MemSet(void *source, int c, size_t n);
+void *MemSet(void *source, int c, size_t n);
 
 /* copy n bytes from source to dest */
-extern void *MemCpy(void *dest, const void *src, size_t n);
+void *MemCpy(void *dest, const void *src, size_t n);
+
+void *MemMove(void *dest, const void *src, size_t n);
 #endif

@@ -25,11 +25,10 @@ static size_t *FillWordBuffer(int c)
 		*(buffer + i) = c;
 	}
 	
-	printf("\nbuffer :%s\n", buffer);
 	return (size_t *)buffer;
 }
 
-/* fills first n bytes of the memory area pointed to by s with byte c */ 
+/* fills first n bytes of the memory area pointed to by source with byte c */ 
 void *MemSet(void *source, int c, size_t n)
 {
 	char *char_iterator = NULL;
@@ -95,7 +94,7 @@ void *MemCpy(void *dest, const void *src, size_t n)
 	}
 	
 	dest_iterator = (char *)word_iterator;
-	/* copy tail if left */
+	/* copy tail if left byte-by-byte */
 	for(; 0 < n; n--, dest_iterator++, source_copy++)
 	{	
 		*dest_iterator = *source_copy;
@@ -103,5 +102,31 @@ void *MemCpy(void *dest, const void *src, size_t n)
 	
 	return dest;
 	
+}
+
+void *MemMove(void *dest, const void *src, size_t n)
+{
+	char *c_src = (char *)src + n - 1;
+	char *c_dest = (char *)dest + n - 1;
+	size_t i = 0;
+
+	/* in case that dest overlaps src copy from tail to head	*/
+	/* because otherwise it fills dest with 1 char			*/
+	if(((char *)src + n > (char *)dest) && src < dest)
+	{
+		for(i = 0; i < n; i++)
+		{
+			*(c_dest) = *(c_src);
+			c_dest--;
+			c_src--;
+		}
+	}
+	/* in case that there is no overlap					 */
+	else
+	{
+		dest = MemCpy(dest, src, n);
+	}
+	
+	return dest;
 }
 

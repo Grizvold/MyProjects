@@ -2,7 +2,6 @@
 #include <stddef.h> /* size_t */
 #include <assert.h> /* assert */
 
-static char LUT[] = {};
 
 static size_t word_size = sizeof(bit_arr_t) * 8;
 static void SwapString(char *str, size_t str_size);

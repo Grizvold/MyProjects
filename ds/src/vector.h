@@ -5,20 +5,20 @@
 
 typedef struct vector vector_t;
 
-VectorCreate(size_t element_size, size_t num_of_elements);
+vector_t *VectorCreate(size_t element_size, size_t num_of_elements);
 
-VectorDestroy(vector_t *element);
+void VectorDestroy(vector_t *element);
 
 void *VectorGetItemAddress(vector_t *element, size_t index);
 
-void VectorPushBack(vector_t *element, void *element);
+int VectorPushBack(vector_t *element,const void *element);
 
-void VectorPopBack(vector_t *element);
+int VectorPopBack(vector_t *element);
 
 size_t VectorSize(const vector_t *element);
 
 size_t VectorCapacity(const vector_t *element);
 
-size_t VectorReserve(vector_t *element, size_t num_elements);
+void VectorReserve(vector_t *element, size_t new_capacity);
 
 #endif /* vector */

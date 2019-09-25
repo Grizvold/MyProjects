@@ -9,7 +9,7 @@ VectorCreate(size_t element_size, size_t num_of_elements);
 
 VectorDestroy(vector_t *element);
 
-void *VectorGetItemAddress(vector_t *element);
+void *VectorGetItemAddress(vector_t *element, size_t index);
 
 void VectorPushBack(vector_t *element, void *element);
 

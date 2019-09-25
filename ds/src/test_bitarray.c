@@ -40,24 +40,30 @@ int main()
 	printf("\n%lu\n", test_arr);	
 	printf("\nIs off: %d\n", BitArrIsOff(test_arr, 15));	*/
 	
-/*	test_arr = 57552;
+	test_arr = 57552;
+	printf("\n%lu\n", test_arr);
 	test_arr = BitArrMirror(test_arr);
-	printf("\n%lu\n", test_arr);	*/
+	printf("\n%lu\n", test_arr);
+	test_arr = 57552;	
+	printf("\n%lu\n", test_arr);
+	test_arr = BitArrMirrorLUT(test_arr);
+	printf("\n%lu\n", test_arr);
 	
 /*	test_arr = 892453;
 	str = BitArrToString(test_arr, str);
 	printf("\n%lu\n", test_arr);
 	printf("\nstring is %s\n", str);	*/
 	
-/*	test_arr = 892453;
+	test_arr = 892453;
 	printf("\n%lu\n", BitArrCountOn(test_arr));
-	printf("\n%lu\n", BitArrCountOff(test_arr));	*/
+	printf("\n%lu\n", BitArrCountOff(test_arr));	
+	printf("\n%lu\n", BitArrCountOnLUT(test_arr));
 	
-	test_arr = 0x5800000000000000;
+/*	test_arr = 0x5800000000000000;
 	/*test_arr = BitArrRotR(test_arr, 5);*/
-	printf("\n%lu\n", test_arr);
+/*	printf("\n%lu\n", test_arr);
 	test_arr = BitArrRotL(test_arr, 5);
-	printf("\n%lu\n", test_arr);	
+	printf("\n%lu\n", test_arr);	*/
 	
 	return 0;
 }

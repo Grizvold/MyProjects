@@ -1,14 +1,48 @@
-#include "bitarray.h"
 #include <stddef.h> /* size_t */
 #include <assert.h> /* assert */
 
+#include <stdio.h>
 
+#include "bitarray.h"
+
+extern int bitOn_arr_LUT[256];
+int bitarr_mirror_LUT[256];
 static size_t word_size = sizeof(bit_arr_t) * 8;
 static void SwapString(char *str, size_t str_size);
 
+/* count bits set on by using LUT */
 size_t BitArrCountOnLUT(bit_arr_t bit_arr)
 {
-	
+	bit_arr_t mask = 0xFF;
+	bit_arr_t word = 0;
+
+	if (0 == bit_arr)
+	{
+		return bitOn_arr_LUT[0];
+	}
+
+	word = bit_arr & mask;
+
+	return bitOn_arr_LUT[word] + BitArrCountOnLUT(bit_arr >> 8); 
+}
+
+
+bit_arr_t BitArrMirrorLUT(bit_arr_t bit_arr)
+{
+	bit_arr_t mask = 0xFF;
+	bit_arr_t word = 0;
+	bit_arr_t result = 0;
+	size_t i = 0;
+
+	for(i = 0; i < word_size; i += 8)
+	{
+		word = bit_arr & mask;
+		result &= (bit_arr_t)bitarr_mirror_LUT[word];
+		bit_arr >>= 8;
+		result <<= 8;
+	}
+
+	return result;
 }
 
 /* count bits that are set to '1' */

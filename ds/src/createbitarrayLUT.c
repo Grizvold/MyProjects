@@ -21,6 +21,7 @@ int main()
 static void CreateBitArrLUT()
 {
 	size_t i = 0;
+	size_t char_counter = 0;
 	size_t bits_on = 0;
 	FILE *ptr_bit_arr_LUT = NULL;
 	char *name_of_file = "bit_arr_LUT.c";
@@ -47,38 +48,45 @@ static void CreateBitArrLUT()
 		{
 			fprintf(ptr_bit_arr_LUT, "%ld,", BitArrCountOn(i));
 		}
+		
+		char_counter++;
 		/* every 8 values jump to new line for readability */
-		if(0 == (i % 8))	
+		if(7 < char_counter)		
 		{
-			fprintf(ptr_bit_arr_LUT, "\n");	
+			fprintf(ptr_bit_arr_LUT, "\n");
+			char_counter = 0;	
 		}		
 	
 	}
 
 	fprintf(ptr_bit_arr_LUT, "%s\n\n", "};");
 
+	char_counter = 0;	
 	/* start bit mirror LUT */
 	fprintf(ptr_bit_arr_LUT, "%s", "int const bitarr_mirror_LUT[256] = {\n");
 		
-		/* fill the values in mirror LUT */
-		for(i = 0; i < LUT_size; i++)
+	/* fill the values in mirror LUT */
+	for(i = 0; i < LUT_size; i++)
+	{
+		if(i == (LUT_size - 1))
 		{
-			if(i == (LUT_size - 1))
-			{
-				bits_on = BitArrMirror(i);
-				fprintf(ptr_bit_arr_LUT, "%ld", bits_on);		
-			}
-			else
-			{
-				fprintf(ptr_bit_arr_LUT, "%ld,", BitArrMirror(i));
-			}
-			/* every 8 values jump to new line for readability */
-			if(0 == (i % 8))	
-			{
-				fprintf(ptr_bit_arr_LUT, "\n");	
-			}		
-		
+			bits_on = BitArrMirror(i);
+			fprintf(ptr_bit_arr_LUT, "%ld", bits_on);		
 		}
+		else
+		{
+			fprintf(ptr_bit_arr_LUT, "%ld,", BitArrMirror(i));
+		}
+		
+		char_counter++;
+		/* every 8 values jump to new line for readability */
+		if(7 < char_counter)		
+		{
+			fprintf(ptr_bit_arr_LUT, "\n");
+			char_counter = 0;	
+		}
+	
+	}
 		
 	fprintf(ptr_bit_arr_LUT, "%s\n\n", "};");
 

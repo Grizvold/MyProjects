@@ -19,6 +19,6 @@ size_t VectorSize(const vector_t *element);
 
 size_t VectorCapacity(const vector_t *element);
 
-void VectorReserve(vector_t *element, size_t new_capacity);
+int VectorReserve(const vector_t *element, size_t new_capacity);
 
 #endif /* vector */

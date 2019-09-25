@@ -8,8 +8,7 @@ static size_t word_size = sizeof(bit_arr_t);
 
 static void CreateBitArrLUT();
 static size_t BitArrCountOn(bit_arr_t bit_arr);
-bit_arr_t BitArrMirror(bit_arr_t bit_arr);
-bit_arr_t BitArrSet(bit_arr_t bit_arr, int index, int val);
+static bit_arr_t BitArrMirror(bit_arr_t bit_arr);
 
 int main()
 {
@@ -35,13 +34,13 @@ static void CreateBitArrLUT()
 		return;
 	}
 	
-	fprintf(ptr_bit_arr_LUT, "%s", "int bitOn_arr_LUT[256] = {\n");
+	fprintf(ptr_bit_arr_LUT, "%s", "int const bitOn_arr_LUT[256] = {\n");
 	/* fill the values in bit count LUT */
 	for(i = 0; i < LUT_size; i++)
 	{
 		if(i == (LUT_size - 1))
 		{
-			bits_on =  BitArrCountOn(i);
+			bits_on = BitArrCountOn(i);
 			fprintf(ptr_bit_arr_LUT, "%ld", bits_on);		
 		}
 		else
@@ -59,29 +58,29 @@ static void CreateBitArrLUT()
 	fprintf(ptr_bit_arr_LUT, "%s\n\n", "};");
 
 	/* start bit mirror LUT */
-	fprintf(ptr_bit_arr_LUT, "%s", "int bitarr_mirror_LUT[256] = {\n");
-	
-	/* fill the values in mirror LUT */
-	for(i = 0; i < LUT_size; i++)
-	{
-		if(i == (LUT_size - 1))
+	fprintf(ptr_bit_arr_LUT, "%s", "int const bitarr_mirror_LUT[256] = {\n");
+		
+		/* fill the values in mirror LUT */
+		for(i = 0; i < LUT_size; i++)
 		{
-			bits_on =  BitArrMirror(i);
-			fprintf(ptr_bit_arr_LUT, "%ld", bits_on);		
+			if(i == (LUT_size - 1))
+			{
+				bits_on = BitArrMirror(i);
+				fprintf(ptr_bit_arr_LUT, "%ld", bits_on);		
+			}
+			else
+			{
+				fprintf(ptr_bit_arr_LUT, "%ld,", BitArrMirror(i));
+			}
+			/* every 8 values jump to new line for readability */
+			if(0 == (i % 8))	
+			{
+				fprintf(ptr_bit_arr_LUT, "\n");	
+			}		
+		
 		}
-		else
-		{
-			fprintf(ptr_bit_arr_LUT, "%ld,", BitArrMirror(i));
-		}
-		/* every 8 values jump to new line for readability */
-		if(0 == (i % 8))	
-		{
-			fprintf(ptr_bit_arr_LUT, "\n");	
-		}		
-	
-	}
-	
-	fprintf(ptr_bit_arr_LUT, "%s", "};");
+		
+	fprintf(ptr_bit_arr_LUT, "%s\n\n", "};");
 
 	if(0 == fclose(ptr_bit_arr_LUT))
 	{
@@ -90,6 +89,7 @@ static void CreateBitArrLUT()
 	}		
 }
 
+/* fill LUT of bitOn_arr_LUT */
 static size_t BitArrCountOn(bit_arr_t bit_arr)
 {
 	size_t i = 0;
@@ -111,48 +111,20 @@ static size_t BitArrCountOn(bit_arr_t bit_arr)
 	return counter;
 }
 
-/* set the value of element in spesific position to val */
-bit_arr_t BitArrSet(bit_arr_t bit_arr, int index, int val)
+/* fill LUT of bitarr_mirror_LUT */
+static bit_arr_t BitArrMirror(bit_arr_t bit_arr)
 {
-	bit_arr_t specific_bit = 1;
-	
-	specific_bit <<= index;
-	/* check if val is 0 or 1 */
-	if(0 == val)
-	{
-		specific_bit = ~specific_bit;
-		bit_arr &= specific_bit;
-	}
-	
-	else if(1 == val)
-	{
-		bit_arr |= specific_bit;
-	}
-	
-	return bit_arr;
+    bit_arr_t mirror_num = 0;
+    size_t i = 0;
+    
+    for(i = 0; i < (word_size); i++)
+    {
+        mirror_num <<= 1;
+        mirror_num |= bit_arr & 1;
+        bit_arr >>= 1;
+    }
+        
+    return mirror_num;
 }
 
-/* perform "bit reversal" on our value */
-bit_arr_t BitArrMirror(bit_arr_t bit_arr)
-{
-	bit_arr_t mask_r = 1;
-	bit_arr_t mask_l = 1;
-	int first = 0, last = 0;
-	size_t i = 0;
 
-	mask_l <<= (word_size - 1); /* mask_l is pushed left to msb */	
-
-	for (i = 0; i < word_size / 2 ; i++)
-	{
-		first = ((bit_arr & mask_r) == mask_r); 
-		last = ((bit_arr & mask_l) == mask_l); 
-		
-		bit_arr = BitArrSet(bit_arr, i, last); 
-		bit_arr = BitArrSet(bit_arr, (word_size - i - 1), first); 
-		
-		mask_r <<= 1; /* forward mask_r to left bit */
-		mask_l >>= 1; /* forward mask_l to right bit */
-	}
-		
-	return bit_arr;
-}

@@ -5,8 +5,8 @@
 
 #include "bitarray.h"
 
-extern int bitOn_arr_LUT[256];
-int bitarr_mirror_LUT[256];
+extern const int bitOn_arr_LUT[256];
+extern const int bitarr_mirror_LUT[256];
 static size_t word_size = sizeof(bit_arr_t) * 8;
 static void SwapString(char *str, size_t str_size);
 
@@ -26,20 +26,21 @@ size_t BitArrCountOnLUT(bit_arr_t bit_arr)
 	return bitOn_arr_LUT[word] + BitArrCountOnLUT(bit_arr >> 8); 
 }
 
-
+/* perform "bit reversal" on our value by using mirror LUT */
 bit_arr_t BitArrMirrorLUT(bit_arr_t bit_arr)
 {
 	bit_arr_t mask = 0xFF;
-	bit_arr_t word = 0;
+	size_t word = 0;
 	bit_arr_t result = 0;
 	size_t i = 0;
-
-	for(i = 0; i < word_size; i += 8)
+	size_t iterations = sizeof(bit_arr_t);
+	
+	for(i = 0; i < iterations; i++)
 	{
-		word = bit_arr & mask;
-		result &= (bit_arr_t)bitarr_mirror_LUT[word];
-		bit_arr >>= 8;
 		result <<= 8;
+		word = bit_arr & mask;
+		result |= (bit_arr_t)bitarr_mirror_LUT[word];
+		bit_arr >>= 8;
 	}
 
 	return result;
@@ -88,25 +89,17 @@ size_t BitArrCountOff(bit_arr_t bit_arr)
 /* perform "bit reversal" on our value */
 bit_arr_t BitArrMirror(bit_arr_t bit_arr)
 {
-	bit_arr_t mask_r = 1;
-	bit_arr_t mask_l = 1;
-	int first = 0, last = 0;
-	size_t i = 0;
-	mask_l <<= (word_size - 1); /* mask_l is pushed left to msb */	
-	
-	for (i = 0; i < word_size / 2 ; i++)
-	{
-		first = ((bit_arr & mask_r) == mask_r); 
-		last = ((bit_arr & mask_l) == mask_l); 
-		
-		bit_arr = BitArrSet(bit_arr, i, last); 
-		bit_arr = BitArrSet(bit_arr, (word_size - i - 1), first); 
-		
-		mask_r <<= 1; /* forward mask_r to left bit */
-		mask_l >>= 1; /* forward mask_l to right bit */
-	}
-		
-	return bit_arr;
+    bit_arr_t mirror_num = 0;
+    size_t i = 0;
+    
+    for(i = 0; i < (word_size); i++)
+    {
+        mirror_num <<= 1;
+        mirror_num |= bit_arr & 1;
+        bit_arr >>= 1;
+    }
+        
+    return mirror_num;
 }
 
 /* check spesific bit value, if '1' */

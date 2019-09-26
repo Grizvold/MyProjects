@@ -14,9 +14,13 @@ size_t BitArrCountOff(bit_arr_t bit_arr);
 
 /* check if bit num "index" is on 	*/
 /* 		return true/false		*/
+/*  in case index is bigger than 
+	our arr - undefined behavior	*/
 int BitArrIsOn(bit_arr_t bit_arr, int index);
 /* check if bit num "index" is off	*/
 /* 		return true/false		*/
+/*  in case index is bigger than 
+	our arr - undefined behavior	*/
 int BitArrIsOff(bit_arr_t bit_arr, int index);
 
 /* perform "bit reversal" on our value	*/
@@ -40,12 +44,18 @@ bit_arr_t BitArrFlip(bit_arr_t bit_arr, int index);
 
 /* set the value of bit num "index in bit arr to '1' */
 /*			  return new bit array			   */
+/*  		in case index is bigger than 
+		our arr - undefined behavior			   */
 bit_arr_t BitArrSetOn(bit_arr_t bit_arr, int index);
 /* set the value of bit num "index in bit arr to '1' */
 /*			  return new bit array			   */
+/*  in case index is bigger than 
+	our arr - undefined behavior				   */
 bit_arr_t BitArrSetOff(bit_arr_t bit_arr, int index);
 /* set the value of bit num "index in bit arr to val */
 /*			  return new bit array			   */
+/*  		in case index is bigger than 
+		our arr - undefined behavior			   */
 bit_arr_t BitArrSet(bit_arr_t bit_arr, int index, int val);
 
 /* 		 rotate right by num_rotations 		   */

@@ -1,4 +1,5 @@
 #include <stdlib.h> /* malloc, calloc, free */
+#include <stdio.h> /* perror */
 
 #include "vector.h"
 
@@ -32,14 +33,18 @@ vector_t *VectorCreate(size_t element_size, size_t num_of_elements)
 	return vector;
 }
 
+int VectorPushBack(vector_t *vector, const void *data)
+{
+	if(vector->size == vector->capacity)
+	{
+		vector->capacity
+	}
+}
 int VectorPopBack(vector_t *vector)
 {
-	if(0 == vector->size)
-	{
-		return 0;
-	}
-	
-	
+	vector->base 	
+
+	return 1;
 }
 
 void *VectorGetItemAddress(vector_t *vector, size_t index)
@@ -55,6 +60,11 @@ size_t VectorSize(const vector_t *vector)
 size_t VectorCapacity(const vector_t *vector)
 {
 	return vector->capacity;
+}
+
+int VectorReserve(vector_t *element, size_t new_capacity)
+{
+	
 }
 
 void VectorDestroy(vector_t *vector)

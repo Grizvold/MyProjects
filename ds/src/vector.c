@@ -40,7 +40,7 @@ int VectorPushBack(vector_t *vector, const void *data)
 	{
 		void *new_vector = realloc(vector->base, 
 							vector->capacity * vector->element_size * 2)
-		if(NULL == temp)
+		if(NULL == new_vector)
 		{
 			return -1;
 		}

@@ -1,5 +1,5 @@
-#ifndef __vector_h__
-#define __vector_h__
+#ifndef __VECTOR_H__
+#define __VECTOR_H__
 
 #include <stddef.h> /* size_t */
 
@@ -37,4 +37,4 @@ size_t VectorCapacity(const vector_t *element);
 	to come (dynamic vector)						*/
 int VectorReserve(vector_t *element, size_t new_capacity);
 
-#endif /* vector */
+#endif /* __VECTOR_H__ */

@@ -1,5 +1,5 @@
-#ifndef __stack_h__
-#define __stack_h__
+#ifndef __STACK_H__
+#define __STACK_H__
 
 #include <stddef.h> /* size_t */
 
@@ -32,4 +32,4 @@ int StkIsEmpty(const stack_t *element);
 /* 				destroys the created stack			*/
 void StkDestroy(stack_t *element);
 
-#endif /* stack */
+#endif /* __STACK_H__ */

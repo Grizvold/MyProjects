@@ -1,5 +1,5 @@
-#ifndef __single_ll_h__
-#define __single_ll_h__
+#ifndef __SINGLE_LL_H__
+#define __SINGLE_LL_H__
 
 typedef int(*sll_func_t)(void *data, void *param);
 
@@ -7,7 +7,7 @@ typedef int(*sll_c_func_t)(const void *data, void *param);
 
 typedef struct sll_node sll_node_t;
 
-typedef struct sll_node{
+struct sll_node{
 		void *data;
 		sll_node_t *next;
 };
@@ -46,6 +46,6 @@ int SLLHasLoop(const sll_node_t *list);
 
 note_t *SLLFindIntersection(const sll_node_t *first_list, const sll_node_t *second_node);
 
-#endif /* __single_ll_h__ */
+#endif /* __SINGLE_LL_H__ */
 
 

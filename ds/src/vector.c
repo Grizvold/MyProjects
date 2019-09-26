@@ -20,15 +20,16 @@ vector_t *VectorCreate(size_t element_size, size_t num_of_elements)
 		return NULL;
 	}
 	
-	vector->element_size = element_size;
-	vector->capacity = num_of_elements;
-	vector->size = num_of_elements;
 	vector->base = calloc(element_size, num_of_elements);
 	if(NULL == vector)
 	{
 		perror("Calloc failed: ");
 		return NULL;
 	}
+	
+	vector->element_size = element_size;
+	vector->capacity = num_of_elements;
+	vector->size = num_of_elements;
 	
 	return vector;
 }
@@ -37,8 +38,25 @@ int VectorPushBack(vector_t *vector, const void *data)
 {
 	if(vector->size == vector->capacity)
 	{
-		vector->capacity
+		void *new_vector = realloc(vector->base, 
+							vector->capacity * vector->element_size * 2)
+		if(NULL == temp)
+		{
+			return -1;
+		}
+		
+		vector->base = new_vector;
+		vector->capcity *= 2;
+		vector->size += 1;
+		memcpy		
 	}
+	else
+	{
+		size++
+		copy	
+	}	
+	
+	return 0;
 }
 int VectorPopBack(vector_t *vector)
 {
@@ -62,7 +80,7 @@ size_t VectorCapacity(const vector_t *vector)
 	return vector->capacity;
 }
 
-int VectorReserve(vector_t *element, size_t new_capacity)
+int VectorReserve(vector_t *vector, size_t new_capacity)
 {
 	
 }

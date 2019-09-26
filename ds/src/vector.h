@@ -13,7 +13,11 @@ void VectorDestroy(vector_t *element);
 	array in position represented by index value		 */
 void *VectorGetItemAddress(vector_t *element, size_t index);
 
-/* 	add element to the end of the dynamic array		*/
+/* 	add element to the end of the dynamic array, if
+	we reached array capacity, allocate capacity * 2 
+	to expand the array							 
+	return -1 for failure
+		   0 for success						*/
 int VectorPushBack(vector_t *element,const void *data);
 
 /*	removes last element of dynamic array
@@ -28,7 +32,7 @@ size_t VectorSize(const vector_t *element);
 	members + empty space left					*/
 size_t VectorCapacity(const vector_t *element);
 
-/* 	in case size reached capacity, alocate 
+/* 	in case size reached capacity, allocate 
 	capacity * 2 to dynamic array for new elements
 	to come (dynamic vector)						*/
 int VectorReserve(vector_t *element, size_t new_capacity);

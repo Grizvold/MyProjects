@@ -5,23 +5,34 @@
 
 typedef struct vector vector_t;
 
+/*	*Create dynamic array of size element_s * element_num
+	*return pointer to the created array				*/
 vector_t *VectorCreate(size_t element_size, size_t num_of_elements);
 
+/* 	*Frees allocated memory to our array and set 
+		dynamic array pointer to zero					*/
 void VectorDestroy(vector_t *element);
 
-/*	returns address of requested element in dynamic
-	array in position represented by index value		 */
+/*	*returns address of requested element in dynamic
+		array in position represented by index value
+	*If index is not in range of array - undefined	 	*/
 void *VectorGetItemAddress(vector_t *element, size_t index);
 
-/* 	add element to the end of the dynamic array, if
-	we reached array capacity, allocate capacity * 2 
-	to expand the array							 
-	return -1 for failure
-		   0 for success						*/
+/* 	*Add element to the end of the dynamic array
+	*If we reached array capacity, then 
+		allocate capacity * 2 to expand the array							 
+	*return 1 for failure
+		   0 for success	
+	*Amortized complexity O(1)						*/
 int VectorPushBack(vector_t *element,const void *data);
 
-/*	removes last element of dynamic array
-	if empty 0, if success 1, if failure -1			*/
+/* 	*Remove element from the end of the dynamic array
+	*If array size = 0.75 of capacity, then 
+		shrink capacity to 0.75 of original size, and
+		give extra 10% of new size. 							 
+	*return 1 for failure
+		   0 for success	
+	*Amortized complexity O(1)						*/
 int VectorPopBack(vector_t *element);
 
 /*   return how much elements currently are in

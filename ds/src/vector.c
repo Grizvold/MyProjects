@@ -75,7 +75,7 @@ int VectorPopBack(vector_t *vector)
 	if(vector->size <= (vector->capacity * exponential_decay))
 	{
 		void *new_vector = realloc(vector->base, 
-					vector->element_size * vector->size * 1.1);
+					vector->element_size * vector->size * 1.125);
 		if(NULL == new_vector)
 		{
 			perror("Realloc in VectorPopBack failed");
@@ -85,7 +85,7 @@ int VectorPopBack(vector_t *vector)
 		}
 		
 			vector->base = new_vector;
-			vector->capacity = (vector->element_size * 1.1);
+			vector->capacity = (vector->element_size * 1.125);
 	}
 	
 	vector->size -= 1; 	

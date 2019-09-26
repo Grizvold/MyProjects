@@ -1,43 +1,50 @@
 #ifndef __single_ll_h__
 #define __single_ll_h__
 
-typedef int(*func_t)(node_t *);
+typedef int(*sll_func_t)(void *data, void *param);
 
-typedef struct{
+typedef int(*sll_c_func_t)(const void *data, void *param);
+
+typedef struct sll_node sll_node_t;
+
+typedef struct sll_node{
 		void *data;
-		node_t next_node*;
-}node_t;
+		sll_node_t *next;
+};
 
 /* 	*Creates root for new linked list
 	*Returns pointer to the root							*/
-node *SLLCreateNode(void *data, node_t *next_node);
+node *SLLCreateNode(void *data, sll_node_t *next);
 
 /*	*Remove all nodes from list including root
 	*Complexcity O()									*/
-void SLLFreeAll(node *node);
+void SLLFreeAll(sll_node_t *node);
 
-/* *Remove spesific node from our linked list, complexity O(1)	*/
-void SLLRemove(node_t *node);
+/*	*Removes specified node from linked list, complexity O(1)	
+	*Does not handle last node as an argument				*/
+sll_node_t *SLLRemove(sll_node_t *target);
 
+/*	*Removes node from linked list, after specified node		
+	* complexity O(1)									*/
+sll_node_t *SLLRemoveAfter(sll_node_t *target);
 
-void SLLRemoveAfter(node_t *node);
+/*	*Links a new item at , re-links adjacent items
+	*Returns pointer to the next node  					*/
+sll_node_t *SLLInsert(sll_node_t *target, sll_node_t *new_node);
 
-/*  */
-void SLLInsert(node_t *target, node_t *new_node, void *data);
+sll_node_t *SLLInsertAfter(sll_node_t *target, sll_node_t *new_node);
 
-void SLLInsertAfter(node_t *target, node_t *new_node, void *data);
+size_t SLLCount(const sll_node_t *root);
 
-size_t SLLCount(const node_t *list);
+int SLLForEach(sll_node_t *root, const sll_func_t func);
 
-int SLLForEach(node_t *root_of_list, func_t *p_func);
+sll_node_t *SLLFind(sll_node_t *root, sll_c_func_t func);
 
-node_t *SLLFind(node_t *root_of_list, func_t *p_func);
+sll_node_t *SLLFlip(sll_node_t *root);
 
-note_t *SLLFlip(node_t *root);
+int SLLHasLoop(const sll_node_t *list);
 
-int SLLHasLoop(node_t *list);
-
-note_t *SLLFindIntersection(node_t *first_list, node_t *second_node);
+note_t *SLLFindIntersection(const sll_node_t *first_list, const sll_node_t *second_node);
 
 #endif /* __single_ll_h__ */
 

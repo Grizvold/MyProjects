@@ -12,7 +12,7 @@ typedef struct stack stack_t;
 stack_t *StkCreate(size_t size_of_stack, size_t element_size);
 
 /*	removes the most recently added element, referred 
-	to as the top of the stack			 			*/
+	to as the top of the stack		 			*/
 void StkPop(stack_t *element);
 
 /* 	adds an element to the stack, when stack is 
@@ -20,16 +20,16 @@ void StkPop(stack_t *element);
 void StkPush(stack_t *stack, void *element);
 
 /* 	peeks to the top of the stack, but does not remove it 
-	form the stack. When stack empty its undefined		*/
+	form the stack. When stack empty - undefined			*/
 void *StkPeek(const stack_t *element);
 
-/* 			count amount of members in the stack	 	*/
+/* 		count amount of elements in the stack	 		*/
 size_t StkCount(const stack_t *element);
 
-/* 		boolean function, returns 1 if empty, 0 if not	*/
+/* 		boolean function, returns 1 if empty, 0 if not		*/
 int StkIsEmpty(const stack_t *element);
 
-/* 				destroys the created stack			*/
+/* 			destroys the created stack			*/
 void StkDestroy(stack_t *element);
 
 #endif /* __STACK_H__ */

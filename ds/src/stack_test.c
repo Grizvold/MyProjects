@@ -44,6 +44,9 @@ int main ()
 	
 	StkDestroy(my_stack);
 
+	empty = StkIsEmpty(my_stack);
+	printf("is the stack empty? %d\n" ,empty);
+
 	return 0;
 }
 

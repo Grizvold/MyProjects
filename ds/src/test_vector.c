@@ -1,25 +1,3 @@
-#include <stdio.h> /* printf */
-
-#include "vector.h"
-/*
-int main()
-{
-	vector_t *test_vector = VectorCreate(20, 4);
-	int num_1 = 5;	
-	int num_2 = 3;
-	int *p_test = NULL;
-
-	printf("new vector size: %ld\n", VectorSize(test_vector));
-	printf("new vector size: %ld\n", VectorSize(test_vector));
-	
-	p_test = VectorGetItemAddress(test_vector, 0);
-	printf("vector address: %p\n", &p_test);
-	
-	VectorPushBack(test_vector);
-	
-	return 0;
-} */
-
 #include <stddef.h> /* size_t */
 #include <stdio.h>  /* printf */
 
@@ -40,20 +18,6 @@ int main()
 	size_t temp_size = 0;
 	size_t i = 0;
 	int is_succsess = 0;
-
-/*	vector_t *test_vector = VectorCreate(20, 4);
-	int num_1 = 5;	
-	int num_2 = 3;
-	int *p_test = NULL;*/
-
-	printf("new vector size: %ld\n", VectorSize(test_vector));
-	printf("new vector size: %ld\n", VectorSize(test_vector));
-	
-	p_test = VectorGetItemAddress(test_vector, 0);
-	printf("vector address: %p\n", &p_test);
-	
-	VectorPushBack(test_vector);
-
 
 	/*######################## test VectorCreate #############################*/
 	test_vector = VectorCreate( sizeof(person_t), size_of_vector);

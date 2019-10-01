@@ -15,8 +15,9 @@ struct stack
 
 stack_t *StkCreate(size_t size_of_stack, size_t element_size)
 {
-	stack_t *stack = (stack_t *)malloc(sizeof(stack_t));
-	if(NULL == stack)
+	stack_t *stack = NULL;
+	stack = (stack_t *)malloc(sizeof(stack_t));
+	if (NULL == stack)
 	{
 		perror("malloc failed in stack creation");
 
@@ -25,7 +26,7 @@ stack_t *StkCreate(size_t size_of_stack, size_t element_size)
 
 	stack->top = 0;
 	stack->max_size = size_of_stack;
-	stack->base_of_data = calloc(size_of_stack, element_size); /* n, sizeof */
+	stack->base_of_data = calloc(size_of_stack, element_size); 
 	stack->item_size = element_size;
 	if(NULL == stack->base_of_data)
 	{
@@ -39,11 +40,6 @@ stack_t *StkCreate(size_t size_of_stack, size_t element_size)
 
 void StkPush(stack_t *p_stack, void *new_element)
 {
-	if(p_stack->top == p_stack->max_size)
-	{
-		return;
-	}
-
 	memcpy((char *)p_stack->base_of_data + (p_stack->top * p_stack->item_size),
 		 new_element, p_stack->item_size);
 	 
@@ -52,12 +48,6 @@ void StkPush(stack_t *p_stack, void *new_element)
 
 void StkPop(stack_t *p_stack)
 {
-	if(0 == p_stack->top)
-	{
-		
-		return;
-	}
-
 	p_stack->top--;
 }
 

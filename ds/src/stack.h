@@ -12,7 +12,8 @@ typedef struct stack stack_t;
 stack_t *StkCreate(size_t size_of_stack, size_t element_size);
 
 /*	removes the most recently added element, referred 
-	to as the top of the stack		 			*/
+	to as the top of the stack, if stack is empty
+	the behavior is undefined		 			*/
 void StkPop(stack_t *element);
 
 /* 	adds an element to the stack, when stack is 

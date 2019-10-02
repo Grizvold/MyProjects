@@ -23,7 +23,7 @@ vector_t *VectorCreate(size_t element_size, size_t num_of_elements)
 		return NULL;
 	}
 	
-	vector->base = calloc(element_size, num_of_elements);
+	vector->base = calloc(num_of_elements, element_size);
 	if (NULL == vector->base)
 	{
 		perror("Calloc in VectorCreate failed");

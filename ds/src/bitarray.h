@@ -9,7 +9,7 @@ typedef size_t bit_arr_t;
 /*		 return count			*/
 size_t BitArrCountOn(bit_arr_t bit_arr);
 /* count bits that are set to '0'	*/
-/* 		 return count			*/
+/*		 return count			*/
 size_t BitArrCountOff(bit_arr_t bit_arr);
 
 /* check if bit num "index" is on	*/

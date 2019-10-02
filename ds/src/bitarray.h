@@ -1,6 +1,6 @@
 #ifndef __bit_array_h__
 #define __bit_array_h__
-#include <stddef.h> /* size_t */
+#include <stddef.h>  /* size_t */
 
 /*	 bit array of size size_t	*/
 typedef size_t bit_arr_t;

@@ -65,6 +65,9 @@ int main()
 	test_arr = BitArrRotL(test_arr, 5);
 	printf("\n%lu\n", test_arr);	*/
 	
+	free(str);
+	str = NULL;
+	
 	return 0;
 }
 

@@ -1,19 +1,19 @@
 #ifndef __bit_array_h__
 #define __bit_array_h__
-#include <stddef.h>  /* size_t */
+#include <stddef.h> /* size_t */
 
 /*	 bit array of size size_t	*/
 typedef size_t bit_arr_t;
 
 /* count bits that are set to '1'	*/ 
-/* 		return count			*/
+/*		 return count			*/
 size_t BitArrCountOn(bit_arr_t bit_arr);
-/* count bits that are set to '0' 	*/
-/* 		return count			*/
+/* count bits that are set to '0'	*/
+/* 		 return count			*/
 size_t BitArrCountOff(bit_arr_t bit_arr);
 
-/* check if bit num "index" is on 	*/
-/* 		return true/false		*/
+/* check if bit num "index" is on	*/
+/*		return true/false		*/
 /*  in case index is bigger than 
 	our arr - undefined behavior	*/
 int BitArrIsOn(bit_arr_t bit_arr, int index);

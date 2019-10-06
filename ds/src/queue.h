@@ -1,22 +1,26 @@
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
 
-typedef struct dll_queue dll_queue_t;
+#include <stddef.h> /* size_t */
 
-dll_queue_t *QueueCreate();
+typedef struct queue queue_t;
 
-void QueueDestroy(dll_queue_t *queue);
+/* create new empty queue */
+queue_t *QueueCreate();
 
-void QueueEnque(dll_queue_t *element, void *data);
+/*  */
+void QueueDestroy(queue_t *queue);
 
-dll_queue_t *QueueDeque(dll_queue_t *element);
+int QueueEnqueue(queue_t *element, void *data);
 
-int QueueIsEmpty(const dll_queue_t *queue);
+void *QueueDequeue(queue_t *element);
 
-void *QueuePeek(const dll_queue_t *element);
+int QueueIsEmpty(const queue_t *queue);
 
-size_t QueueCount(const dll_queue_t *queue);
+void *QueuePeek(const queue_t *element);
 
-dll_queue_t *QueueAppend(dll_queue_t *dest, dll_queue_t *src);
+size_t QueueCount(const queue_t *queue);
 
-#endif __QUEUE_H__ /* queue.h */
+queue_t *QueueAppend(queue_t *dest, queue_t *src);
+
+#endif /* queue.h */

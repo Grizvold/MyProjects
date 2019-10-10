@@ -16,7 +16,7 @@ typedef struct dll_list dll_t;
 typedef struct dll_iter
 {
 	dll_note_t *current;
-	
+	dll_t *cur_list;	
 }dll_iter_t;
 
 /* 	typedef of action function for ForEach function	*/
@@ -132,4 +132,6 @@ int DLLIterIsEqual(dll_iter_t iter_1, dll_iter_t iter_2);
 void *DLLIterGetData(dll_iter cur_iter);
 /*##########################################################################*/
 
-#endif __DLL_H__
+#endif /*__DLL_H__*/
+
+

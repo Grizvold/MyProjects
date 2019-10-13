@@ -15,7 +15,7 @@ typedef struct dll_list dll_t;
 /* typedef of iterator to dll */
 typedef struct dll_iter
 {
-	dll_note_t *current;
+	dll_note_t *cur_node;
 	dll_t *cur_list;	
 }dll_iter_t;
 

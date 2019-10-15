@@ -46,9 +46,76 @@ void DLLDestroy(dll_t *target_dll)
 	
 	assert(NULL != target_dll);
 	
-	for(temp_node = target_dll->start; )
+	for(temp_node = target_dll->start; NULL != target_dll->start;)
+	{
+		temp_node = target_dll->start;
+		target_dll->start = target_dll->start->next;
+		
+		free(temp_node);
+		temp_node = NULL;
+	}
+	
+	target_dll->end = NULL;
+	target_dll->start = NULL;
+	
+	free(target_dll);
+	target_dll = NULL;
 }
 
+dll_iter_t DLLInsert(dll_iter_t dll_iterator, const void *data)
+{
+	
+}
+
+dll_iter_t DLLRemove(dll_iter_t dll_iterator)
+{
+
+}
+
+dll_iter_t DLLPushFront(dll_iter_t dll_iterator, const void *data)
+{
+	
+}
+
+void *DLLPopFront(dll_iter_t dll_iterator)
+{
+	
+}
+
+dll_iter_t DLLPushBack(dll_iter_t dll_iterator, const void *data)
+{
+	
+}
+
+void *DLLPopBack(dll_iter_t dll_iterator)
+{
+	
+}
+
+dll_iter_t DLLFind(dll_iter_t start, dll_iter_t end, dll_cmp_func_t cmp_func, void *param)
+{
+	
+}
+
+int DLLForEach(dll_iter_t start, dll_iter_t end, dll_act_func_t act_func, void *param)
+{
+	
+}
+
+dll_iter_t DLLSplice(dll_iter_t where, dll_iter_t from, dll_iter_t to)
+{
+	
+}
+
+size_t DLLSize(const dll_t *target_list)
+{
+	size_t dll_size = 0;
+	dll_iter_t temp_iter = {NULL, NULL};
+	
+	assert(NULL != target_list);
+	
+	 
+}
 /*------------------------------------------------------*/
 
 /*------------- DLL Iterator Functionality -------------*/

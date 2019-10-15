@@ -1,7 +1,11 @@
 #include <stdlib.h> /*	malloc	*/ 
-#include <stdio.h>  /*  perror	*/
+#include <stdio.h>  /*  	perror	*/
+#include <assert.h> /*  	assert	*/
 
 #include "single_ll.h"
+
+static int CountHelper(void *data, void *param);
+static sll_node_t *GetIntersectionNode(size_t diff, sll_node_t *list1, sll_node_t *list2);
 
 sll_node_t *SLLCreateNode(void *data, sll_node_t *next)
 {
@@ -20,72 +24,92 @@ sll_node_t *SLLCreateNode(void *data, sll_node_t *next)
 	return node; 
 }
 
-void SLLFreeAll(sll_node_t *root)
+void SLLFreeAll(sll_node_t *target_node)
 {
-	sll_node_t *temp_node = root;
+	sll_node_t *temp_node = target_node;
 	
-	for (; NULL != root; temp_node = root, root = root->next)
+	assert(NULL != target_node);
+	
+	for (; NULL != target_node; 
+		temp_node = target_node, target_node = target_node->next)
 	{
 		free(temp_node);
 		temp_node = NULL;
 	}
+	
+	free(target_node);
 }
 
-sll_node_t *SLLRemove(sll_node_t *target)
+sll_node_t *SLLRemove(sll_node_t *target_node)
 {
-	sll_node_t *temp_node = target->next;
+	sll_node_t *temp_node = target_node->next;
 	
-	target->data = target->next->data;
-	target->next = target->next->next;
+	assert(NULL != target_node);
+	
+	target_node->data = temp_node->data;
+	target_node->next = temp_node->next;
 
 	free(temp_node);
 	temp_node = NULL;
 
-	return target;	
+	return target_node;	
 }
 
-sll_node_t *SLLRemoveAfter(sll_node_t *target)
+sll_node_t *SLLRemoveAfter(sll_node_t *target_node)
 {
-	sll_node_t *temp_node = target->next;
+	sll_node_t *temp_node = target_node->next;
 	
-	target->next = target->next->next;
+	assert(NULL != target_node);
+	
+	target_node->next = temp_node->next;
 
 	free(temp_node);
 	temp_node = NULL;
 
-	return target;
+	return target_node;
 }
 
-sll_node_t *SLLInsert(sll_node_t *target, sll_node_t *new_node)
+sll_node_t *SLLInsert(sll_node_t *target_node, sll_node_t *new_node)
 {
-	void *new_node_data = new_node->data;
+	void *temp_node_data = new_node->data;
 	
-	new_node->next = target->next;
-	new_node->data = target->data;
-	target->next = new_node;
-	target->data = new_node_data;
-
-	return target;
+	assert(NULL != target_node && NULL != new_node);
+	
+	SLLInsertAfter(target_node, new_node);
+	
+	
+	temp_node_data = target_node->data;
+	target_node->data = new_node->data;
+	new_node->data = temp_node_data;
+	
+	return new_node;
 }
 
-sll_node_t *SLLInsertAfter(sll_node_t *target, sll_node_t *new_node)
+sll_node_t *SLLInsertAfter(sll_node_t *target_node, sll_node_t *new_node)
 {
-	target->next = new_node;
-	new_node->next = target->next;
+	assert(NULL != target_node && NULL != new_node);
 	
-	return target;	
+	new_node->next = target_node->next;
+	target_node->next = new_node;
+	
+	return target_node;	
 }
 
-size_t SLLCount(const sll_node_t *root)
+size_t SLLCount(const sll_node_t *target_node)
 {
 	size_t node_counter = 0;
 
-	for (node_counter = 0; NULL != root; node_counter++)
-	{
-		root = root->next;
-	}
+	SLLForEach((sll_node_t*)target_node, &CountHelper, &node_counter);
 	
 	return node_counter;
+}
+
+static int CountHelper(void *data, void *param)
+{
+	UNUSED(data);
+	(*(size_t *)param)++;
+	
+	return 0;
 }
 
 int SLLForEach(sll_node_t *root, sll_foreach_func_t func, void *func_param)
@@ -116,27 +140,23 @@ sll_node_t *SLLFind(const sll_node_t *root, sll_find_func_t func, void *func_par
 
 sll_node_t *SLLFlip(sll_node_t *root)
 {
-	int i = 0;
-	int list_size = SLLCount(root);
-	int counter = 0;  
-	sll_node_t *curr_node = root;
-	sll_node_t *last_node = root;
-	void *temp_data = NULL;
-
-	for (counter = list_size / 2; 0 != counter; curr_node = curr_node->next, counter--)
+	sll_node_t *current = root;
+	sll_node_t *next = NULL;
+	sll_node_t *prev = NULL;
+	
+	assert(NULL != root);
+	
+	for(; NULL != current;)
 	{
-		for (last_node = root, i = 0;
-			i != list_size - 1;
-			i++, last_node = last_node->next);
-
-		temp_data = curr_node->data;
-		curr_node->data = last_node->data; 
-		last_node->data = temp_data;
-
-		list_size--; 
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
 	}
-
-	return curr_node;
+	
+	root = prev;
+	
+	return prev;
 }
 
 /* returns 1 if there is a loop, 0 if not */
@@ -150,7 +170,7 @@ int SLLHasLoop(const sll_node_t *node)
 		slow_p = slow_p->next, fast_p = fast_p->next->next)
 	{
 		/* if slow_p and fast_p meet at some pooint
-		   then there is a loop			    */
+		   then there is a loop			    		*/
 		if (slow_p == fast_p)
 		{
 			return 1;
@@ -160,22 +180,62 @@ int SLLHasLoop(const sll_node_t *node)
 	return 0;
 }
 
+static sll_node_t *GetIntersectionNode(size_t diff, sll_node_t *list1, sll_node_t *list2)
+{
+	size_t i = 0;
+	sll_node_t *cur1 = list1;
+	sll_node_t *cur2 = list2;
+	
+	for(i = 0; i < diff; i++)
+	{
+		if(NULL == cur1)
+		{
+		
+			return NULL;
+		}
+		
+		cur1 = cur1->next;
+	}
+	
+	for(; NULL != cur1 && NULL != cur2;)
+	{
+		if(cur1 == cur2)
+		{
+		
+			return cur1->data;
+		}
+		
+		cur1 = cur1->next;
+		cur2 = cur2->next;
+	}
+	
+	return NULL;
+}
+
 sll_node_t *SLLFindIntersection(const sll_node_t *first_list, const sll_node_t *second_list)
 {
-	sll_node_t *second_list_iterator = (sll_node_t *)second_list;
+	size_t len_firtlist = 0;
+	size_t len_secondlist = 0;
+	size_t diff = 0;
 	
-	for (; NULL != first_list; first_list = first_list->next)
+	len_firtlist = SLLCount(first_list);
+	len_secondlist = SLLCount(second_list);
+	
+	if(len_firtlist > len_secondlist)
 	{
-		for (second_list_iterator = (sll_node_t *)second_list;
-			NULL != second_list_iterator;
-			second_list_iterator = second_list_iterator->next)
-		{
-			if (first_list == second_list_iterator)
-			{
-				return (sll_node_t *)first_list;
-			}
-		}
+		diff = len_firtlist - len_secondlist;
+		
+		return GetIntersectionNode(diff, (sll_node_t *)first_list, (sll_node_t *)second_list);
 	}
+	
+	else
+	{
+		diff = len_secondlist - len_firtlist;
+		
+		return GetIntersectionNode(diff, (sll_node_t *)second_list, (sll_node_t *)first_list);
+	}
+	
+	
 
 	return NULL;
 }

@@ -87,7 +87,7 @@ int main()
 	
 	printf("\ninserting node to third' next node\n");
 	node = SLLCreateNode(&c, NULL);
-	temp = (root->next)->next;
+	temp = root->next->next;
 	SLLInsertAfter(temp, node);
 	node = root;
 	
@@ -96,7 +96,7 @@ int main()
 		printf("%d, ", *(int *)node->data);
 		node = node->next;
 	}
-	printf("\nnodes in linked list: %ld\n", SLLCount(root));
+	printf("\n TEST nodes in linked list: %ld\n", SLLCount(root));
 	
 	printf("\nis there a loop: %d\n", SLLHasLoop(root));
 	printf("forcing loop\n");

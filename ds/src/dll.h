@@ -12,12 +12,6 @@ typedef struct dll_node dll_node_t;
 typedef struct dll_list dll_t;
 
 
-/* typedef of iterator to dll */
-typedef struct dll_iter
-{
-	dll_note_t *cur_node;
-	dll_t *cur_list;	
-}dll_iter_t;
 
 /* 	typedef of action function for ForEach function	*/
 typedef int (*dll_act_func_t)(void *data, void *param);
@@ -54,24 +48,33 @@ dll_iter_t DLLRemove(dll_iter_t dll_iterator);
     In case of failure return EndIterator
     	refering to <past-the-end> element in vector container			
    *Complexity O(1)										*/
-dll_iter_t DLLPushFront(dll_iter_t dll_iterator, const void *data);
+dll_iter_t DLLPushFront(dll_t *dll_list, const void *data);
 
 /* *Pop first element of the dll
    *Returns data of the first element				
    *Complexity O(1)										*/
-void *DLLPopFront(dll_iter_t dll_iterator);
+void *DLLPopFront(dll_t *dll_list);
 
 /* *Push new element at the end of dll
    *Return iterator to the new element
     In case of failure return EndIterator
     	refering to <past-the-end> element in vector container	
    *Complexity O(1)										*/
-dll_iter_t DLLPushBack(dll_iter_t dll_iterator, const void *data);
+dll_iter_t DLLPushBack(dll_t *dll_list, const void *data);
 
 /* *Pop last element of the dll
    *Returns data of the last element
    *Complexity O(1)										*/
-void *DLLPopBack(dll_iter_t dll_iterator);
+void *DLLPopBack(dll_t *dll_list);
+
+/* *Return number of elements in targeted dll			
+   *Complexity O(n)										*/
+size_t DLLSize(const dll_t *target_list);
+
+/* *Check if dll is empty or not
+   *Returns boolean if  empty - 1
+				not empty - 0							*/
+int DLLIsEmpty(const dll_t *target_list);
 
 /* *Find element in targeted dll
    *Return iterator to element in case of success
@@ -93,9 +96,6 @@ int DLLForEach(dll_iter_t start, dll_iter_t end, dll_act_func_t act_func, void *
 	refering to <past-the-end> element in vector container		*/
 dll_iter_t DLLSplice(dll_iter_t where, dll_iter_t from, dll_iter_t to);
 
-/* *Return number of elements in targeted dll			
-   *Complexity O(n)										*/
-size_t DLLSize(const dll_t *target_list);
 /*################################################################*/
 
 /*####################### DLL Iterator Functionality #######################*/
@@ -132,6 +132,15 @@ int DLLIterIsEqual(dll_iter_t iter_1, dll_iter_t iter_2);
 void *DLLIterGetData(dll_iter cur_iter);
 /*##########################################################################*/
 
-#endif /*__DLL_H__*/
 
+/*=============================FOR INTERNAL USAGE===========================*/
+/* typedef of iterator to dll */
+typedef struct dll_iter
+{
+	dll_note_t *cur_node;
+	dll_t *cur_list;	
+}dll_iter_t;
+/*==========================================================================*/
+
+#endif /*__DLL_H__*/
 

@@ -107,39 +107,39 @@ dll_iter_t DLLSplice(dll_iter_t where, dll_iter_t from, dll_iter_t to);
 
 /*################################################################*/
 
-/*####################### DLL Iterator Functionality #######################*/
+/*################## DLL Iterator Functionality ##################*/
 /* *Receives targeted dll list
-   *Returns first element of dll				*/
+   *Returns first element of dl							 */
 dll_iter_t DLLBegin(const dll_t *list);
 
 /* *Receives targeted dll list
    *Returns iterator refering to 
-   	<past-the-end> element in vector container	*/
+   	<past-the-end> element in vector container				 */
 dll_iter_t DLLEnd(const dll_t *list);
 
 /* *Receives current iterator of targeted dll	
    *Returns next iterator
    *If used on EndIterator, returns EndIterator
    	refering to <past-the-end> element 
-	in vector container						*/
+	in vector container						 			 */
 dll_iter_t DLLIterNext(dll_iter_t cur_iter);
 
 /* *Receives current iterator of targeted dll	
    *Returns previous iterator
    *If used on StartIterator, returns EndIterator
    	refering to <past-the-end> element 
-	in vector container						*/
+	in vector container			 						 */
 dll_iter_t DLLIterPrev(dll_iter_t cur_iter);
 
 /* *Compare 2 iterators
    *Returns 1 if equal
-    		  0 if not equal					*/
+    		  0 if not equal								 */
 int DLLIterIsEqual(dll_iter_t iter_1, dll_iter_t iter_2);
 
 /* *Receives requested iterator
-   *Returns data of requested iterator			*/
+   *Returns data of requested iterator						 */
 void *DLLIterGetData(dll_iter_t cur_iter);
-/*##########################################################################*/
+/*################################################################*/
 
 #endif /*__DLL_H__*/
 

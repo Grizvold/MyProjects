@@ -3,6 +3,8 @@
 
 #include <stddef.h> /* size_t */
 
+#define UNUSED(x) (void)(x) 
+
 /*########################### typedefs ###########################*/
 
 /* typedef of node */
@@ -63,7 +65,7 @@ void *DLLPopFront(dll_t *dll_list);
 dll_iter_t DLLPushBack(dll_t *dll_list, const void *data);
 
 /* *Pop last element of the dll
-   *Returns data of the last element
+   *Returns data of the last element, if empty returns null
    *Complexity O(1)										*/
 void *DLLPopBack(dll_t *dll_list);
 

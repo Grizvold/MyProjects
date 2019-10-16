@@ -19,9 +19,20 @@ typedef int(*sl_cmp_func_t)(const void *data, void *param);
 
 /*################################################################*/
 
-/*############ Sorted List Iterator Functionality  ###############*/
+/*################## Sorted List Functionality ###################*/
 
+sl_t 
+/*################################################################*/
 
+/*############ Sorted List Iterator Functionality ################*/
+
+sl_iter_t SLIterNext(sl_iter_t iter);
+
+sl_iter_t SLIterPrev(sl_iter_t iter);
+
+int SLIterIsEqual(sl_iter_t iter1, sl_iter_t iter2);
+
+void *SLIterGetData(sl_iter_t iter);
 /*################################################################*/
 
 /*====================== INTERNAL USE ONLY =======================*/

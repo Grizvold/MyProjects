@@ -51,7 +51,7 @@ void DLLDestroy(dll_t *target_dll)
 	
 	assert(NULL != target_dll);
 	
-	for(temp_node = &target_dll->head; target_dll->next != &target_dll->tail;)
+	for(temp_node = &target_dll->head; temp_node->next != &target_dll->tail;)
 	{
 		temp_node->next = temp_node->next->next;
 		/* free prev(cur) node */
@@ -74,13 +74,14 @@ int DLLIsEmpty(const dll_t *target_list)
 dll_iter_t DLLInsert(dll_iter_t dll_iterator, const void *data)
 {
 	dll_node_t *new_node = NULL;
+	dll_iter_t null_iterator = {NULL, NULL};
 	
 	new_node = (dll_node_t *)malloc(sizeof(*new_node));
 	if(NULL == new_node)
 	{
 		perror("Malloc in DLLInsert failed");
 		
-		return NULL;
+		return null_iterator;
 	}
 	
 	new_node->next = dll_iterator.cur_node; 
@@ -142,7 +143,7 @@ void *DLLPopFront(dll_t *dll_list)
 	assert(NULL != dll_list);
 	
 	/* if dll is empty */
-	if(dll_list->head.next == dll_list->tail)
+	if(dll_list->head.next == &dll_list->tail)
 	{
 		return NULL;
 	}
@@ -176,15 +177,15 @@ dll_iter_t DLLPushBack(dll_t *dll_list, const void *data)
 		return DLLEnd(dll_list);
 	}
 	
-	new_node->next = dll_list->tail;
-	new_node->prev = &dll_list->tail.prev;
+	new_node->next = &dll_list->tail;
+	new_node->prev = dll_list->tail.prev;
 	new_node->data = (void *)data;
 	
 	dll_list->tail.prev->next = new_node;
 	dll_list->tail.prev = new_node;
 	
-	push_f_itr.cur_node = new_node;
-	push_f_itr.cur_list = dll_list;
+	push_b_itr.cur_node = new_node;
+	push_b_itr.cur_list = dll_list;
 	
 	return push_b_itr;
 }
@@ -197,7 +198,7 @@ void *DLLPopBack(dll_t *dll_list)
 	assert(NULL != dll_list);
 	
 	/* if dll is empty */
-	if(dll_list->head.next == dll_list->tail)
+	if(dll_list->head.next == &dll_list->tail)
 	{
 		return NULL;
 	}
@@ -243,7 +244,15 @@ int DLLForEach(dll_iter_t start_itr, dll_iter_t end_itr, dll_act_func_t act_func
 
 dll_iter_t DLLSplice(dll_iter_t where, dll_iter_t from, dll_iter_t to)
 {
+	/* disconect <from>-<to> from previous dll */
+	from.cur_node->prev->next = to.cur_node->next;
+	to.cur_node->next->prev = from.cur_node->prev;
 	
+	/* chain <from>-<to> to <where> dll list   */
+	where.cur_node->prev->next = from.cur_node;
+	to.cur_node->next = where.cur_node;
+	
+	return from;
 }
 
 
@@ -259,11 +268,10 @@ static int DLLSizeHelper(void *data, void *param)
 size_t DLLSize(const dll_t *target_list)
 {
 	size_t dll_size = 0;
-	dll_iter_t temp_iter = {NULL, NULL};
 	
 	assert(NULL != target_list);
 	
-	DLLForEach(DLLBegin(temp_iter), DLLEnd(temp_iter), &DLLSizeHelper, &dll_size);
+	DLLForEach(DLLBegin(target_list), DLLEnd(target_list), &DLLSizeHelper, &dll_size);
 	
 	return dll_size;
 }
@@ -284,51 +292,45 @@ dll_iter_t DLLBegin(const dll_t *target_dll)
 
 /* returns EndIterator
    	refering to <past-the-tail> element	*/	
-dll_iter_t DLLEnd(const dll_t *target_dll);
+dll_iter_t DLLEnd(const dll_t *target_dll)
 {
 	dll_iter_t end_iter = {NULL, NULL};
 	
 	assert(NULL != target_dll);
 	
 	end_iter.cur_list = (dll_t *)target_dll;
-	end_iter.cur_list = target_dll->tail.prev;
+	end_iter.cur_node = target_dll->tail.prev;
 	
 	return end_iter;
 }
 
 dll_iter_t DLLIterNext(dll_iter_t cur_iter)
 {
-	dll_iter_t next_iter = {NULL, NULL};
-	
 	assert(NULL != cur_iter.cur_list);
 	
-	next_iter.cur_list = cur_iter.cur_list;
-	next_iter.cur_node = cur_iter->next;
+	cur_iter.cur_node = cur_iter.cur_node->next;
 	
-	return next_iter;
+	return cur_iter;
 }
 
 dll_iter_t DLLIterPrev(dll_iter_t cur_iter)
 {
-	dll_iter_t prev_iter = {NULL, NULL};
-	
 	assert(NULL != cur_iter.cur_list);
 	
-	prev_iter.cur_list = cur_iter.cur_list;
-	prev_iter.cur_node = cur_iter->prev;
+	cur_iter.cur_node = cur_iter.cur_node->prev;
 	
-	return prev_iter;
+	return cur_iter;
 }
 
 int DLLIterIsEqual(dll_iter_t iter_1, dll_iter_t iter_2)
 {
 	assert(NULL != iter_1.cur_list && NULL != iter_2.cur_list);
 
-	return ((iter_1.cur_list == iter_2_cur_list) && 
-			iter_1.cur_node == iter_2_cur_node));
+	return ((iter_1.cur_list == iter_2.cur_list) && 
+			(iter_1.cur_node == iter_2.cur_node));
 }
 
-void *DLLIterGetData(dll_iter cur_iter)
+void *DLLIterGetData(dll_iter_t cur_iter)
 {
 	return cur_iter.cur_node->data;
 }

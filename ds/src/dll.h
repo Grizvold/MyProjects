@@ -14,6 +14,13 @@ typedef struct dll_node dll_node_t;
 typedef struct dll_list dll_t;
 
 
+/* typedef of iterator to dll */
+typedef struct dll_iter
+{
+	dll_node_t *cur_node;
+	dll_t *cur_list;	
+}dll_iter_t;
+
 
 /* 	typedef of action function for ForEach function	*/
 typedef int (*dll_act_func_t)(void *data, void *param);
@@ -131,18 +138,8 @@ int DLLIterIsEqual(dll_iter_t iter_1, dll_iter_t iter_2);
 
 /* *Receives requested iterator
    *Returns data of requested iterator			*/
-void *DLLIterGetData(dll_iter cur_iter);
+void *DLLIterGetData(dll_iter_t cur_iter);
 /*##########################################################################*/
-
-
-/*=============================FOR INTERNAL USAGE===========================*/
-/* typedef of iterator to dll */
-typedef struct dll_iter
-{
-	dll_note_t *cur_node;
-	dll_t *cur_list;	
-}dll_iter_t;
-/*==========================================================================*/
 
 #endif /*__DLL_H__*/
 

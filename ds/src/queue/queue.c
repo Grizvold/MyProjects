@@ -17,11 +17,10 @@ struct queue
 	size_t counter;
 };
 
-
 typedef enum
 {
-	FAILURE = 0,
-	SUCCESS = 1
+	SUCCESS = 0,
+	FAILURE = 1
 }status_t; 
 
 queue_t *QueueCreate()
@@ -102,12 +101,11 @@ void *QueueDequeue(queue_t *target_queue)
 
 	temp_node = target_queue->start;
 	temp_data = temp_node->data;
-	target_queue->start = target_queue->start->next;
+	target_queue->start = temp_node->next;
 	
 	target_queue->counter--;
 	
 	free(temp_node);
-	temp_node = NULL;
 	
 	return temp_data;	
 }

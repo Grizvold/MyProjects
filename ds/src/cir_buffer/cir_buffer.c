@@ -1,7 +1,7 @@
-#include <stdio.h> 	/* 	perror 	*/
-#include <stddef.h> /* 	size_t	*/
-#include <assert.h> /* 	assert	*/
-#include <stdlib.h> /* malloc/free */
+#include <stdio.h> 	/* 		perror 	*/
+#include <stddef.h> /* size_t/offsetof	*/
+#include <assert.h> /* 		assert	*/
+#include <stdlib.h> /* 	   malloc/free */
 
 #include "cir_buffer.h"
 
@@ -39,18 +39,17 @@ void CBDestroy(cir_buffer_t *circ_buffer)
 	assert(NULL != circ_buffer);
 
 	free(circ_buffer);
-	circ_buffer = NULL;
 }
 
 size_t CBWrite(cir_buffer_t *circ_buffer, void *data, size_t num_bytes)
 {
-	size_t i = 0;
+	size_t bytes_written = 0;
 	
 	assert(NULL != circ_buffer && circ_buffer->data);
 	
-	for(i = 0; 0 != num_bytes; num_bytes--, i++)
+	for(bytes_written = 0; 0 != num_bytes; num_bytes--, bytes_written++)
 	{
-		circ_buffer->data[circ_buffer->head_index] = ((char *)data)[i];
+		circ_buffer->data[circ_buffer->head_index] = ((char *)data)[bytes_written];
 		
 		if(1 == circ_buffer->is_full)
 		{
@@ -62,29 +61,29 @@ size_t CBWrite(cir_buffer_t *circ_buffer, void *data, size_t num_bytes)
 		circ_buffer->is_full = (circ_buffer->head_index == circ_buffer->tail_index);
 	}
 	
-	return i;
+	return bytes_written;
 }
 
 size_t CBRead(cir_buffer_t *circ_buffer, void *buffer, size_t num_bytes)
 {
-	size_t i = 0;
+	size_t bytes_read = 0;
 
 	assert(NULL != circ_buffer && NULL != buffer && circ_buffer->data);
 	
-	for(i = 0; 0 != num_bytes && !(CBIsEmpty(circ_buffer)); num_bytes--, i++)
+	for(bytes_read = 0; 0 != num_bytes && !(CBIsEmpty(circ_buffer)); num_bytes--, bytes_read++)
 	{
-		((char *)buffer)[i] = circ_buffer->data[circ_buffer->tail_index];
+		((char *)buffer)[bytes_read] = circ_buffer->data[circ_buffer->tail_index];
 		circ_buffer->tail_index = (circ_buffer->tail_index + 1) % circ_buffer->capacity;
 	}
 	
 	circ_buffer->is_full = 0;
 	
-	return i;
+	return bytes_read;
 }
 
 int CBIsEmpty(const cir_buffer_t *circ_buffer)
 {
-	return (circ_buffer->is_full & (circ_buffer->head_index == circ_buffer->tail_index));
+	return (!(circ_buffer->is_full) && (circ_buffer->head_index == circ_buffer->tail_index));
 }
 
 size_t CBCapacity(const cir_buffer_t *circ_buffer)
@@ -96,26 +95,21 @@ size_t CBCapacity(const cir_buffer_t *circ_buffer)
 
 size_t CBGetFreeSpace(const cir_buffer_t *circ_buffer)
 {
-	size_t cb_free_space = 0;
+	size_t free_space = 0;
 	
 	if(0 == circ_buffer->is_full)
 	{
-		if(circ_buffer->head_index > circ_buffer->tail_index)
+		if(circ_buffer->head_index >= circ_buffer->tail_index)
 		{
-			cb_free_space = circ_buffer->capacity - 
+			free_space = circ_buffer->capacity - 
 					circ_buffer->head_index + circ_buffer->tail_index;
 		}
 	
 		if(circ_buffer->head_index < circ_buffer->tail_index)
 		{
-			cb_free_space = circ_buffer->tail_index - circ_buffer->head_index;
-		}
-		
-		if(circ_buffer->head_index == circ_buffer->tail_index)
-		{
-			cb_free_space = circ_buffer->capacity;
+			free_space = circ_buffer->tail_index - circ_buffer->head_index;
 		}
 	}
 	
-	return cb_free_space;
+	return free_space;
 }

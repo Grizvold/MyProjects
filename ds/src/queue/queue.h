@@ -46,7 +46,7 @@ size_t QueueCount(const queue_t *queue);
 		queue, and removing chained items from src
 		queue.
    *Complexity O(1).
-   *Returns chained dest queue.					 */
+   *Returns chained dest queue.;					 */
 queue_t *QueueAppend(queue_t *dest, queue_t *src);
 
 #endif /* __QUEUE_H__ */

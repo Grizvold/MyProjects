@@ -23,7 +23,7 @@ struct sll_node{
 /* 	*Creates new node in linked list
 		of users data, 
 		chains new node to list.
-	*Returns pointer to the node.				*/
+	*Returns pointer to the created node.		*/
 sll_node_t *SLLCreateNode(void *data, sll_node_t *next);
 
 /*	*Remove all nodes from selected node

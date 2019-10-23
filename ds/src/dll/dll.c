@@ -27,7 +27,7 @@ dll_t *DLLCreate()
 {
 	dll_t *new_dll = NULL;
 	
-	new_dll = (dll_t *)malloc(sizeof(new_dll));
+	new_dll = (dll_t *)malloc(sizeof(*new_dll));
 	if(NULL == new_dll)
 	{
 		perror("malloc in DLLCreate failed");
@@ -36,183 +36,136 @@ dll_t *DLLCreate()
 	}
 
 	/* head and tail are part of struct */
-	new_dll->head.next = NULL;
-	new_dll->head.prev = &new_dll->tail;
+	new_dll->head.next = &new_dll->tail;
+	new_dll->head.prev = NULL;
 	
-	new_dll->tail.next = &new_dll->head;
-	new_dll->tail.prev = NULL;
+	new_dll->tail.next = NULL;
+	new_dll->tail.prev = &new_dll->head;
 
 	return new_dll;
 }
 
 void DLLDestroy(dll_t *target_dll)
 {
-	dll_node_t *temp_node = NULL;
+	/* dll_node_t *temp_node = NULL;*/
 	
 	assert(NULL != target_dll);
 	
-	for(temp_node = &target_dll->head; temp_node->next != &target_dll->tail;)
+	for(; !DLLIsEmpty(target_dll);)
 	{
-		temp_node->next = temp_node->next->next;
-		/* free prev(cur) node */
-		free(temp_node->next->prev);
-		temp_node->next->prev = &target_dll->head;
-		target_dll->head.next = temp_node->next;
+		DLLPopFront(target_dll);
 	}
 	
 	free(target_dll);
-	target_dll = NULL;
 }
 
 int DLLIsEmpty(const dll_t *target_list)
 {
 	assert(NULL != target_list);
 
-	return (target_list->head.next == &target_list->tail);
+	return target_list->head.next == &target_list->tail;
 }
 
 dll_iter_t DLLInsert(dll_iter_t dll_iterator, const void *data)
 {
 	dll_node_t *new_node = NULL;
-	dll_iter_t null_iterator = {NULL, NULL};
+	dll_iter_t new_iterator = {NULL, NULL};
 	
 	new_node = (dll_node_t *)malloc(sizeof(*new_node));
 	if(NULL == new_node)
 	{
 		perror("Malloc in DLLInsert failed");
 		
-		return null_iterator;
+		return DLLEnd(dll_iterator.cur_list);
+		
+		/*
+		return null_iterator;*/
 	}
 	
 	new_node->next = dll_iterator.cur_node; 
 	new_node->prev = dll_iterator.cur_node->prev;
 	new_node->data = (void *)data;
 	
-	dll_iterator.cur_node->prev = new_node;
 	dll_iterator.cur_node->prev->next = new_node;
+	dll_iterator.cur_node->prev = new_node;
 	
-	dll_iterator.cur_node = new_node;
-	
-	return dll_iterator;
+	new_iterator.cur_node = new_node;
+	new_iterator.cur_list = dll_iterator.cur_list;	
+
+	return new_iterator;
 }
 
 dll_iter_t DLLRemove(dll_iter_t dll_iterator)
 {
-	dll_iterator.cur_node = dll_iterator.cur_node->next;
-	dll_iterator.cur_node->prev = dll_iterator.cur_node->prev->prev;
-	free(dll_iterator.cur_node->prev->next);
-	dll_iterator.cur_node->prev->next = dll_iterator.cur_node;
+	dll_node_t *temp_node = NULL;
+	dll_iter_t temp_iterator = {NULL, NULL};
+
+	temp_node = dll_iterator.cur_node;
+	temp_iterator = DLLIterPrev(dll_iterator);
 	
-	return dll_iterator;
+	temp_node->prev->next = dll_iterator.cur_node->next;
+	temp_node->next->prev = dll_iterator.cur_node->prev;
+	
+	free(temp_node);
+	
+	return temp_iterator;
 }
 
 dll_iter_t DLLPushFront(dll_t *dll_list, const void *data)
 {
-	dll_node_t *new_node = NULL;
-	dll_iter_t push_f_itr = {NULL, NULL};
-	
 	assert(NULL != dll_list);
 	
-	
-	new_node = (dll_node_t *)malloc(sizeof(*new_node));
-	if(NULL == new_node)
-	{
-		perror("Malloc in DLLPushFront failed");
-		
-		return DLLEnd(dll_list);
-	}
-	
-	new_node->next = dll_list->head.next;
-	new_node->prev = &dll_list->head;
-	new_node->data = (void *)data;
-	
-	dll_list->head.next->prev = new_node;
-	dll_list->head.next = new_node;
-	
-	push_f_itr.cur_node = new_node;
-	push_f_itr.cur_list = dll_list;
-	
-	return push_f_itr;
+	return DLLInsert(DLLBegin(dll_list), (void *)data);
 }
 
 void *DLLPopFront(dll_t *dll_list)
 {
-	dll_node_t *temp_node = NULL;
+	/*dll_node_t *temp_node = NULL;*/
 	void *temp_data = NULL;
+	dll_iter_t temp_iter = {NULL, NULL};
 	
 	assert(NULL != dll_list);
 	
 	/* if dll is empty */
-	if(dll_list->head.next == &dll_list->tail)
+	if(DLLIsEmpty(dll_list))
 	{
+	
 		return NULL;
 	}
 	
-	temp_node = dll_list->head.next;
-	temp_data = temp_node->data;
-
-	
-	dll_list->head.next = temp_node->next;
-
-	free(dll_list->head.next->prev);
-	
-	dll_list->head.next->prev = &dll_list->head; 
+	temp_iter = DLLBegin(dll_list);
+	temp_data = temp_iter.cur_node->data;
+	DLLRemove(temp_iter);
 	
 	return temp_data;
 }
 
 dll_iter_t DLLPushBack(dll_t *dll_list, const void *data)
 {
-	dll_node_t *new_node = NULL;
-	dll_iter_t push_b_itr = {NULL, NULL};
-	
 	assert(NULL != dll_list);
 	
-	
-	new_node = (dll_node_t *)malloc(sizeof(*new_node));
-	if(NULL == new_node)
-	{
-		perror("Malloc in DLLPushBack failed");
-		
-		return DLLEnd(dll_list);
-	}
-	
-	new_node->next = &dll_list->tail;
-	new_node->prev = dll_list->tail.prev;
-	new_node->data = (void *)data;
-	
-	dll_list->tail.prev->next = new_node;
-	dll_list->tail.prev = new_node;
-	
-	push_b_itr.cur_node = new_node;
-	push_b_itr.cur_list = dll_list;
-	
-	return push_b_itr;
+	return DLLInsert(DLLEnd(dll_list), (void *)data);
 }
 
 void *DLLPopBack(dll_t *dll_list)
 {
-	dll_node_t *temp_node = NULL;
 	void *temp_data = NULL;
+	dll_iter_t temp_iter = {NULL, NULL};
 	
 	assert(NULL != dll_list);
 	
 	/* if dll is empty */
-	if(dll_list->head.next == &dll_list->tail)
+	if(DLLIsEmpty(dll_list))
 	{
+	
 		return NULL;
 	}
 	
-	temp_node = dll_list->tail.prev;
-	temp_data = temp_node->data;
+	temp_iter = DLLIterPrev(DLLEnd(dll_list));
+	temp_data = temp_iter.cur_node->data;
+	
+	DLLRemove(temp_iter);
 
-	
-	dll_list->tail.prev = temp_node->prev;
-
-	free(dll_list->tail.prev->next);
-	
-	dll_list->tail.prev->next = &dll_list->tail; 
-	
 	return temp_data;
 }
 
@@ -220,9 +173,9 @@ dll_iter_t DLLFind(dll_iter_t start_itr, dll_iter_t end_itr, dll_cmp_func_t cmp_
 {
 	for(; !DLLIterIsEqual(start_itr, end_itr); start_itr = DLLIterNext(start_itr))
 	{
-		if(0 == cmp_func(DLLIterGetData(start_itr), param))
+		if(1 == cmp_func(DLLIterGetData(start_itr), param))
 		{
-			return start_itr;
+			break;
 		}
 	}
 	
@@ -299,27 +252,33 @@ dll_iter_t DLLEnd(const dll_t *target_dll)
 	assert(NULL != target_dll);
 	
 	end_iter.cur_list = (dll_t *)target_dll;
-	end_iter.cur_node = target_dll->tail.prev;
+	end_iter.cur_node = &(((dll_t *)target_dll)->tail);
 	
 	return end_iter;
 }
 
 dll_iter_t DLLIterNext(dll_iter_t cur_iter)
 {
+	dll_iter_t next_iter = {NULL, NULL};
+
 	assert(NULL != cur_iter.cur_list);
 	
-	cur_iter.cur_node = cur_iter.cur_node->next;
+	next_iter.cur_node = cur_iter.cur_node->next;
+	next_iter.cur_list = cur_iter.cur_list;
 	
-	return cur_iter;
+	return next_iter;
 }
 
 dll_iter_t DLLIterPrev(dll_iter_t cur_iter)
 {
+	dll_iter_t prev_iter = {NULL, NULL};
+
 	assert(NULL != cur_iter.cur_list);
 	
-	cur_iter.cur_node = cur_iter.cur_node->prev;
+	prev_iter.cur_node = cur_iter.cur_node->prev;
+	prev_iter.cur_list = cur_iter.cur_list;
 	
-	return cur_iter;
+	return prev_iter;
 }
 
 int DLLIterIsEqual(dll_iter_t iter_1, dll_iter_t iter_2)

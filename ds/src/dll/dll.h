@@ -15,18 +15,19 @@ typedef struct dll_list dll_t;
 
 
 /* typedef of iterator to dll */
-typedef struct dll_iter
+typedef struct dll_iter dll_iter_t;
+
+struct dll_iter
 {
 	dll_node_t *cur_node;
-	dll_t *cur_list;	
-}dll_iter_t;
-
+	dll_t *cur_list;
+};
 
 /* 	typedef of action function for ForEach function	*/
 typedef int (*dll_act_func_t)(void *data, void *param);
 
 /* 	typedef of action function for Find function		*/
-typedef int (*dll_cmp_func_t)(void *data, void *param);
+typedef int (*dll_cmp_func_t)(const void *data, void *param);
 /*################################################################*/
 
 /*####################### DLL Funtionality #######################*/

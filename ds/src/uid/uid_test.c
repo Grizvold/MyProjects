@@ -4,6 +4,8 @@
 
 #include "uid.h"   /* declarations of the uid functions */
 
+/* edit test */
+
 int main()
 {
 	ilrd_uid_t uid_test1 = {0};

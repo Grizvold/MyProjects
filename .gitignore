@@ -7,8 +7,8 @@
 # Don't ignore gitignore
 !.gitignore
 
-# Don't ignore c, h files
+# Don't ignore c, h, make files
 !*.c
 !*.h
 !*.txt
-
+!makefile

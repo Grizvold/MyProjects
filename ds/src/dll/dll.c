@@ -98,17 +98,17 @@ dll_iter_t DLLInsert(dll_iter_t dll_iterator, const void *data)
 dll_iter_t DLLRemove(dll_iter_t dll_iterator)
 {
 	dll_node_t *temp_node = NULL;
-	dll_iter_t temp_iterator = {NULL, NULL};
-
+	dll_iter_t temp_iter = DLLIterNext(dll_iterator);
+	
 	temp_node = dll_iterator.cur_node;
-	temp_iterator = DLLIterPrev(dll_iterator);
 	
-	temp_node->prev->next = dll_iterator.cur_node->next;
-	temp_node->next->prev = dll_iterator.cur_node->prev;
+	dll_iterator.cur_node->prev->next = dll_iterator.cur_node->next;
+	dll_iterator.cur_node->next->prev = dll_iterator.cur_node->prev;
 	
+
 	free(temp_node);
 	
-	return temp_iterator;
+	return temp_iter;
 }
 
 dll_iter_t DLLPushFront(dll_t *dll_list, const void *data)
@@ -120,22 +120,12 @@ dll_iter_t DLLPushFront(dll_t *dll_list, const void *data)
 
 void *DLLPopFront(dll_t *dll_list)
 {
-	/*dll_node_t *temp_node = NULL;*/
 	void *temp_data = NULL;
-	dll_iter_t temp_iter = {NULL, NULL};
 	
 	assert(NULL != dll_list);
 	
-	/* if dll is empty */
-	if(DLLIsEmpty(dll_list))
-	{
-	
-		return NULL;
-	}
-	
-	temp_iter = DLLBegin(dll_list);
-	temp_data = temp_iter.cur_node->data;
-	DLLRemove(temp_iter);
+	temp_data = DLLBegin(dll_list).cur_node->data;
+	DLLRemove(DLLBegin(dll_list));
 	
 	return temp_data;
 }
@@ -153,18 +143,10 @@ void *DLLPopBack(dll_t *dll_list)
 	dll_iter_t temp_iter = {NULL, NULL};
 	
 	assert(NULL != dll_list);
+
+	temp_data = DLLIterPrev(DLLEnd(dll_list)).cur_node->data;
 	
-	/* if dll is empty */
-	if(DLLIsEmpty(dll_list))
-	{
-	
-		return NULL;
-	}
-	
-	temp_iter = DLLIterPrev(DLLEnd(dll_list));
-	temp_data = temp_iter.cur_node->data;
-	
-	DLLRemove(temp_iter);
+	DLLRemove(DLLIterPrev(DLLEnd(dll_list)));
 
 	return temp_data;
 }

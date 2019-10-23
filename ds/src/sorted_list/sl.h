@@ -95,9 +95,9 @@ void *SLIterGetData(sl_iter_t iter);
 
 /*====================== INTERNAL USE ONLY =======================*/
 
-struct sl_iter_t
+struct sl_iterator
 {
-	dll_node_t iter;
+	dll_iter_t iter;
 	sl_t *sl;
 };
 /*================================================================*/

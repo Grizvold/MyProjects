@@ -4,13 +4,14 @@
 #include <stdio.h> /* perror */
 
 #include "sl.h"
+#include "dll.h"
 
 struct sl
 {
-	dll *list;
+	dll_t *list;
 	sl_is_before_t IsBefore;
 	void *param;
-}
+};
 
 /*################## Sorted List Functionality ###################*/
 
@@ -43,7 +44,7 @@ sl_t *SLCreate(sl_is_before_t is_before_func, void *param)
 
 void SLDestroy(sl_t *sl)
 {
-	asser(NULL != sl);
+	assert(NULL != sl);
 
 	DLLDestroy(sl->list);
 	free(sl);
@@ -111,7 +112,7 @@ sl_iter_t SLBegin(const sl_t *target_sl)
 
 	assert(NULL != target_sl);
 
-	begin_iter.sl = (sl_t)*target_sl;
+	begin_iter.sl = (sl_t *)target_sl;
 	begin_iter.iter = DLLBegin(target_sl->list);
 
 	return begin_iter;
@@ -123,7 +124,7 @@ sl_iter_t SLEnd(const sl_t *target_sl)
 
 	assert(NULL != target_sl);
 
-	end_iter.sl = (sl_t)*target_sl;
+	end_iter.sl = (sl_t *)target_sl;
 	end_iter.iter = DLLEnd(target_sl->list);
 
 	return end_iter;
@@ -131,17 +132,19 @@ sl_iter_t SLEnd(const sl_t *target_sl)
 
 int SLForEach(sl_iter_t from, sl_iter_t to, sl_act_func_t func, void *param)
 {
-	return DLLForEach(from.iter, to.iter, param);
+	return DLLForEach(from.iter, to.iter, func, param);
 }
 
 sl_iter_t SLFindIf(sl_iter_t from, sl_iter_t to, sl_cmp_func_t func, void *param)
 {
-	return DLLFind(from.iter, to.iter, func, param);
+	from.iter = DLLFind(from.iter, to.iter, func, param);
+
+	return from;
 }
 
 sl_iter_t SLFind(sl_iter_t itr_from, sl_iter_t itr_to, void *data)
 {
-	sl_t *f_list = from.sl;
+	sl_t *f_list = itr_from.sl;
 
 	for(;!SLIterIsEqual(itr_from, itr_to); itr_from = SLIterNext(itr_from))
 	{
@@ -157,7 +160,7 @@ sl_iter_t SLFind(sl_iter_t itr_from, sl_iter_t itr_to, void *data)
 		}
 	}
 
-	return SLEnd(f_list);
+	return itr_from;
 }
 
 sl_iter_t SLMerge(sl_t *dest, sl_t *src)

@@ -3,7 +3,7 @@
 
 #include <stddef.h> /* size_t */
 
-#include "dll.h" 
+#include "dll.h"
 
 /*########################### typedefs ###########################*/
 

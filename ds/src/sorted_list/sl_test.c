@@ -1,249 +1,166 @@
-#include <stddef.h> /*size_t  */
-#include <stdlib.h> /* malloc, calloc, realloc, free, srand*/
-#include <stdio.h>  /* printf */
-#include <assert.h> /* assert */
-#include <time.h> /* time */
+#include <stdio.h>  /*printf */
+#include <stdlib.h> /*malloc*/
 
+#include "dll.h"
 #include "sl.h"
 
-void PrintAll(sl_t *sl);
-void CompareListVal(sl_t *sl, int arr[]);
-int IsBeforeInt(void *data1, void *data2, void *param);
-int AddInt(void *data,  void *param);
-int FindModulo(const void *data,  void *param);
-int *CreateIntArray(size_t size);
-void IntArrayToSl(sl_t *sl, int *arr, size_t size);
-
-
-int num0 = 0;
-int num1 = 1;
-int num2 = 2;
-int num3 = 3;
-int num4 = 4;
-int num5 = 5;
-int int_to_add = 10;
-int int_to_find_if = 4;
-int int_to_find = 14;
-
+int Add(void* data, void* param);
+int Find(const void* data, void* cmp);
+int IsBefore(void *newdata, void* cmpdata, void *param);
+int Print(void *data, void *param);
 
 int main()
 {
-	sl_t *sl_1 = NULL;
-	sl_t *sl_2 = NULL;
-	sl_t *sl_3 = NULL;
-	sl_iter_t test_iter = {NULL};
-	int i = 0;
-	int *test_arr1 = NULL;
-	int *test_arr2 = NULL; 
+	sl_t *my_sl = NULL;
+	sl_t *new_sl = NULL;
+	
+	sl_iter_t iter;
+	
+	int *arr = NULL;
 
-
-/* ############################### test no. 1 ############################### */
-	sl_1 = SLCreate(&IsBeforeInt, NULL);
-
-	printf("*** Insert test #1 ***\n");
-	printf("is empty = %d\n", SLIsEmpty(sl_1));
-
-	SLInsert(sl_1, &num3);
-	SLInsert(sl_1, &num0);
-	SLInsert(sl_1, &num1);
-	SLInsert(sl_1, &num4);
-	SLInsert(sl_1, &num2);
-
-	printf("-After filling-\n");
-	printf("is empty = %d\n", SLIsEmpty(sl_1));
-	printf("size = %lu\n", SLSize(sl_1));
-	PrintAll(sl_1);
-
-/* ############################### test no. 2 ############################### */
-	printf("\n*** Insert test #2 ***\n");
-	printf("PopBack value = %d\n", *(int*)SLPopBack(sl_1));
-	printf("PopFront value = %d\n", *(int*)SLPopFront(sl_1));
-	printf("size = %lu\n", SLSize(sl_1));
-
-	PrintAll(sl_1);
-
-/*################################# ForEach ##################################*/
-	printf("\n*** ForEach ***\nBefore:");
-
-	SLInsert(sl_1, &num4);
-	SLInsert(sl_1, &num0);
-	SLInsert(sl_1, &num5);
-	PrintAll(sl_1);
-
-	SLForEach(SLBegin(sl_1), (SLEnd(sl_1)), &AddInt, &int_to_add);
-	printf("After (values should be +=10):\n");
-	PrintAll(sl_1);
-
-
-/*################################# FindIf ###################################*/
-	printf("\n*** FindIf ***\n");
-	printf("FindIf Value (should be 12) = %d\n",
-		   *(int*)SLIterGetData(
-			SLFindIf(SLBegin(sl_1), (SLEnd(sl_1)), &FindModulo, &int_to_find_if)));
-
-
-/*################################## Find ####################################*/
-	printf("\n*** Find ***\n");
-	printf("Find Value (should be 14) = %d\n",
-		   *(int*)SLIterGetData(
-			SLFind(SLBegin(sl_1), (SLEnd(sl_1)), &int_to_find)));
-
-/*################################## Merge ###################################*/
-	sl_2 = SLCreate(&IsBeforeInt, NULL);
-	sl_3 = SLCreate(&IsBeforeInt, NULL);
-
-	srand(time(NULL));
-	test_arr1 = CreateIntArray(5);
-	test_arr2 = CreateIntArray(5);
-
-	IntArrayToSl(sl_2, test_arr1, 5);
-	IntArrayToSl(sl_3, test_arr2, 5);
-
-	printf("\n*** Merge ***\n");
-	printf("Before:\n@@ sl_2\n");
-	PrintAll(sl_2);
-	printf("@@ sl_3\n");
-	PrintAll(sl_3);
-
-	SLMerge(sl_2, sl_3);
-
-	printf("After:\n@@ sl_2\n");
-	PrintAll(sl_2);
-	printf("@@ sl_3\n");
-	PrintAll(sl_3);
-
-/* ################################# Remove ################################# */
-
-
-	printf("\n*** Remove ***\n");
-	test_iter = SLBegin(sl_1);
-	SLRemove(test_iter);
-
-	for (test_iter = SLBegin(sl_1), i = 0;
-		 2 > i;
-		 test_iter = SLIterNext(test_iter), i++)
+	int A = 3;
+	int B = 9;
+	int C = 2;
+	int E = 4;
+	size_t i = 0;
+	
+	arr = malloc((sizeof(int)) * 9);
+	if (NULL == arr)
 	{
+		return 1;
 	}
-	SLRemove(test_iter);
+	
+	arr[0] = 5;
+	arr[1] = 6;
+	arr[2] = 7;
+	arr[3] = 2;
+	arr[4] = 9;
+	arr[5] = 6;
+	arr[6] = 7;
+	arr[7] = 2;
+	arr[8] = 9;
+	
+	my_sl = SLCreate(&IsBefore, NULL);
+	new_sl = SLCreate(&IsBefore, NULL);
+	
+	printf("\ntest SLIsEmpty:\n");
+	(SLIsEmpty(my_sl) == 1) ? printf("success\n") : printf("failure\n");
+	(SLIsEmpty(new_sl) == 1) ? printf("success\n") : printf("failure\n");
 
-	test_iter = SLIterPrev(SLEnd(sl_1));
-	SLRemove(test_iter);
+	for (i=0; i<5; i++)
+	{
+		SLInsert(my_sl, &arr[i]);
+	}
+	
+	for (; i<9; i++)
+	{
+		SLInsert(new_sl, &arr[i]);
+	}
+	
+	(SLIsEmpty(my_sl) == 0) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest SLSize:\n");
+	(SLSize(my_sl) == 5) ? printf("success\n") : printf("failure\n");
+	(SLSize(new_sl) == 9) ? printf("success\n") : printf("failure\n");
+		
+	printf("\ntesting insert- printing fisrt (5 first elements)list:\n");
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
+	printf("\ntesting insert- printing second (4 last elements)list :\n");
+	SLForEach(SLBegin(new_sl), SLEnd(new_sl), &Print, NULL);
+	
+	printf("\ntest SLPopFront\n");
+	SLPopFront(my_sl);
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
+	/*printf("\n");
+	SLPopFront(new_sl);
+	SLForEach(SLBegin(new_sl), SLEnd(new_sl), &Print, NULL);*/
+	
+	printf("\ntest SLPopBack\n");
+	SLPopBack(my_sl);
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
+	
+	printf("\ntest SLIterNext\n");
+	(*(int *)SLIterGetData(SLIterNext(SLBegin(my_sl))) == 6) ? printf("success\n") : printf("failure\n");
 
-	PrintAll(sl_1);
+	printf("\ntest SLIterPrev and DLLEnd\n");
+	iter = SLIterPrev(SLEnd(my_sl));
+	(*(int *)SLIterGetData(iter) == 7) ? printf("success\n") : printf("failure\n");
 
+	printf("\ntest SLForEach\n");
+	printf("adding 2 to first list\n");
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Add, &C);
+	printf("\n");
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
+	
+	printf("\n\ntest SLFind\n");
+	printf("find 9 in list\n");
+	iter = SLFind(SLBegin(my_sl), SLEnd(my_sl), &B); 
+	(*(int *)SLIterGetData(iter) == 9) ? printf("success\n") : printf("failure\n");	
+	
+	printf("\ntest SLFindIf\n");
+	iter = SLFindIf(SLBegin(my_sl), SLEnd(my_sl), &Find, &A); 
+	(*(int *)SLIterGetData(iter) == 9) ? printf("success\n") : printf("failure\n");
 
-
-/* ################################ Destroy ################################# */
-
-
-	SLDestroy(sl_1);
-	sl_1 = NULL;
-	SLDestroy(sl_2);
-	sl_2 = NULL;
-	SLDestroy(sl_3);
-	sl_3 = NULL;
-
-/* Clean Up to Test Arrays  */
-	free(test_arr1);
-	free(test_arr2);
-
+	printf("\ntest SLRemove\n");			
+	SLRemove(SLIterNext(SLBegin(my_sl)));
+	(*(int *)SLIterGetData(SLIterNext(SLBegin(my_sl))) == 9) ? printf("success\n") : printf("failure\n"); 
+	
+	SLForEach(SLBegin(new_sl), SLEnd(new_sl), &Add, &E);
+	printf("\ntestin SLMerge\n");
+	printf("\nsrc list: \n");
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
+	printf("\ndest list: \n");
+	SLForEach(SLBegin(new_sl), SLEnd(new_sl), &Print, NULL);
+	
+	SLMerge(my_sl, new_sl);
+	printf("\nmerged list: \n");
+	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
+	
+	printf("\nsrc list: \n");
+	SLForEach(SLBegin(new_sl), SLEnd(new_sl), &Print, NULL);
+	printf("\n"); 
+	
+	while (!SLIsEmpty(my_sl))
+	{
+		SLPopFront(my_sl);
+	}
+	
+	SLDestroy(my_sl);
+	SLDestroy(new_sl);
+	free(arr);
+	
 	return 0;
 }
 
 
-
-int IsBeforeInt(void *data1, void *data2, void *param)
+int Add(void* data, void* param)
 {
-	assert(NULL != data1);
-	assert(NULL != data2);
+	*(int *)data += *(int *)param;
+	
+	return 0;
+}
 
+int Find(const void* data, void* cmp)
+{
+	return (*(int *)data % *(int *)cmp == 0);
+}
+
+int IsBefore(void *newdata, void* cmpdata, void *param)
+{
 	(void)param;
-
-	return ((*(int*)data1 - *(int*)data2) < 0);
+	return   ((*(int *)newdata - *(int *)cmpdata) < 0);
 }
 
-void PrintAll(sl_t *sl)
+int Print(void *data, void *param)
 {
-	sl_iter_t print_iter =  {NULL};
-	void *temp_data = NULL;
+	printf("%d ", *(int *)data);
 	
-	for (print_iter = SLBegin(sl);
-		 ! SLIterIsEqual(print_iter, SLEnd(sl));
-		 print_iter = SLIterNext(print_iter))
-	{
-		temp_data = SLIterGetData(print_iter);
-		printf("\tdata = %d\n", *(int*)temp_data);
-	}
-}
-
-
-void CompareListVal(sl_t *sl, int arr[])
-{
-	sl_iter_t cmp_iter =  {NULL};
-	void *temp_data = NULL;
-	int i = 0;
+	(void)param;
 	
-	for (cmp_iter = SLBegin(sl), i = 0;
-		 ! SLIterIsEqual(cmp_iter, SLEnd(sl));
-		 cmp_iter = SLIterNext(cmp_iter), i++)
-	{
-		temp_data = SLIterGetData(cmp_iter);
-		if (*((int*)temp_data) == arr[i])
-		{
-			printf("\tnode no. %d - SUCCSESS\n", i);
-		}
-		else
-		{
-			printf("\tnode no. %d - FAIL\n", i);
-		}
-	}
+	return 0;
 }
 
-
-int AddInt(void *data,  void *param)
-{
-	int is_success = 0;
-
-	*(int*)data += *(int*)param;
-
-	return is_success;
-}
-
-
-
-int FindModulo(const void *data,  void *param)
-{
-	return ((*(int*)data % *(int*)param) == 0) ? 1 : 0;
-}
-
-int *CreateIntArray(size_t size)
-{
-	int *arr = NULL;
-	
-	arr = (int*)malloc(sizeof(*arr) * size);
-	if (NULL == arr)
-	{
-		return NULL;
-	}
-	
-
-	for (; 0 < size; size--)
-	{
-		arr[size-1] = rand() % 20;	
-	}
-
-	return arr;
-}
-
-void IntArrayToSl(sl_t *sl, int *arr, size_t size)
-{
-	size_t i = 0;
-	
-	for (i = 0; size > i; i++)
-	{
-		SLInsert(sl, arr + i);
-	}
-}
 
 
 

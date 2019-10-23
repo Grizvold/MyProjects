@@ -61,12 +61,14 @@ sl_iter_t SLInsert(sl_t *sl, const void *data)
 		sl_iter = SLIterNext(sl_iter))
 	{
 		if(sl->IsBefore((void *)data, SLIterGetData(sl_iter), sl->param))
-		{		
-			break;
+		{	
+			sl_iter.iter = DLLInsert(sl_iter.iter, (void *)data);	
+			
+			return  sl_iter;
 		}
 	}
 
-	sl_iter.iter = DLLInsert(sl_iter.iter, (void *)data);
+	sl_iter.iter = DLLInsert(DLLEnd(sl->list), (void *)data);
 
 	return sl_iter;
 }
@@ -148,19 +150,19 @@ sl_iter_t SLFind(sl_iter_t itr_from, sl_iter_t itr_to, void *data)
 
 	for(;!SLIterIsEqual(itr_from, itr_to); itr_from = SLIterNext(itr_from))
 	{
-		if(!f_list->IsBefore(data, SLIterGetdata(itr_from), f_list->param))
+		if(!f_list->IsBefore(data, SLIterGetData(itr_from), f_list->param))
 		{
 			break;
 		}
 
-		if(!f_list->IsBefore(data, SLIterGetdata(itr_from), f_list->param)
-		   && (!f_list->IsBefore(SLIterGetdata(itr_from), data, f_list->param)))
+		if(!f_list->IsBefore(data, SLIterGetData(itr_from), f_list->param)
+		   && (!f_list->IsBefore(SLIterGetData(itr_from), data, f_list->param)))
 		{
 			return itr_from;
 		}
 	}
 
-	return itr_from;
+	return SLEnd(f_list);
 }
 
 sl_iter_t SLMerge(sl_t *dest, sl_t *src)
@@ -177,7 +179,7 @@ sl_iter_t SLMerge(sl_t *dest, sl_t *src)
 		{
 			mrg_iter.iter = DLLSplice(mrg_iter.iter, 
 							DLLBegin(src->list), 
-							DLLBegin(src->list));			
+							DLLIterNext(DLLBegin(src->list)));			
 		}
 	}
 
@@ -185,7 +187,7 @@ sl_iter_t SLMerge(sl_t *dest, sl_t *src)
 	{
 		DLLSplice(mrg_iter.iter, 
 				DLLBegin(src->list),
-				DLLIterPrev(DLLEnd(src->list)));
+				DLLEnd(src->list));
 	}
 
 	return SLBegin(dest);

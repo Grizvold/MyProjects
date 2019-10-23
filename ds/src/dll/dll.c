@@ -36,12 +36,12 @@ dll_t *DLLCreate()
 	}
 
 	/* head and tail are part of struct */
+	new_dll->tail.prev = &new_dll->head;
+	new_dll->tail.next = NULL;
+
 	new_dll->head.next = &new_dll->tail;
 	new_dll->head.prev = NULL;
 	
-	new_dll->tail.next = NULL;
-	new_dll->tail.prev = &new_dll->head;
-
 	return new_dll;
 }
 
@@ -77,9 +77,6 @@ dll_iter_t DLLInsert(dll_iter_t dll_iterator, const void *data)
 		perror("Malloc in DLLInsert failed");
 		
 		return DLLEnd(dll_iterator.cur_list);
-		
-		/*
-		return null_iterator;*/
 	}
 	
 	new_node->next = dll_iterator.cur_node; 
@@ -125,6 +122,7 @@ void *DLLPopFront(dll_t *dll_list)
 	assert(NULL != dll_list);
 	
 	temp_data = DLLBegin(dll_list).cur_node->data;
+	
 	DLLRemove(DLLBegin(dll_list));
 	
 	return temp_data;
@@ -140,7 +138,6 @@ dll_iter_t DLLPushBack(dll_t *dll_list, const void *data)
 void *DLLPopBack(dll_t *dll_list)
 {
 	void *temp_data = NULL;
-	dll_iter_t temp_iter = {NULL, NULL};
 	
 	assert(NULL != dll_list);
 
@@ -179,13 +176,18 @@ int DLLForEach(dll_iter_t start_itr, dll_iter_t end_itr, dll_act_func_t act_func
 
 dll_iter_t DLLSplice(dll_iter_t where, dll_iter_t from, dll_iter_t to)
 {
-	/* disconect <from>-<to> from previous dll */
-	from.cur_node->prev->next = to.cur_node->next;
-	to.cur_node->next->prev = from.cur_node->prev;
+	dll_iter_t to_prev = DLLIterPrev(to);
+	
+	/* disconect <from>-<to> from previous dll and rechain */
+	from.cur_node->prev->next = to.cur_node;
+	to.cur_node->prev = from.cur_node->prev;
 	
 	/* chain <from>-<to> to <where> dll list   */
 	where.cur_node->prev->next = from.cur_node;
-	to.cur_node->next = where.cur_node;
+	from.cur_node->prev = where.cur_node->prev;
+	
+	where.cur_node->prev = to_prev.cur_node;
+	to_prev.cur_node->next = where.cur_node;
 	
 	return from;
 }

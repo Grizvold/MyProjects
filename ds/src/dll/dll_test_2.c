@@ -137,7 +137,7 @@ int main()
 		printf("%d\n", *(int *)DLLIterGetData(iter));
 	}
 	
-	DLLSplice(DLLBegin(my_dll),DLLBegin(new_dll), DLLIterNext(DLLBegin(new_dll)));
+	DLLSplice(DLLIterNext(DLLBegin(my_dll)),DLLBegin(new_dll),  DLLEnd(new_dll));
 	
 	printf("src list:\n");
 	for(iter = DLLBegin(new_dll); !DLLIterIsEqual(iter, DLLEnd(new_dll)); iter = DLLIterNext(iter))
@@ -179,6 +179,8 @@ int Find(const void* data, void* cmp)
 {
 	return (*(int *)data == *(int *)cmp);
 }
+
+
 
 
 

@@ -1,211 +1,186 @@
-#include <stddef.h> /* size_t 							 */
-#include <stdio.h>  /* printf 							 */
+#include <stdio.h>  /* printf */
+#include <stdlib.h> /*malooc */
 
-#include "dll.h" 	/* declarations of the dll functions */
+#include "dll.h"
 
-/************************ Test Functions Declarations *************************/
-void PrintAll(dll_t *dll);
-void CompareListVal(dll_t *dll, int arr[]);
+/* adds the <param> to the <data */
+int Add(void* data, void* param);
+/* compers the <data> to <cmp>
+	returns 1 if they are equal, 0 if they are not */
+int Find(const void* data, void* cmp);
 
-/************************* Test Variables Defenitions *************************/
-int test_arr[10] = {0, 1, 2, 3, 4};
-
-/******************************* Main *****************************************/
 int main()
 {
-	int num0 = 0;
-	int num1 = 1;
-	int num2 = 2;
-	int num3 = 3;
-	int num4 = 4;
-	int num5 = 5;
-	int num10 = 10;
-	int num11 = 11;
-	int num12 = 12;
-	int num13 = 13;
-	int i = 0;
-
-	dll_t *dll_1 = NULL, *dll_2 = NULL;
-	dll_iter_t test_iter1 = {NULL, NULL};
-	dll_iter_t test_iter_from = {NULL, NULL}, test_iter_to = {NULL, NULL};
-
-/* ############### Create, PushBack, PushFront, IsEmpty, Size ############### */
-	dll_1 = DLLCreate();
-
-	printf("*** test #1 ***\n");
-	printf("\n*** Pop ***\n");
-	printf("is empty = %d\n", DLLIsEmpty(dll_1));
-
-	DLLPushBack(dll_1, &num1);
-	DLLPushBack(dll_1, &num2);
-	DLLPushBack(dll_1, &num3);
-	DLLPushBack(dll_1, &num4);
-	DLLPushFront(dll_1, &num0);
-
-	printf("-After filling-\n");
-	printf("is empty = %d\n", DLLIsEmpty(dll_1));
-	printf("size = %lu\n", DLLSize(dll_1));
-	CompareListVal(dll_1, test_arr);
-
-/* ########################### PopBack, PopFront ############################ */
-	printf("\n*** PopBack & PopFront - test #1 ***\n");
-	printf("PopBack value = %d\n", *(int*)DLLPopBack(dll_1));
-	printf("PopFront value = %d\n", *(int*)DLLPopFront(dll_1));
-	printf("size = %lu\n", DLLSize(dll_1));
-
-	test_arr[0] = 1;
-	test_arr[1] = 2;
-	test_arr[2] = 3;
-	CompareListVal(dll_1, test_arr);
-
-	DLLPopBack(dll_1);
-	DLLPopFront(dll_1);
-
-	test_arr[0] = 2;
-	printf("\n*** PopBack & PopFront - test #2 ***\n");
-	CompareListVal(dll_1, test_arr);
-
-/* ################################## Push ################################## */
-	DLLDestroy(dll_1);
-	dll_1 = NULL;
-	dll_1 = DLLCreate();
-
-	DLLPushFront(dll_1, &num3);
-	DLLPushBack(dll_1, &num4);
-	DLLPushFront(dll_1, &num2);
-	DLLPushFront(dll_1, &num1);
-	DLLPushFront(dll_1, &num0);
-
-	test_arr[0] = 0;
-	test_arr[1] = 1;
-	test_arr[2] = 2;
-	test_arr[3] = 3;
-	test_arr[4] = 4;
-	printf("\n*** Push ***\n");
-	CompareListVal(dll_1, test_arr);
-
-/* ################################# Insert ################################# */
-	test_iter1 = DLLBegin(dll_1);
-	DLLInsert(test_iter1, &num5);
-
-	for (test_iter1 = DLLBegin(dll_1), i = 0;
-		 3 > i;
-		 test_iter1 = DLLIterNext(test_iter1), i++)
+	dll_t *my_dll = NULL;
+	dll_t *new_dll = NULL;
+	dll_t *empty_dll = NULL;
+	
+	dll_iter_t iter;
+	
+	int *arr = NULL;
+	int *newarr = NULL;
+	
+	int A = 2;
+	int B = 9;
+	int C = 100;
+	size_t i = 0;
+	
+	arr = malloc(sizeof(int)*5);
+	if (NULL == arr)
 	{
+		return 1;
 	}
-	DLLInsert(test_iter1, &num5);
-
-	test_iter1 = (DLLEnd(dll_1));
-	DLLInsert(test_iter1, &num5);
-
-	test_arr[0] = 5;
-	test_arr[1] = 0;
-	test_arr[2] = 1;
-	test_arr[3] = 5;
-	test_arr[4] = 2;
-	test_arr[5] = 3;
-	test_arr[6] = 4;
-	test_arr[7] = 5;
-	printf("\n*** Insert ***\n");
-	CompareListVal(dll_1, test_arr);
-
-/* ################################# Remove ################################# */
-	test_iter1 = DLLBegin(dll_1);
-	DLLRemove(test_iter1);
-
-	for (test_iter1 = DLLBegin(dll_1), i = 0;
-		 2 > i;
-		 test_iter1 = DLLIterNext(test_iter1), i++)
+	
+	arr[0] = 5;
+	arr[1] = 6;
+	arr[2] = 7;
+	arr[3] = 2;
+	arr[4] = 9;
+	
+	newarr = malloc(sizeof(int)*4);
+	if (NULL == newarr)
 	{
+		return 1;
+	}
+	
+	newarr[0] = 5;
+	newarr[1] = 6;
+	newarr[2] = 7;
+	newarr[3] = 8;
+	
+	my_dll = DLLCreate();
+	new_dll = DLLCreate();
+	empty_dll = DLLCreate();
+	
+	
+	for (i=0; i<3; i++)
+	{
+		DLLPushFront(my_dll, &arr[i]);
+	}
+	
+	printf("\ntest DLLIsEmpty:\n");
+	(DLLIsEmpty(my_dll) == 0) ? printf("success\n") : printf("failure\n");
+	(DLLIsEmpty(new_dll) != 0) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLSize:\n");
+	(DLLSize(my_dll) == 3) ? printf("success\n") : printf("failure\n");
+	(DLLSize(new_dll) == 0) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLIterGetData and DLLBegin:\n");
+	(*(int *)DLLIterGetData(DLLBegin(my_dll)) == 7) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLPushFront\n");
+	DLLPushFront(my_dll,&arr[3]);
+	(*(int *)DLLIterGetData(DLLBegin(my_dll)) == 2) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLPopFront\n");
+	DLLPopFront(my_dll);
+	(*(int *)DLLIterGetData(DLLBegin(my_dll)) == 7) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLPushBack\n");
+	DLLPushBack(my_dll,&arr[2]);
+	(*(int *)DLLIterGetData(DLLIterPrev(DLLEnd(my_dll))) == 7) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLPopBack\n");
+	DLLPopBack(my_dll);
+	(*(int *)DLLIterGetData(DLLIterPrev(DLLEnd(my_dll))) == 5) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLIterNext\n");
+	iter = DLLIterNext(DLLBegin(my_dll));
+	(*(int *)DLLIterGetData(iter) == 6) ? printf("success\n") : printf("failure\n");
+
+	printf("\ntest DLLIterPrev and DLLEnd\n");
+	iter = DLLIterPrev(DLLEnd(my_dll));
+	(*(int *)DLLIterGetData(iter) == 5) ? printf("success\n") : printf("failure\n");
+
+	printf("\ntest DLLForEach\n");
+	DLLForEach(DLLBegin(my_dll), DLLEnd(my_dll), &Add, &A);
+	iter =  DLLBegin(my_dll);
+	((*(int *)DLLIterGetData(iter) == 9) && (*(int *)DLLIterGetData(DLLIterNext(iter)) == 8)) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLFind\n");
+	iter = DLLFind(DLLBegin(my_dll), DLLEnd(my_dll), &Find, &B); 
+	(*(int *)DLLIterGetData(iter) == 9) ? printf("success\n") : printf("failure\n");
+	
+	printf("\ntest DLLInsert\n");			
+	DLLInsert(DLLBegin(my_dll), &arr[3]);
+	(*(int *)DLLIterGetData(DLLBegin(my_dll)) == 2) ? printf("success\n") : printf("failure\n"); 
+	
+	DLLInsert(DLLIterNext(DLLBegin(my_dll)), &arr[4]);
+	(*(int *)DLLIterGetData(DLLIterNext(DLLBegin(my_dll))) == 9) ? printf("success\n") : printf("failure\n"); 
+	
+	printf("\ntest DLLRemove\n");			
+	DLLRemove(DLLBegin(my_dll));
+	(*(int *)DLLIterGetData(DLLBegin(my_dll)) == 9) ? printf("success\n") : printf("failure\n"); 
+	
+	DLLRemove(DLLIterNext(DLLBegin(my_dll)));
+	(*(int *)DLLIterGetData(DLLIterNext(DLLBegin(my_dll))) == 8) ? printf("success\n") : printf("failure\n"); 
+
+	printf("\ntest DLLSplice\n");
+	
+	for (i=0; i<4; i++)
+	{
+		DLLPushBack(new_dll, &newarr[i]);
+	}	
+	
+	DLLForEach(DLLBegin(new_dll), DLLEnd(new_dll), &Add, &C);
+	
+	printf("First list:\n");
+	for(iter = DLLBegin(new_dll); !DLLIterIsEqual(iter, DLLEnd(new_dll)); iter = DLLIterNext(iter))
+	{
+		printf("%d\n", *(int *)DLLIterGetData(iter));
+	}
+		
+	printf("\nSecond list:\n");
+	for(iter = DLLBegin(my_dll); !DLLIterIsEqual(iter, DLLEnd(my_dll)); iter = DLLIterNext(iter))
+	{
+		printf("%d\n", *(int *)DLLIterGetData(iter));
+	}
+	
+	DLLSplice(DLLIterNext(DLLBegin(my_dll)),DLLBegin(new_dll),  DLLEnd(new_dll));
+	
+	printf("src list:\n");
+	for(iter = DLLBegin(new_dll); !DLLIterIsEqual(iter, DLLEnd(new_dll)); iter = DLLIterNext(iter))
+	{
+		printf("%d\n", *(int *)DLLIterGetData(iter));
+	}
+		
+	printf("\ndest list:\n");
+	for(iter = DLLBegin(my_dll); !DLLIterIsEqual(iter, DLLEnd(my_dll)); iter = DLLIterNext(iter))
+	{
+		printf("%d\n", *(int *)DLLIterGetData(iter));
 	}
 
-	DLLRemove(test_iter1);
-
-	test_iter1 = DLLIterPrev(DLLEnd(dll_1));
-	DLLRemove(test_iter1);
-
-	test_arr[0] = 0;
-	test_arr[1] = 1;
-	test_arr[2] = 2;
-	test_arr[3] = 3;
-	test_arr[4] = 4;
-	printf("\n*** Remove ***\n");
-	CompareListVal(dll_1, test_arr);
-
-/* ################################# Splice ################################# */
-	dll_2 = DLLCreate();
-
-	DLLPushBack(dll_2, &num10);
-	DLLPushBack(dll_2, &num11);
-	DLLPushBack(dll_2, &num12);
-	DLLPushBack(dll_2, &num13);
-
-	test_iter1 = DLLIterNext(DLLBegin(dll_1));
-	test_iter_from = DLLIterNext(DLLBegin(dll_2));
-	test_iter_to = DLLIterNext(test_iter_from);
-
-	DLLSplice(test_iter1, test_iter_from, test_iter_to);
-
-	printf("\n*** Splice ***\n");
-	printf("\tdll_1:\n");
-	PrintAll(dll_1);
-
-	printf("\tdll_2:\n");
-	PrintAll(dll_2);
-
-	test_iter_from = test_iter_to = DLLIterNext(DLLBegin(dll_2));
-	DLLSplice(test_iter1, test_iter_from, test_iter_to);
-	printf("\n\tdll_1:\n");
-	PrintAll(dll_1);
-
-	printf("\tdll_2:\n");
-	PrintAll(dll_2);
-	 
-/* ################################# Destroy ################################# */
-	DLLDestroy(dll_1);
-	dll_1 = NULL;
-
-	DLLDestroy(dll_2);
-	dll_2 = NULL;
-
+	printf("\nempty list:\n");
+	for(iter = DLLBegin(empty_dll); !DLLIterIsEqual(iter, DLLEnd(empty_dll)); iter = DLLIterNext(iter))
+	{
+		printf("%d\n", *(int *)DLLIterGetData(iter));
+	}
+	
+	DLLDestroy(my_dll);
+	DLLDestroy(new_dll);
+	DLLDestroy(empty_dll);
+	
+	free(arr);
+	free(newarr);
+	
 	return 0;
 }
 
-/************************* Test Functions Defenitions *************************/
-void PrintAll(dll_t *dll)
+
+int Add(void* data, void* param)
 {
-	dll_iter_t print_iter =  {NULL, NULL};
-	void *temp_data = NULL;
+	*(int *)data += *(int *)param;
 	
-	for (print_iter = DLLBegin(dll);
-		 ! DLLIterIsEqual(print_iter, DLLEnd(dll));
-		 print_iter = DLLIterNext(print_iter))
-	{
-		temp_data = DLLIterGetData(print_iter);
-		printf("data = %d\n", *(int*)temp_data);
-	}
+	return 0;
 }
 
-void CompareListVal(dll_t *dll, int arr[])
+int Find(const void* data, void* cmp)
 {
-	dll_iter_t cmp_iter =  {NULL, NULL};
-	void *temp_data = NULL;
-	int i = 0;
-	
-	for (cmp_iter = DLLBegin(dll), i = 0;
-		 !DLLIterIsEqual(cmp_iter, DLLEnd(dll));
-		 cmp_iter = DLLIterNext(cmp_iter), i++)
-	{
-		temp_data = DLLIterGetData(cmp_iter);
-		if (*((int*)temp_data) == arr[i])
-		{
-			printf("\tnode no. %d - SUCCSESS\n", i);
-		}
-		else
-		{
-			printf("\tnode no. %d - FAIL\n", i);
-		}
-	}
+	return (*(int *)data == *(int *)cmp);
 }
+
+
+
 
 

@@ -26,15 +26,16 @@ sll_node_t *SLLCreateNode(void *data, sll_node_t *next)
 
 void SLLFreeAll(sll_node_t *target_node)
 {
-	sll_node_t *temp_node = target_node;
+	sll_node_t *temp_node = NULL;
 	
 	assert(NULL != target_node);
 	
-	for (; NULL != target_node; 
-		temp_node = target_node, target_node = target_node->next)
+	for (temp_node = target_node; 
+		NULL != target_node; 
+		temp_node = target_node)
 	{
+		target_node = target_node->next;
 		free(temp_node);
-		temp_node = NULL;
 	}
 	
 	free(target_node);
@@ -50,21 +51,20 @@ sll_node_t *SLLRemove(sll_node_t *target_node)
 	target_node->next = temp_node->next;
 
 	free(temp_node);
-	temp_node = NULL;
 
 	return target_node;	
 }
 
 sll_node_t *SLLRemoveAfter(sll_node_t *target_node)
 {
-	sll_node_t *temp_node = target_node->next;
+	sll_node_t *temp_node = NULL;
 	
 	assert(NULL != target_node);
 	
+	temp_node = target_node->next;
 	target_node->next = temp_node->next;
 
 	free(temp_node);
-	temp_node = NULL;
 
 	return target_node;
 }
@@ -76,7 +76,6 @@ sll_node_t *SLLInsert(sll_node_t *target_node, sll_node_t *new_node)
 	assert(NULL != target_node && NULL != new_node);
 	
 	SLLInsertAfter(target_node, new_node);
-	
 	
 	temp_node_data = target_node->data;
 	target_node->data = new_node->data;
@@ -112,41 +111,48 @@ static int CountHelper(void *data, void *param)
 	return 0;
 }
 
-int SLLForEach(sll_node_t *root, sll_foreach_func_t func, void *func_param)
+int SLLForEach(sll_node_t *head, sll_foreach_func_t func, void *func_param)
 {
-	for (; NULL != root; root = root->next)
+	sll_node_t *itr = NULL;
+	int status = 0;
+	
+	for (itr = head; NULL != itr; itr = itr->next)
 	{
-		if (0 != func(root->data, func_param))
+		if (0 != func(head->data, func_param))
 		{
-			return 1;	
+			status = 1;		
+		
+			return status;	
 		}		
 	}
 	
-	return 0;
+	return status;
 }
 
-sll_node_t *SLLFind(const sll_node_t *root, sll_find_func_t func, void *func_param)
+sll_node_t *SLLFind(const sll_node_t *head, sll_find_func_t func, void *func_param)
 {
-	for (; NULL != root; root = root->next)
+	sll_node_t *itr = NULL;
+
+	for (itr = (sll_node_t *)head; NULL != itr; itr = itr->next)
 	{
-		if (0 == func(root->data, func_param))
+		if (0 == func(itr->data, func_param))
 		{
-			return (sll_node_t *)root;
+			return (sll_node_t *)itr;
 		}	
 	}
 	
 	return NULL;
 }
 
-sll_node_t *SLLFlip(sll_node_t *root)
+sll_node_t *SLLFlip(sll_node_t *head)
 {
-	sll_node_t *current = root;
+	sll_node_t *current = NULL;
 	sll_node_t *next = NULL;
 	sll_node_t *prev = NULL;
 	
-	assert(NULL != root);
+	assert(NULL != head);
 	
-	for(; NULL != current;)
+	for(current = head; NULL != current;)
 	{
 		next = current->next;
 		current->next = prev;
@@ -154,7 +160,7 @@ sll_node_t *SLLFlip(sll_node_t *root)
 		current = next;
 	}
 	
-	root = prev;
+	head = prev;
 	
 	return prev;
 }
@@ -173,6 +179,7 @@ int SLLHasLoop(const sll_node_t *node)
 		   then there is a loop			    		*/
 		if (slow_p == fast_p)
 		{
+		
 			return 1;
 		}	
 	}

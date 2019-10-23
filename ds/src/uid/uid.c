@@ -1,20 +1,20 @@
-#include <stddef.h> 
-#include <sys/types.h>
-#include <time.h>
+#include <stddef.h> /* size_t */
+#include <sys/types.h> /*  */
+#include <time.h> /* time_t/time */
 #include <unistd.h>
 
 #include "uid.h"
 
 ilrd_uid_t UIDCreate()
 {
-	time_t curr_time = 0;
 	ilrd_uid_t new_uid = {0};
 	static size_t counter = 0;
 	
-	uid.curr_time = time(&curr_time);
-	uid.counter = counter++;
-	uid.pid = getpid();
+	new_uid.curr_time = time(NULL);
+	new_uid.counter = counter++;
+	new_uid.pid = getpid(); /* getpid returns unique process id */
 	
+	/* error check for time_t */
 	if((time_t)(-1) == new_uid.curr_time)
 	{
 		new_uid.is_error = 1;
@@ -25,6 +25,7 @@ ilrd_uid_t UIDCreate()
 
 int UIDIsEqual(ilrd_uid_t uid1, ilrd_uid_t uid2)
 {
+
 	return (uid1.curr_time == uid2.curr_time 
 			&& uid1.counter == uid2.counter
 			&& uid1.pid == uid2.pid
@@ -33,6 +34,7 @@ int UIDIsEqual(ilrd_uid_t uid1, ilrd_uid_t uid2)
 
 int UIDIsError(ilrd_uid_t uid)
 {
+
 	return uid.is_error;
 }
 

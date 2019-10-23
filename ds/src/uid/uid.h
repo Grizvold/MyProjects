@@ -1,8 +1,8 @@
 #ifndef __UID_H__
 #define __UID_H__
 
-#include <stddef.h> /* size_t */
-#include <sys/types.h> /* time_t, pid_t */
+#include <stddef.h>		/* size_t */
+#include <sys/types.h>	/* time_t*/
 
 typedef struct uid ilrd_uid_t;
 
@@ -16,7 +16,7 @@ struct uid
 {
 	time_t curr_time;
 	size_t counter;
-	pid_t pid;
+	pid_t pid; /* signed int type, representing process ID */
 	int is_error;
 };
 

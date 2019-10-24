@@ -146,23 +146,24 @@ sl_iter_t SLFindIf(sl_iter_t from, sl_iter_t to, sl_cmp_func_t func, void *param
 
 sl_iter_t SLFind(sl_iter_t itr_from, sl_iter_t itr_to, void *data)
 {
-	sl_t *f_list = itr_from.sl;
+	sl_t *curr_list = itr_from.sl;
 
 	for(;!SLIterIsEqual(itr_from, itr_to); itr_from = SLIterNext(itr_from))
 	{
-		if(!f_list->IsBefore(data, SLIterGetData(itr_from), f_list->param))
+		/* if (<data> < than 1st element) */
+		if(curr_list->IsBefore(data, SLIterGetData(itr_from), curr_list->param))
 		{
 			break;
 		}
-
-		if(!f_list->IsBefore(data, SLIterGetData(itr_from), f_list->param)
-		   && (!f_list->IsBefore(SLIterGetData(itr_from), data, f_list->param)))
+		/* if (<data> == element in list) */
+		if(!curr_list->IsBefore(data, SLIterGetData(itr_from), curr_list->param)
+		   && (!curr_list->IsBefore(SLIterGetData(itr_from), data, curr_list->param)))
 		{
 			return itr_from;
 		}
 	}
 
-	return SLEnd(f_list);
+	return SLEnd(curr_list);
 }
 
 sl_iter_t SLMerge(sl_t *dest, sl_t *src)

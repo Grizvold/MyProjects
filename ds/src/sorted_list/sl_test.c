@@ -5,8 +5,15 @@
 #include "sl.h"
 
 int Add(void* data, void* param);
+
+/* returns 1 if same data
+ 		 0 not same data		   	*/
 int Find(const void* data, void* cmp);
+
+/* returns 1 if <newdata> < <cmpdata>
+		 0 if <newdata> > <cmpdata> 	*/
 int IsBefore(void *newdata, void* cmpdata, void *param);
+
 int Print(void *data, void *param);
 
 int main()
@@ -47,12 +54,12 @@ int main()
 	(SLIsEmpty(my_sl) == 1) ? printf("success\n") : printf("failure\n");
 	(SLIsEmpty(new_sl) == 1) ? printf("success\n") : printf("failure\n");
 
-	for (i=0; i<5; i++)
+	for (i = 0; i<5; i++)
 	{
 		SLInsert(my_sl, &arr[i]);
 	}
 	
-	for (; i<9; i++)
+	for (i = 0; i<9; i++)
 	{
 		SLInsert(new_sl, &arr[i]);
 	}
@@ -63,23 +70,23 @@ int main()
 	(SLSize(my_sl) == 5) ? printf("success\n") : printf("failure\n");
 	(SLSize(new_sl) == 9) ? printf("success\n") : printf("failure\n");
 		
-	printf("\ntesting insert- printing fisrt (5 first elements)list:\n");
+	printf("\ntesting insert- printing fisrt list (5 first elements)list:\n");
 	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
-	printf("\ntesting insert- printing second (4 last elements)list :\n");
+	printf("\ntesting insert- printing second second (4 last elements)list :\n");
 	SLForEach(SLBegin(new_sl), SLEnd(new_sl), &Print, NULL);
 	
-	printf("\ntest SLPopFront\n");
+	printf("\n\ntest SLPopFront first list\n");
 	SLPopFront(my_sl);
 	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
 	/*printf("\n");
 	SLPopFront(new_sl);
 	SLForEach(SLBegin(new_sl), SLEnd(new_sl), &Print, NULL);*/
 	
-	printf("\ntest SLPopBack\n");
+	printf("\n\ntest SLPopBack first list\n");
 	SLPopBack(my_sl);
 	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
 	
-	printf("\ntest SLIterNext\n");
+	printf("\n\ntest SLIterNext for first list\n");
 	(*(int *)SLIterGetData(SLIterNext(SLBegin(my_sl))) == 6) ? printf("success\n") : printf("failure\n");
 
 	printf("\ntest SLIterPrev and DLLEnd\n");
@@ -87,16 +94,17 @@ int main()
 	(*(int *)SLIterGetData(iter) == 7) ? printf("success\n") : printf("failure\n");
 
 	printf("\ntest SLForEach\n");
-	printf("adding 2 to first list\n");
+	printf("adding 2 to first list, original list:\n");
 	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
 	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Add, &C);
-	printf("\n");
+	printf("\nafter adding operation:\n");
 	SLForEach(SLBegin(my_sl), SLEnd(my_sl), &Print, NULL);
 	
 	printf("\n\ntest SLFind\n");
 	printf("find 9 in list\n");
 	iter = SLFind(SLBegin(my_sl), SLEnd(my_sl), &B); 
 	(*(int *)SLIterGetData(iter) == 9) ? printf("success\n") : printf("failure\n");	
+	printf("found element %d\n", (*(int *)SLIterGetData(iter)));
 	
 	printf("\ntest SLFindIf\n");
 	iter = SLFindIf(SLBegin(my_sl), SLEnd(my_sl), &Find, &A); 
@@ -146,7 +154,7 @@ int Find(const void* data, void* cmp)
 	return (*(int *)data % *(int *)cmp == 0);
 }
 
-int IsBefore(void *newdata, void* cmpdata, void *param)
+int IsBefore(void *newdata, void *cmpdata, void *param)
 {
 	(void)param;
 	return   ((*(int *)newdata - *(int *)cmpdata) < 0);

@@ -1,6 +1,6 @@
 #include <stddef.h> /* size_t/ ptrdiff_t */
-#include <assert.h> /* 	assert		 */
-#include <stdio.h>
+#include <assert.h> /* 		assert	 */
+#include <stdlib.h> /*   	free		 */
 
 #include "fsa.h"
 
@@ -19,30 +19,97 @@ static size_t AligningFunc(size_t num_test);
 
 fsa_t *FSAInit(void *buffer, size_t buffer_size, size_t block_size)
 {
-	char *starting_point = NULL;
+	fsa_t *management_struct = NULL;
 	size_t element_size = 0;
 	size_t num_of_elements = 0;
-	size_t itr = 0;
+	size_t offset = 0;
 	
 	assert(NULL != buffer);
 	
-	starting_point = (char *)buffer;
+	management_struct = buffer;
+	management_struct->next_free = sizeof(*management_struct);
 	
-	/* aligned data + word_size */
+	/* aligned data block + word_size ("header" - next block)	*/
 	element_size = AligningFunc(block_size) + WORD_SIZE;
-	num_of_elements = buffer_size / element_size;
+	num_of_elements = (buffer_size - sizeof(*management_struct)) / element_size;
 	
-	for(; buffer_size > element_size; buffer_size -= element_size)
+	offset = sizeof(*management_struct);
+	
+	/* Move pointer past management struct.					*/
+	buffer = (char *)buffer + offset;
+	
+	/* Divide buffer to elements
+	   Init elements so each element has 
+		an offset of the next free element.				*/
+	for(; num_of_elements > 1; --num_of_elements)
 	{
-		*(ptrdiff_t *)(buffer) = (ptrdiff_t)((char *)buffer + element_size - starting_point);
-				
+		/* put offset of next free element
+			into curret element "header" 					*/
+		offset += element_size; 
+		*(ptrdiff_t *)buffer = offset;
+		/* move to next element */
+		buffer = (char *)buffer + element_size;	
 	}
 	
-	printf("\nbuffer size %lu, number of blocks %lu, block size %lu \n", buffer_size, num_of_elements, element_size);
+	/* indicator that signs end of allocated buffer 			*/
+	*(ptrdiff_t *)buffer = -1;
+	
+	return management_struct;
+}
+
+/*  Allocates next free block for user
+    In case there is no free blocks, return NULL				*/
+void *FSAAlloc(fsa_t *fsa)
+{
+	void *free_element_ptr = NULL;
+	ptrdiff_t offset_to_next_free = 0;
+	
+	assert(NULL != fsa);
+	
+	/* no free elements left */
+	if(-1 == fsa->next_free)
+	{
+		
+		return NULL;
+	}
+	
+	/* move to free element in buffer						*/
+	free_element_ptr = (char *)fsa + fsa->next_free;
+	offset_to_next_free = *(ptrdiff_t *)free_element_ptr;
+	
+	/* get offset to next free element						*/
+	*(ptrdiff_t *)free_element_ptr = (ptrdiff_t)free_element_ptr - (ptrdiff_t)fsa;
+	fsa->next_free = offset_to_next_free;
+	
+	free_element_ptr = (char *)free_element_ptr + WORD_SIZE;
+	
+	return free_element_ptr;
+}
+
+void FSAFree(void *block)
+{
+	
+}
+
+size_t FSACountFreeBlocks(const fsa_t *fsa)
+{
+	const void *element_itr = NULL;
+	ptrdiff_t next_free_element = 0;
+	size_t free_blocks = 0;
+	
+	assert(NULL != fsa);
+
+	next_free_element = fsa->next_free;
+	element_itr = fsa;
 	
 	
+	for(; -1 != next_free_element; next_free_element = *(ptrdiff_t *)element_itr)
+	{
+		element_itr = (char *)fsa + *(ptrdiff_t *)element_itr;
+		free_blocks++;
+	}
 	
-	return (fsa_t *)buffer;
+	return free_blocks;
 }
 
 size_t FSASuggest(size_t num_of_blocks, size_t size_of_block)
@@ -56,6 +123,7 @@ size_t FSASuggest(size_t num_of_blocks, size_t size_of_block)
 /* 	size_t mod = 8;											   */
 /* 	size_t result = 0; 											   */
 /* 	result = (num + mod - 1) & ~(mod - 1);							   */
+/******************************************************************************/
 static size_t AligningFunc(size_t num_test)
 {
 	return ((num_test + WORD_SIZE - 1) & ~(WORD_SIZE - 1));

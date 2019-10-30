@@ -5,5 +5,5 @@
 
 struct vsa
 {
-	
+	   
 };

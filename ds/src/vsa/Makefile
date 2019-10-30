@@ -20,4 +20,4 @@ $(OBJ_DIR)/vsa.o: vsa.c vsa.h
 	clean
 clean:
 	rm vsa_test.out $(OBJ)
-
+ 

@@ -88,7 +88,21 @@ void *FSAAlloc(fsa_t *fsa)
 
 void FSAFree(void *block)
 {
+	size_t offset = 0;
+	void *manage = NULL;
+	fsa_t *location = NULL;
+
+	assert(NULL != block);	
+
+	block = (char *)block - WORD_SIZE;
+	offset = *(size_t *)block;
+	manage = (char *)block - offset;
 	
+	location = manage;	
+
+	/* swap data in management struct and in block */
+	*(size_t *)block = location->next_free;
+	location->next_free = offset;	
 }
 
 size_t FSACountFreeBlocks(const fsa_t *fsa)

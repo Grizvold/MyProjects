@@ -10,6 +10,7 @@
 # Don't ignore c, h, make files
 !*.c
 !*.h
+!*.so
 !*.txt
 !makefile
 !Makefile

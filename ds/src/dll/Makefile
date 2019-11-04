@@ -5,13 +5,13 @@
 ROOT_DIR = ../../..
 
 #PROJ_SRCS = $(shell xmlstarlet select -t -v //Unit/@filename xx.cbp | grep -e '\.c')
-PROJ_SRCS = fsa.c fsa_test.c
+PROJ_SRCS = dll.c dll_test.c
 
 # list of directories containing header files
 PROJ_INC_DIR =
 
 # the executable file
-PROJ_OUT = fsa_test.out
+PROJ_OUT = dll_test.out
 
 # list of compiler flags (prepended with "-" sign)
 PROJ_CFLAGS = -Wunused-but-set-variable
@@ -31,4 +31,3 @@ PROJ_LDFLAGS =
 PROJ_DEPENDS  =
 
 include $(ROOT_DIR)/Make/Project.mak
-

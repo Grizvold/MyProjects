@@ -5,13 +5,13 @@
 ROOT_DIR = ../../..
 
 #PROJ_SRCS = $(shell xmlstarlet select -t -v //Unit/@filename xx.cbp | grep -e '\.c')
-PROJ_SRCS = fsa.c fsa_test.c
+PROJ_SRCS = sl.c sl_test.c
 
 # list of directories containing header files
-PROJ_INC_DIR =
+PROJ_INC_DIR = ../dll
 
 # the executable file
-PROJ_OUT = fsa_test.out
+PROJ_OUT = sl_test.out
 
 # list of compiler flags (prepended with "-" sign)
 PROJ_CFLAGS = -Wunused-but-set-variable
@@ -19,7 +19,7 @@ PROJ_CFLAGS = -Wunused-but-set-variable
 PROJ_MACROS = _BSD_SOURCE
 
 # additional object files (created by other projects)
-PROJ_ADD_OBJS =
+PROJ_ADD_OBJS = dll.o
 
 # additional libraries
 PROJ_LIBS =
@@ -28,7 +28,6 @@ PROJ_LIBS =
 PROJ_LDFLAGS =
 
 # list of projects (makefiles) this project depends on
-PROJ_DEPENDS  =
+PROJ_DEPENDS  = ../dll/Makefile
 
 include $(ROOT_DIR)/Make/Project.mak
-

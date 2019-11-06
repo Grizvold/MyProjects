@@ -1,5 +1,6 @@
 #include <stddef.h> /*    size_t    */
 #include <stdlib.h> /* malloc/free  */
+#include <stdio.h>  /*  perror      */
 
 #include "sort.h"
 
@@ -92,19 +93,42 @@ void SelectionSort(int *arr, size_t arr_size)
 int CountSort(const int *original_arr, size_t arr_size, 
                 int lower_limit, int upper_limit, int *sorted_arr)
 {
-    size_t itr = 0;
+    ptrdiff_t itr = 0;
     int status = 0; /* 0 - success, 1 - failure */
+    int range = 0;
     int *count_arr = NULL;
-    int normalize_value = 0;
-    
-    normalize_value =  upper_limit - lower_limit + 1;
+    int count_arr_elem = 0;
 
-    count_arr = (int *)calloc(normalize_value, sizeof(int));
+    range =  upper_limit - lower_limit + 1;
 
-    for(itr = 0; itr < arr_size; itr++)
+    count_arr = (int *)calloc(range, sizeof(int));
+
+    if(NULL == count_arr)
     {
+        status = 1;
+        perror("Calloc failed in CountSort");
 
+        return status;
     }
+
+    for(itr = 0; itr < (ptrdiff_t)arr_size; itr++)
+    {
+        count_arr[original_arr[itr] - lower_limit]++;
+    }
+
+    for(itr = 1; itr < range; itr++)
+    {
+        count_arr[itr] += count_arr[itr - 1]; 
+    }
+
+    for(itr = (ptrdiff_t)arr_size - 1; itr >= 0; itr--)
+    {
+        count_arr[original_arr[itr] - lower_limit]--;
+        count_arr_elem = count_arr[original_arr[itr] - lower_limit];
+        sorted_arr[count_arr_elem] = original_arr[itr];
+    }
+
+    free(count_arr);
 
     return status;
 }

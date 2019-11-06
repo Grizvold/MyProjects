@@ -17,8 +17,8 @@ static clock_t start_time = 0;
 static clock_t end_time = 0;
 static double cpu_time_used = 0;
 /******************************/
-static int arr[10] = {0};   
-static const size_t arr_size = 10; /* update to size of array */
+static int arr[100] = {0};   
+static const size_t arr_size = 100; /* update to size of array */
 static const char print_str[] = "============================================="; 
 /******************************************************************************/
 
@@ -36,16 +36,16 @@ int main()
     srand(time(NULL));
     
     /* Buble Sort Test */
-    /* BubleSortTest(); */
+    BubleSortTest();
 
     /* Optimized Buble Sort Test */
-    /* OptimizedBubbleSortTest(); */
+    OptimizedBubbleSortTest(); 
 
     /* Insertion Sort Test */
-    /* InsertionSortTest(); */
+    InsertionSortTest(); 
 
     /* Selection Sort Test */
-    /* SelectionSortTest(); */
+    SelectionSortTest(); 
 
     /* Count Sort Test */
     CountSortTest();
@@ -126,19 +126,25 @@ void SelectionSortTest()
 
 void CountSortTest()
 {
-    int random_limit_upper = 50;
-    int random_limit_lower = 20;
+    int random_limit_upper = 30;
+    int random_limit_lower = -20;
     static int *sorted_arr = NULL;
 
     sorted_arr = (int *)malloc(sizeof(int) * arr_size);
 
-    printf("\n\t%sSelection Sort Algo%s\n", SET_RED_COLOR, RESET_COLOR);
+    printf("\n\t%sCount Sort Algo%s\n", SET_RED_COLOR, RESET_COLOR);
     puts(print_str);
     ArrValueRandomizer(arr, arr_size);
     PrintArr(arr, arr_size);
-
+    /* calculate time taken by process */
+    start_time = clock();
     CountSort(arr, arr_size, random_limit_lower, random_limit_upper, sorted_arr);
+    end_time = clock();
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+
     PrintArr(sorted_arr, arr_size);
+    printf("\nTime taken by process: %f\n", cpu_time_used);
+    puts(print_str);
 
     free(sorted_arr);
 }
@@ -159,7 +165,7 @@ static void ArrValueRandomizer(int *arr, size_t arr_size)
 
 static void PrintArr(int *arr, size_t arr_size)
 {
-    size_t i = 0;
+/*     size_t i = 0;
 
     printf("\n");
     for (i = 0; i < arr_size - 1; i++)
@@ -168,6 +174,6 @@ static void PrintArr(int *arr, size_t arr_size)
     }
 
     printf("%d ", arr[i]);
-    printf("\n");
+    printf("\n"); */
 }
 /******************************************************************************/

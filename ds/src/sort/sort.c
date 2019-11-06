@@ -1,4 +1,5 @@
-#include <stddef.h> /* size_t */
+#include <stddef.h> /*    size_t    */
+#include <stdlib.h> /* malloc/free  */
 
 #include "sort.h"
 
@@ -31,7 +32,7 @@ void OptimizedBubbleSort(int *arr, size_t arr_size)
     size_t j = 0;
     size_t num_of_swaps = 1;
 
-    for(i = 0; num_of_swaps != 0; i++)
+    for(i = 0; num_of_swaps != 0 && i < arr_size - 1; i++)
     {
         num_of_swaps = 0;
         for (j = 0; j < arr_size - i - 1; j++)
@@ -86,6 +87,26 @@ void SelectionSort(int *arr, size_t arr_size)
 
         MemberSwap(&arr[i], &arr[min_index]);
     }
+}
+
+int CountSort(const int *original_arr, size_t arr_size, 
+                int lower_limit, int upper_limit, int *sorted_arr)
+{
+    size_t itr = 0;
+    int status = 0; /* 0 - success, 1 - failure */
+    int *count_arr = NULL;
+    int normalize_value = 0;
+    
+    normalize_value =  upper_limit - lower_limit + 1;
+
+    count_arr = (int *)calloc(normalize_value, sizeof(int));
+
+    for(itr = 0; itr < arr_size; itr++)
+    {
+
+    }
+
+    return status;
 }
 /******************************************************************************/
 

@@ -55,4 +55,7 @@ void SelectionSort(int *arr, size_t arr_size);
 /* */
 int CountSort(const int *original_arr, size_t arr_size, 
                 int lower_limit, int upper_limit, int *sorted_arr);
+
+/* */
+int RadixSort(size_t *original_arr, size_t arr_size, size_t n_bits);
 #endif /* __SORT_H__ */

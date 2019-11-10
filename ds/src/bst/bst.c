@@ -243,7 +243,7 @@ static bst_iter_t GoRightToTheEnd(bst_iter_t curr_iter)
     }
 
     curr_iter.curr = curr_node;
-
+ 
     return curr_iter;
 }
 /******************************************************************************/

@@ -26,17 +26,19 @@ static char *param_g[] = {"id", "key"};
 static unsigned int GenerateUnsingedInt(unsigned int low_limit, 
                                         unsigned int hight_limit);
 static void PersonPrint(person_t *list_of_persons);
+static int PrintTree(void *data, void *param);
 /******************************************************************************/
 
 int main()
 {
     person_t *list_of_persons = NULL;
     size_t i = 0;
+    bst_t *test_tree = NULL;
 
     /* put seed for random number generation */
     srand(time(NULL));
     
-    list_of_persons = (person_t *)malloc(sizeof(list_of_persons) * AMOUNT);
+    list_of_persons = (person_t *)malloc(sizeof(*list_of_persons) * AMOUNT);
     assert(NULL != list_of_persons);
 
     for(i = 0; i < AMOUNT; i++)
@@ -54,6 +56,18 @@ int main()
     printf("\n by %skey%s %u\n", SET_RED_COLOR, RESET_COLOR,
             IsBeforeFunc(&list_of_persons[0], &list_of_persons[1], param_g[1]));
 
+    test_tree =  BSTCreate(IsBeforeFunc, param_g[1]);
+
+    /* Insert by "key" */
+    for(i = 0; i < AMOUNT; i++)
+    {
+        BSTInsert(test_tree, &list_of_persons[i]);
+    }
+
+    BSTforEach(BSTBegin(test_tree), BSTEnd(test_tree), PrintTree, NULL);
+
+    free(list_of_persons);
+
     return 0;
 }
 
@@ -68,7 +82,7 @@ static int IsBeforeFunc(const void *data_1,const void *data_2, void *param)
 
     else if(0 == strcmp((char *)param, "key"))
     {
-        return ((person_t *)data_1)->id < ((person_t *)data_2)->key;
+        return ((person_t *)data_1)->key < ((person_t *)data_2)->key;
     }
 
     return -1;    
@@ -92,5 +106,17 @@ static void PersonPrint(person_t *list_of_persons)
         printf("%sid%s: %u\n",SET_RED_COLOR, RESET_COLOR, list_of_persons[i].id);
         printf("%skey%s: %u\n\n",SET_RED_COLOR, RESET_COLOR, list_of_persons[i].key);
     }
+}
+
+static int PrintTree(void *data, void *param)
+{
+    int status = 0;
+
+    (void)param;
+
+    printf("%sid%s: %u\n",SET_RED_COLOR, RESET_COLOR, ((person_t *)data)->id); 
+    printf("%skey%s: %u\n\n",SET_RED_COLOR, RESET_COLOR, ((person_t *)data)->key);
+
+    return status;
 }
 /******************************************************************************/

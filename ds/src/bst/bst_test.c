@@ -8,6 +8,8 @@
 
 #define AMOUNT (10)
 #define SET_RED_COLOR "\033[0;31m"  
+#define SET_BLUE_COLOR "\033[0;34m"
+#define SET_CYAN_COLOR "\033[0;36m"
 #define RESET_COLOR "\033[0m"
 
 /******************************* Typedefs *************************************/
@@ -34,6 +36,7 @@ int main()
     person_t *list_of_persons = NULL;
     size_t i = 0;
     bst_t *test_tree = NULL;
+    
 
     /* put seed for random number generation */
     srand(time(NULL));
@@ -47,10 +50,13 @@ int main()
         list_of_persons[i].id = GenerateUnsingedInt(200000000, 300000000);
     }
 
+    /* Print from <start> to <end> */
+    printf("\n %sPrint generated person list %s\n", 
+                                    SET_BLUE_COLOR, RESET_COLOR);  
     PersonPrint(list_of_persons);
 
     /* Test Is_Before_Function */
-    printf("\n Test IsBeforeFunction\n");
+    printf("\n %sTest IsBeforeFunction%s\n", SET_BLUE_COLOR, RESET_COLOR);
     printf("\n by %sid%s %u\n", SET_RED_COLOR, RESET_COLOR, 
             IsBeforeFunc(&list_of_persons[0], &list_of_persons[1], param_g[0]));
     printf("\n by %skey%s %u\n", SET_RED_COLOR, RESET_COLOR,
@@ -64,9 +70,27 @@ int main()
         BSTInsert(test_tree, &list_of_persons[i]);
     }
 
+    /* Print from <start> to <end> */
+    printf("\n %sPrint Tree from start to end%s\n", 
+                                    SET_BLUE_COLOR, RESET_COLOR);    
     BSTforEach(BSTBegin(test_tree), BSTEnd(test_tree), PrintTree, NULL);
 
+    /* Removing <start> untill nothing left */
+    printf("\n %s Removing <start> untill nothing left %s \n", 
+                                    SET_BLUE_COLOR, RESET_COLOR);
+    for(i = 0; i < AMOUNT - 1; i++)
+    {
+        printf("\n Run Number: %s%ld%s\n", SET_CYAN_COLOR, i, RESET_COLOR);
+        BSTRemove(BSTBegin(test_tree));
+        BSTforEach(BSTBegin(test_tree), BSTEnd(test_tree), PrintTree, NULL);
+    }
+
+    BSTDestroy(test_tree); 
+
     free(list_of_persons);
+
+    /* End of test */
+    printf("\n %s End of test %s \n", SET_BLUE_COLOR, RESET_COLOR);
 
     return 0;
 }

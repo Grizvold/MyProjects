@@ -26,12 +26,13 @@ struct bst
 /************************** Auxiliary Component *******************************/
 static void BSTInitNewNode(bst_node_t *new_node, bst_node_t *parent, 
                                                     const void *data);
-
 static int BSTIsBefore(const bst_t *tree, const void *data_1, const void *data_2);
-
 static bst_iter_t GoLeftToTheEnd(bst_iter_t curr_iter);
 static bst_iter_t GoRightToTheEnd(bst_iter_t curr_iter);
 static bst_iter_t BSTIterCreate(const bst_t *tree, const bst_node_t *node);
+static void BSTNodeReplacer(bst_t *tree,bst_node_t *removed_node, 
+                            bst_node_t *replacer_node);
+static void BSTFreeNode(bst_node_t *node);
 /******************************************************************************/
 
 /**************************** BST Functions ***********************************/
@@ -129,7 +130,9 @@ bst_iter_t BSTFind(const bst_t *tree, void *requested_data)
 {
     bst_iter_t iter = {NULL, NULL};
 
-    for(iter = BSTBegin(tree); !BSTIterIsSame(iter, BSTEnd(tree)); iter = BSTIterNext(iter))
+    for(iter.curr = tree->root, iter.tree = (bst_t *)tree;
+        !BSTIterIsSame(iter, BSTEnd(tree)); 
+        iter = BSTIterNext(iter))
     {
         if(BSTIsBefore(tree, requested_data, iter.curr->data))
         {
@@ -160,15 +163,68 @@ int BSTforEach(bst_iter_t from, bst_iter_t to, bst_action_func_t func, void *par
 
 void BSTDestroy(bst_t *tree)
 {
-    (void)tree;
+    while (!BSTIsEmpty(tree))
+    {
+        BSTRemove(BSTBegin(tree));
+    }
+    
+    /* free tree structure */
+    tree->root = NULL;
+    tree->is_before = NULL;
+    tree->func_param = NULL;
+
+    free(tree);
 }
 
 
 bst_iter_t BSTRemove(bst_iter_t iter)
 {
+    bst_node_t *next = NULL;
 
+    /* trying to remove an empty tree */
+    assert(iter.curr);
+    
+    /* no child on the left, but can be child on the right */
+    if (NULL == iter.curr->left)
+    {
+        BSTNodeReplacer(iter.tree, iter.curr, iter.curr->right);
+    }
+    /* has child on left, but no child on right */
+    else if(NULL == iter.curr->right)
+    {
+        BSTNodeReplacer(iter.tree, iter.curr, iter.curr->left);
+    }
+    /* has child on left and on right */
+    else
+    {
+        /* if we have a child in right and left lookup for the next child */
+        iter.curr = iter.curr->right;
+        iter = GoLeftToTheEnd(iter);
+        next = iter.curr;
 
-    return iter;
+        /* if what we found is not direct child of iter */
+        if (next->parent != iter.curr)
+        {
+            BSTNodeReplacer(iter.tree, next, next->right);
+
+            /* connect right branch of removed node to replacer */
+            next->right = iter.curr->right;
+            next->right->parent = next;
+        }
+
+        /* for direct child of curr */
+        BSTNodeReplacer(iter.tree,iter.curr, next); 
+
+        /* connect left branch of removed node to replacer */
+        next->left = iter.curr->left;
+        next->left->parent = next;
+    }
+
+    
+    /* release and free node */
+    BSTFreeNode(iter.curr);
+
+    return BSTIterCreate(iter.tree,next);
 }
 /******************************************************************************/
 
@@ -187,12 +243,14 @@ bst_iter_t BSTIterNext(bst_iter_t iter)
 {
     bst_node_t *parent = NULL;
 
+    /* if there is right child -> go to him and then to most left child */
     if(NULL != iter.curr->right)
     {
         iter.curr = iter.curr->right;
         iter = GoLeftToTheEnd(iter);
     }
-
+    /* if there is no right child -> go to parent untill current node
+            is the left child of his parent. */
     else
     {
         for(parent = iter.curr->parent; iter.curr == parent->right;)
@@ -211,12 +269,14 @@ bst_iter_t BSTIterPrev(bst_iter_t iter)
 {
     bst_node_t *parent = NULL;
 
+    /* if there is left child -> go to him and then to most right child */
     if(NULL != iter.curr->left)
     {
         iter.curr = iter.curr->left;
         iter = GoRightToTheEnd(iter);
     }
-
+    /* if there is no left child -> go to parent untill current node
+            is the right child of his parent. */
     else
     {
         for(parent = iter.curr->parent; iter.curr == parent->left;)
@@ -302,5 +362,47 @@ static bst_iter_t BSTIterCreate(const bst_t *tree, const bst_node_t *node)
     new_iter.tree = (bst_t *)tree;
 
     return new_iter;
+}
+
+static void BSTNodeReplacer(bst_t *tree, bst_node_t *removed_node, 
+                                                bst_node_t *replacer_node)
+{
+    /* if removed_node is the root, i.e parent is dummy */
+    if (removed_node->parent == &tree->dummy)
+    {
+        /* now the root is replacer_noder */
+        tree->root = replacer_node;
+    }
+    
+    /* if removed_node is a left child, replacer_noder now takes its place as left child */
+    if (removed_node == removed_node->parent->left)
+    {
+        removed_node->parent->left = replacer_node;
+    }
+
+    /* to_removed_node is a right child ,replacer_node replace_node in right side */
+    else
+    {
+        removed_node->parent->right = replacer_node;
+    }
+    
+    /* if replace node not nil , has parent */
+    if (NULL != replacer_node)
+    {
+        replacer_node->parent = removed_node->parent;         
+    }
+
+}
+
+static void BSTFreeNode(bst_node_t *node)
+{
+    /* clean node pointers */
+    node->data = NULL;
+    node->left = NULL;
+    node->right = NULL;
+    node->parent = NULL;
+
+    /* free node */
+    free(node);
 }
 /******************************************************************************/

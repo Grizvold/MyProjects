@@ -4,10 +4,10 @@
 ROOT_DIR = ../../..
 
 #PROJ_SRCS = $(shell xmlstarlet select -t -v //Unit/@filename xx.cbp | grep -e '\.c')
-PROJ_SRCS = calculator.c
+PROJ_SRCS = calculator.c calculator_test.c
 
 # list of directories containing header files
-PROJ_INC_DIR =
+PROJ_INC_DIR = ../vector
 
 # the executable file
 PROJ_OUT = calculator.out

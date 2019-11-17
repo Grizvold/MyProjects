@@ -61,6 +61,23 @@ char *StrStrRec(const char *haystack, const char *needle)
     
 }
 
+char *ReverceRec(char *str)
+{
+    return ReverceRecHelper(str, StrLenRec(str), 0);    
+}
+
+char *ReverceRecHelper(char *str, size_t right_iter, size_t left_iter)
+{
+    char temp = '\0';
+
+    if(right_iter >= left_iter)
+    {
+        return str;
+    }
+
+    temp = *(str + left_iter);
+    *(str + left_iter) = *(str - left_iter);
+ }
 /*************************************************************/
 
 char* Reverse (char *str)

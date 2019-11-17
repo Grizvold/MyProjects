@@ -148,7 +148,7 @@ bst_iter_t BSTFind(const bst_t *tree, void *requested_data)
     return BSTEnd(tree);
 }
 
-int BSTforEach(bst_iter_t from, bst_iter_t to, bst_action_func_t func, void *param)
+int BSTForEach(bst_iter_t from, bst_iter_t to, bst_action_func_t func, void *param)
 {
     int status = 0;
     bst_iter_t iter = {NULL, NULL};
@@ -231,6 +231,13 @@ bst_iter_t BSTRemove(bst_iter_t iter)
 /*********************** Binary Search Tree Iterator **************************/
 bst_iter_t BSTBegin(const bst_t *tree)
 {
+    assert(NULL != tree);
+
+    if(BSTIsEmpty(tree))
+    {
+        return BSTEnd(tree);
+    }
+
     return GoLeftToTheEnd(BSTIterCreate((bst_t *)tree, tree->root));
 }
 

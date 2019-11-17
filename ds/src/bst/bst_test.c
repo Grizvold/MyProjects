@@ -73,7 +73,7 @@ int main()
     /* Print from <start> to <end> */
     printf("\n %sPrint Tree from start to end%s\n", 
                                     SET_BLUE_COLOR, RESET_COLOR);    
-    BSTforEach(BSTBegin(test_tree), BSTEnd(test_tree), PrintTree, NULL);
+    BSTForEach(BSTBegin(test_tree), BSTEnd(test_tree), PrintTree, NULL);
 
     /* Removing <start> untill nothing left */
     printf("\n %s Removing <start> untill nothing left %s \n", 
@@ -82,7 +82,7 @@ int main()
     {
         printf("\n Run Number: %s%ld%s\n", SET_CYAN_COLOR, i, RESET_COLOR);
         BSTRemove(BSTBegin(test_tree));
-        BSTforEach(BSTBegin(test_tree), BSTEnd(test_tree), PrintTree, NULL);
+        BSTForEach(BSTBegin(test_tree), BSTEnd(test_tree), PrintTree, NULL);
     }
 
     BSTDestroy(test_tree); 

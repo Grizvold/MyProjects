@@ -20,7 +20,7 @@ bst_iter_t BSTRemove(bst_iter_t iter);
 
 bst_iter_t BSTFind(const bst_t *tree, void *data);
 
-int BSTforEach(bst_iter_t from, bst_iter_t to, bst_action_func_t func, void *param);
+int BSTForEach(bst_iter_t from, bst_iter_t to, bst_action_func_t func, void *param);
 
 int BSTIsEmpty(const bst_t *tree);
 

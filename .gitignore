@@ -7,10 +7,11 @@
 # Don't ignore gitignore
 !.gitignore
 
-# Don't ignore c, h, make files
+# Don't ignore c, h, make files, shared libraries
 !*.c
 !*.h
 !*.so
 !*.txt
+!*.mak
 !makefile
 !Makefile

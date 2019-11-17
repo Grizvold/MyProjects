@@ -11,6 +11,7 @@
 !*.c
 !*.h
 !*.so
+!*.md
 !*.txt
 !*.mak
 !makefile

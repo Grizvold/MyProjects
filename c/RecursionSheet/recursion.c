@@ -1,33 +1,27 @@
 #include <stddef.h> /* size_t */
 
+/******************************************************************************/
+/*                      Internal Functions Declaration                        */
+/******************************************************************************/
+static char *ReverceRecHelper(char *str, size_t right_iter, size_t left_iter);
+static void CharSwap(char *x, char *y);
+/******************************************************************************/
+
 size_t StrLenRec(const char *str)
 {
-    if('\0' == *str)
-    {
-        return 0;
-    }
-
-    else
-    {
-        return 1 + StrLenRec(++str);
-    }
-    
+    return ('\0' == *str) ? 0 : 1 + StrLenRec(++str);
 }
 
 char *StrCpyRec(char *dest, const char *src)
 {
-    if('\0' == *src)
-    {
-        *dest = *src;
+    *dest = *src;
 
-        return dest;
-    }
-
-    else
+    if('\0' != *src)
     {
-        *dest = *src;
         StrCpyRec(dest + 1, src + 1);
     }
+
+    return dest--;
 }
 
 int StrCmpRec(const char *str1, const char *str2)
@@ -45,14 +39,17 @@ int StrCmpRec(const char *str1, const char *str2)
 
 char *StrStrRec(const char *haystack, const char *needle)
 {
+    /* if we reached end of main string */
     if('\0' == *haystack)
     {
         return NULL;
     }
+    /* in case substring isnt found in main string keep searching */
     else if (*haystack != *needle)
     {
         StrStrRec(++haystack, needle);
     }
+    /* in case substring is found, keep running on both of them */
     else
     {
         StrStrRec(haystack + 1, needle + 1);
@@ -61,46 +58,40 @@ char *StrStrRec(const char *haystack, const char *needle)
     
 }
 
-char *ReverceRec(char *str)
+char *StrReverceRec(char *str)
 {
-    return ReverceRecHelper(str, StrLenRec(str), 0);    
+    return ReverceRecHelper(str, 0, StrLenRec(str) - 1);    
 }
 
-char *ReverceRecHelper(char *str, size_t right_iter, size_t left_iter)
+size_t Fibonacci(size_t index)
 {
-    char temp = '\0';
+    if(index <= 1)
+    {
+        return index;
+    }
+    
+    return Fibonacci(index - 1) + Fibonacci(index - 2);
+}
 
+/******************************************************************************/
+/*                      Internal Functions Definition                         */
+/******************************************************************************/
+static char *ReverceRecHelper(char *str, size_t right_iter, size_t left_iter)
+{
     if(right_iter >= left_iter)
     {
         return str;
     }
 
-    temp = *(str + left_iter);
-    *(str + left_iter) = *(str - left_iter);
+    CharSwap(str + right_iter, str + left_iter);
+
+    return ReverceRecHelper(str, ++right_iter, --left_iter);
  }
-/*************************************************************/
 
-char* Reverse (char *str)
-{
-    return Reverse_helper(str, 0, Strlen(str)-1);
-}
-
-
-char* Reverse_helper (char *str, size_t inx_r, size_t inx_l)
-{
-    if (inx_r >= inx_l)
-    {
-        return str;
-    }
-
-    Swap(str+inx_r, str+inx_l);
-    return Reverse_helper(str, ++inx_r, --inx_l);
-}
-
-
-void Swap(char *a, char *b)
-{
-    char temp = *a;
-    *a = *b;
-    *b = temp;
-}
+ static void CharSwap(char *x, char *y)
+ {
+     char temp = *x;
+     *x = *y;
+     *y = temp;
+ }
+/******************************************************************************/

@@ -11,5 +11,8 @@ int StrCmpRec(const char *str1, const char *str2);
 
 char *StrStrRec(const char *haystack, const char *needle);
 
+char *StrReverceRec(char *str);
+
+size_t Fibonacci(size_t index);
 
 #endif

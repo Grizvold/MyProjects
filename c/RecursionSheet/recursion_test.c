@@ -14,8 +14,8 @@
 #define STR_SIZE 20
 static const char *TEST_STRINGS[] = {"Hello recursion", 
                                     "Testing", 
-                                    "Hello", 
-                                    "recursion"};
+                                    "We Love Recursion", 
+                                    "I want it that way"};
 /******************************************************************************/
 
 
@@ -26,6 +26,8 @@ void StrLenTest();
 void StrCpyTest();
 void StrCmpTest();
 void StrStrTest();
+void StrReverceTest();
+void FibonacciTest();
 /******************************************************************************/
 
 int main()
@@ -38,14 +40,54 @@ int main()
 
     StrStrTest();
 
+    StrReverceTest();
+
+    FibonacciTest();
+
     return 0;
 }
-
-
 
 /******************************************************************************/
 /*                         Test Functions Definition                          */
 /******************************************************************************/
+void FibonacciTest()
+{
+    static const size_t fibonacci_arr[STR_SIZE] = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34};
+
+    printf("\n\t%sFibonacci Test%s\n", SET_RED_COLOR, RESET_COLOR);
+        /* Test 1 */
+    printf("%s %ld %s\n", SET_BLUE_COLOR, Fibonacci(2), RESET_COLOR);
+    printf("%s %ld %s\n\n", SET_CYAN_COLOR, fibonacci_arr[2], RESET_COLOR);
+
+        /* Test 2 */
+    printf("%s %ld %s\n", SET_BLUE_COLOR, Fibonacci(5), RESET_COLOR);
+    printf("%s %ld %s\n\n", SET_CYAN_COLOR, fibonacci_arr[5], RESET_COLOR);
+
+        /* Test 3 */
+    printf("%s %ld %s\n", SET_BLUE_COLOR, Fibonacci(7), RESET_COLOR);
+    printf("%s %ld %s\n\n", SET_CYAN_COLOR, fibonacci_arr[7], RESET_COLOR);
+}
+
+void StrReverceTest()
+{
+    static char str_test1[STR_SIZE] = "You are my fire";
+    static char str_test2[STR_SIZE] = "The one desire";
+    static char str_test3[STR_SIZE] = "TELL ME WHY?!";
+
+    printf("\n\t%sStrReverceTest%s\n", SET_RED_COLOR, RESET_COLOR);
+        /* Test 1 */
+    printf("%s%s%s\n", SET_BLUE_COLOR, StrReverceRec(str_test1), RESET_COLOR);
+    printf("%s\n\n", StrReverceRec(str_test1));
+
+        /* Test 2 */
+    printf("%s%s%s\n", SET_BLUE_COLOR, StrReverceRec(str_test2), RESET_COLOR);
+    printf("%s\n\n", StrReverceRec(str_test2));
+
+        /* Test 3 */
+    printf("%s%s%s\n", SET_BLUE_COLOR, StrReverceRec(str_test3), RESET_COLOR);
+    printf("%s\n\n", StrReverceRec(str_test3));
+}
+
 void StrStrTest()
 {
     static char str_test1[] = "rec";
@@ -101,6 +143,7 @@ void StrCmpTest()
     printf("%s%s%s\n", SET_BLUE_COLOR, TEST_STRINGS[0], RESET_COLOR);
     printf("%d\n\n", StrCmpRec(str_test2, TEST_STRINGS[0]));
 }
+
 void StrCpyTest()
 {
     static char str_test[STR_SIZE] = "";

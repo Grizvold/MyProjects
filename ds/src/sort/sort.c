@@ -6,7 +6,7 @@
 
 #include "sort.h"
 
-/************************** Auxiliary Component *******************************/
+/************************** Internal Component *******************************/
 static void MemberSwap(int *x, int *y);
 static void ResetHistorgram(size_t *histagram_arr, size_t histagram_size);
 static void CountRadix(size_t *original_arr, size_t *result_arr, 
@@ -189,7 +189,7 @@ int RadixSort(size_t *original_arr, size_t arr_size, size_t n_bits)
 }
 /******************************************************************************/
 
-/************************** Auxiliary Functions *******************************/
+/************************** Internal Functions *******************************/
 static void ResetHistorgram(size_t *histagram_arr, size_t histagram_size)
 {
     size_t itr = 0;

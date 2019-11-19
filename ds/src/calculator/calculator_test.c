@@ -1,50 +1,16 @@
-#include <stdio.h> /* printf */
-
-double Calculator(const char *expression, int *errors);
-
-int main()
-{
-    static char *test_string = "4.556";
-    int *errors = NULL;
-
-    Calculator(test_string, errors);
-
-    return 0;
-}
-
-/* /* /* #include <stddef.h> /* size_t       */
-#include <stdlib.h> /* malloc, free */
-#include <stdio.h>  /* strtod       */
-#include <string.h> /* strcspn      */
+#include <stdio.h>
+#include <string.h>
 
 #include "calculator.h"
 
-char *expresion_test = "5.5+7*(3.8-1)/2.1/9+0-(3+1)";
-
 int main()
 {
-    double *test_result = NULL;
+    char *str = "-5.3 *(-2.6 / 7.3 + 3.8) - 2.1";
+    double result = 0;
+    int * err = NULL;
 
-    test_result = CreateResultBuffer();
-    if (NULL == test_result)
-    {
-        return 1;
-    }
-
-    Calculator(expresion_test, test_result);
+    result = Calculator(str, err);
+    printf("% f\n", result);
 
     return 0;
 }
-
-
-
-double *CreateResultBuffer()
-{
-    double *result_buff = NULL;
-    
-    result_buff = (double*)malloc(sizeof(*result_buff));
-
-    return result_buff; /* no need for checkup here */
-}
-`
- */ */ */

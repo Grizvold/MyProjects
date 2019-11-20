@@ -6,12 +6,14 @@
 /******************************************************************************/
 /*                          Typedefs Declaration                              */
 /******************************************************************************/
-/*  the user should provide a comparisson function
- *  which returns a boolean value                   */
+/*  users's comparison boolean function that returns status:
+        0 if not before.
+        1 if is before.  */
 typedef int (*avl_is_before_t)(const void *data1, const void *data2, void *param);
 
-/*  returns a boolean value, 0 upon success and
- *  1 upon failure                                  */
+/*  user's boolean action function that returns status:
+        0 for success.
+        1 for failure.   */
 typedef int (*avl_action_func_t)(void *data, void *param);
 
 typedef struct avl avl_t;
@@ -30,15 +32,15 @@ void AVLDestroy(avl_t *tree);
 
 /*  -Insert new data to avl tree.
     -boolean function that returns:
-        -0 for success.
-        -1 for failure. */
+        0 for success.
+        1 for failure. */
 int AVLInsert(avl_t *tree, const void *data);
 
 void AVLRemove(avl_t *tree, const void *data);
 
 /*  -boolean function that returns:
-        -0 if not empty.
-        -1 if empty.    */
+        0 if not empty.
+        1 if empty.    */
 int AVLIsEmpty(const avl_t *tree);
 
 /*  -Get height of avl tree. */
@@ -49,8 +51,8 @@ size_t AVLSize(const avl_t *tree);
 
 /*  -Perform action_function on each element in avl tree by <in-order>.
     -Returns status for:
-        -0 for success.
-        -1 for failure. */
+        0 for success.
+        1 for failure. */
 int AVLForEach(avl_t *tree, avl_action_func_t func, void *param);
 
 /*  -Find data in avl tree by <binary search>. */

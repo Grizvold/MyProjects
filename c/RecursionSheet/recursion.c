@@ -21,7 +21,7 @@ char *StrCpyRec(char *dest, const char *src)
         StrCpyRec(dest + 1, src + 1);
     }
 
-    return dest--;
+    return dest;
 }
 
 int StrCmpRec(const char *str1, const char *str2)

@@ -52,11 +52,11 @@ size_t AVLSize(const avl_t *tree);
 /*  -Perform action_function on each element in avl tree by <in-order>.
     -Returns status for:
         0 for success.
-        1 for failure. */
+        1 for failure.  */
 int AVLForEach(avl_t *tree, avl_action_func_t func, void *param);
 
 /*  -Find data in avl tree by <binary search>. 
-        -Assumption that data exists in tree.*/
+        -Assumption that data exists in tree.   */
 void *AVLFind(const avl_t *tree, const void *data);
 
 /*   -Print AVL tree 2D */

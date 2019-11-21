@@ -32,8 +32,8 @@ struct avl
 /******************************************************************************/
 
 void AVLTreePrint(const avl_t *tree);
-void print2DUtil(avl_node_t *root, int space);
-void print2D(avl_node_t *root);
+void PrintAVLTree2DUtil(avl_node_t *root, int space);
+void PrintAVLTree2D(avl_node_t *root);
 
 
 /******************************************************************************/
@@ -250,12 +250,12 @@ static void *RecAVLFind(const avl_t *tree, avl_node_t *node, const void *data)
 
 void AVLTreePrint(const avl_t *tree)
 {
-    print2D(tree->root);
+    PrintAVLTree2D(tree->root);
 }
 
 /* Function to print binary tree in 2D  */
 /*  It does reverse inorder traversal */
-void print2DUtil(avl_node_t *root, int space) 
+void PrintAVLTree2DUtil(avl_node_t *root, int space) 
 { 
     int i = 0;
      /* Base case  */
@@ -266,7 +266,7 @@ void print2DUtil(avl_node_t *root, int space)
     space += COUNT; 
   
     /* Process right child first  */
-    print2DUtil(root->child[RIGHT], space); 
+    PrintAVLTree2DUtil(root->child[RIGHT], space); 
   
     /*Print current node after space 
      count */ 
@@ -276,12 +276,12 @@ void print2DUtil(avl_node_t *root, int space)
     printf("%d\n", *((int *)root->data)); 
   
     /*  Process left child  */
-    print2DUtil(root->child[LEFT], space); 
+    PrintAVLTree2DUtil(root->child[LEFT], space); 
 } 
   
-/* Wrapper over print2DUtil()  */
-void print2D(avl_node_t *root) 
+/* Wrapper over PrintAVLTree2DUtil()  */
+void PrintAVLTree2D(avl_node_t *root) 
 { 
    /* Pass initial space count as 0 */
-   print2DUtil(root, 0); 
+   PrintAVLTree2DUtil(root, 0); 
 } 

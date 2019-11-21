@@ -30,6 +30,8 @@ struct avl
     avl_node_t *root;
 };
 /******************************************************************************/
+
+void AVLTreePrint(const avl_t *tree);
 void print2DUtil(avl_node_t *root, int space);
 void print2D(avl_node_t *root);
 
@@ -43,11 +45,12 @@ static avl_node_t *AVLCreateNewNode(const void *data);
 static int AVLIsBefore(const avl_t *avl_tree, const void *data_1, 
                             const void *data_2);
 static void AVLNodeHeighUpgrade(avl_node_t *curr_node);
+static void *RecAVLFind(const avl_t *tree, avl_node_t *node,const void *data);
 /******************************************************************************/
 
 
 /******************************************************************************/
-/*                          AVL Functions Declaration                         */
+/*                          AVL Functions Definition                          */
 /******************************************************************************/
 avl_t *AVLCreate(avl_is_before_t func, void *param)
 {
@@ -118,7 +121,7 @@ int AVLForEach(avl_t *tree, avl_action_func_t func, void *param)
 
 void *AVLFind(const avl_t *tree, const void *data)
 {
-    print2D(tree->root);
+    return RecAVLFind(tree, tree->root, data);
 }
 
 /******************************************************************************/
@@ -127,6 +130,11 @@ void *AVLFind(const avl_t *tree, const void *data)
 /******************************************************************************/
 /*                      Internal Component Definition                         */
 /******************************************************************************/
+static int AVLIsBefore(const avl_t *avl_tree, const void *data_1, const void *data_2)
+{
+    return avl_tree->func(data_1, data_2, avl_tree->func_param);
+}
+
 static void AVLNodeHeighUpgrade(avl_node_t *curr_node)
 {
     size_t right_son_height = 0;
@@ -142,6 +150,32 @@ static void AVLNodeHeighUpgrade(avl_node_t *curr_node)
     curr_node->height = (right_son_height > left_son_height) ? 
                             right_son_height + 1: left_son_height + 1;
 }
+
+static avl_node_t *AVLCreateNewNode(const void *data)
+{
+    avl_node_t *new_node = NULL;
+
+    while(1)
+    {
+        new_node = (avl_node_t *)malloc(sizeof(*new_node));
+        if(NULL == new_node)
+        {
+            perror("Malloc in failed in AVLCreateNewNode");
+
+            break;
+        }
+
+        new_node->data = (void *)data;
+        new_node->height = 1;
+        new_node->child[RIGHT] = NULL;
+        new_node->child[LEFT] = NULL;
+        
+        return new_node;
+    }
+
+    return NULL;
+}
+
 
 static int RecAVLInsert(avl_t *tree, avl_node_t *node, const void *data)
 {
@@ -171,10 +205,6 @@ static int RecAVLInsert(avl_t *tree, avl_node_t *node, const void *data)
     return is_success;
 }
 
-static int AVLIsBefore(const avl_t *avl_tree, const void *data_1, const void *data_2)
-{
-    return avl_tree->func(data_1, data_2, avl_tree->func_param);
-}
 
 static int RecAVLForEach(avl_node_t *node, avl_action_func_t func, void *param)
 {
@@ -195,32 +225,33 @@ static int RecAVLForEach(avl_node_t *node, avl_action_func_t func, void *param)
     return is_success;
 }
 
-static avl_node_t *AVLCreateNewNode(const void *data)
+static void *RecAVLFind(const avl_t *tree, avl_node_t *node, const void *data)
 {
-    avl_node_t *new_node = NULL;
-
-    while(1)
+    /* if current node is empty */
+    if(NULL == node)
     {
-        new_node = (avl_node_t *)malloc(sizeof(*new_node));
-        if(NULL == new_node)
-        {
-            perror("Malloc in failed in AVLCreateNewNode");
 
-            break;
-        }
-
-        new_node->data = (void *)data;
-        new_node->height = 1;
-        new_node->child[RIGHT] = NULL;
-        new_node->child[LEFT] = NULL;
-        
-        return new_node;
+        return NULL;
     }
 
-    return NULL;
+    /* Check data of current node */
+    if(LEFT == AVLIsBefore(tree, node->data, data) && 
+        LEFT == AVLIsBefore(tree, data, node->data))
+        {
+            return node->data;
+        }
+
+    /* Go Right if (node->data) < (data), Left otherwise */
+    RecAVLFind(tree, node->child[AVLIsBefore(tree, node->data, data)], data);
 }
 
+
 /******************************************************************************/
+
+void AVLTreePrint(const avl_t *tree)
+{
+    print2D(tree->root);
+}
 
 /* Function to print binary tree in 2D  */
 /*  It does reverse inorder traversal */

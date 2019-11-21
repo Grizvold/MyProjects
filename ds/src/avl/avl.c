@@ -31,21 +31,22 @@ struct avl
 };
 /******************************************************************************/
 
-void AVLTreePrint(const avl_t *tree);
-void PrintAVLTree2DUtil(avl_node_t *root, int space);
-void PrintAVLTree2D(avl_node_t *root);
-
 
 /******************************************************************************/
 /*                          Internal Component Declaration                    */
 /******************************************************************************/
-static int RecAVLForEach(avl_node_t *node, avl_action_func_t func, void *param);
-static int RecAVLInsert(avl_t *tree, avl_node_t *node, const void *data);
-static avl_node_t *AVLCreateNewNode(const void *data);
 static int AVLIsBefore(const avl_t *avl_tree, const void *data_1, 
                             const void *data_2);
+void AVLTreePrint(const avl_t *tree);
+static void PrintAVLTree2D(avl_node_t *root, int space);
 static void AVLNodeHeighUpgrade(avl_node_t *curr_node);
+
+static avl_node_t *AVLCreateNewNode(const void *data);
+static int RecAVLInsert(avl_t *tree, avl_node_t *node, const void *data);
+static int RecAVLForEach(avl_node_t *node, avl_action_func_t func, void *param);
 static void *RecAVLFind(const avl_t *tree, avl_node_t *node,const void *data);
+static void RecAVLSize(const avl_t *tree, avl_node_t *node, size_t *tree_size);
+static void RecAVLDestroy(avl_t *tree, avl_node_t *node);
 /******************************************************************************/
 
 
@@ -124,6 +125,27 @@ void *AVLFind(const avl_t *tree, const void *data)
     return RecAVLFind(tree, tree->root, data);
 }
 
+size_t AVLSize(const avl_t *tree)
+{
+    size_t avl_tree_size = 0;
+
+    RecAVLSize(tree, tree->root, &avl_tree_size);
+
+    return avl_tree_size;
+}
+
+void AVLDestroy(avl_t *tree)
+{
+    RecAVLDestroy(tree, tree->root);
+
+    free(tree);
+}
+
+void AVLRemove(avl_t *tree, const void *data)
+{
+
+}
+    
 /******************************************************************************/
 
 
@@ -233,7 +255,7 @@ static void *RecAVLFind(const avl_t *tree, avl_node_t *node, const void *data)
 
         return NULL;
     }
-
+    
     /* Check data of current node */
     if(LEFT == AVLIsBefore(tree, node->data, data) && 
         LEFT == AVLIsBefore(tree, data, node->data))
@@ -241,23 +263,46 @@ static void *RecAVLFind(const avl_t *tree, avl_node_t *node, const void *data)
             return node->data;
         }
 
-    /* Go Right if (node->data) < (data), Left otherwise */
-    RecAVLFind(tree, node->child[AVLIsBefore(tree, node->data, data)], data);
+    else
+    {
+        /* Go Right if (node->data) < (data), Left otherwise */
+        return RecAVLFind(tree, node->child[AVLIsBefore(tree, node->data, data)], data);
+    }
 }
 
+static void RecAVLSize(const avl_t *tree, avl_node_t *node, size_t *avl_tree_size)
+{
+    /* Count number of elements in pre-order (root - left - right) */
 
+     
+}
+
+static void RecAVLDestroy(avl_t *tree, avl_node_t *node)
+{
+    /* Destroying by post-order (left - right - root) */
+    if(NULL != node->child[LEFT])
+    {
+        RecAVLDestroy(tree, node->child[LEFT]);
+    }
+
+    if(NULL != node->child[RIGHT])
+    {
+        RecAVLDestroy(tree, node->child[RIGHT]);
+    }
+
+    AVLRemove(tree, node->data);
+}
 /******************************************************************************/
 
 void AVLTreePrint(const avl_t *tree)
 {
-    PrintAVLTree2D(tree->root);
+    PrintAVLTree2D(tree->root, 0);
 }
 
-/* Function to print binary tree in 2D  */
+/*  Function to print binary tree in 2D  */
 /*  It does reverse inorder traversal */
-void PrintAVLTree2DUtil(avl_node_t *root, int space) 
+static void PrintAVLTree2D(avl_node_t *root, int space) 
 { 
-    int i = 0;
      /* Base case  */
     if (root == NULL) 
         return; 
@@ -265,23 +310,14 @@ void PrintAVLTree2DUtil(avl_node_t *root, int space)
     /*  Increase distance between levels  */
     space += COUNT; 
   
-    /* Process right child first  */
-    PrintAVLTree2DUtil(root->child[RIGHT], space); 
+    /*  Process right child first  */
+    PrintAVLTree2D(root->child[RIGHT], space); 
   
-    /*Print current node after space 
-     count */ 
+    /*  Print current node after space count */ 
     printf("\n"); 
-    for (i = 0; i < space; i++) 
-        printf(" "); 
+    printf("%*c", space, ' ');
     printf("%d\n", *((int *)root->data)); 
   
     /*  Process left child  */
-    PrintAVLTree2DUtil(root->child[LEFT], space); 
-} 
-  
-/* Wrapper over PrintAVLTree2DUtil()  */
-void PrintAVLTree2D(avl_node_t *root) 
-{ 
-   /* Pass initial space count as 0 */
-   PrintAVLTree2DUtil(root, 0); 
+    PrintAVLTree2D(root->child[LEFT], space); 
 } 

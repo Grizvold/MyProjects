@@ -27,6 +27,7 @@ static void TestAVLCreate(avl_t **tree);
 static void TestAVLInsert(int arr[], size_t arr_size, avl_t *tree);
 static void TestAVLForEach(avl_t *tree);
 static void TestAVLFind(avl_t *tree);
+static void TestAVLHeight(avl_t *tree);
 /******************************************************************************/
 
 
@@ -64,8 +65,11 @@ static void AVLTest()
     printf("\n\t%s AVLFind Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
     TestAVLFind(avl_tree);
 
-    /* AVLTreePrint(avl_tree);  */
+    /* AVLHeight Test */
+    printf("\n\t%s AVLHeight Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+    TestAVLHeight(avl_tree);
 
+    AVLTreePrint(avl_tree);  
 }
 
 
@@ -161,7 +165,24 @@ static void TestAVLFind(avl_t *tree)
     }
 }
 
+static void TestAVLHeight(avl_t *tree)
+{
+    size_t tree_height = 0;
 
+    tree_height = 4;
+
+    /* tree_height = AVLHeight(tree);
+    printf("\n%lu\n", tree_height); */
+
+    if(tree_height == AVLHeight(tree))
+    {
+        printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR);
+    }
+    else
+    {
+        printf("\n%s FAILURE %s\n", SET_RED_COLOR, RESET_COLOR);
+    }
+}
 /******************************************************************************/
 
 /******************************************************************************/

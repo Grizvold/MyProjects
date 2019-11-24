@@ -50,10 +50,10 @@ static void AVLTest()
 {
     avl_t *avl_tree = NULL;
     size_t arr_size = 12; 
-    size_t tree_height = 4; /* current 4 */
+    size_t tree_height = 5; 
     static int test_arr[] = {50, 60, 70, 55, 51, 40, 45, 30, 35, 20, 80, 90}; /* size 12 */
 
-    /* AVLCreate Test */
+    /* AVLCreate Test *//* current 4 */
     printf("\n\t%s AVLCreate Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
     TestAVLCreate(&avl_tree);
 
@@ -216,23 +216,30 @@ static void TestAVLRemove(avl_t *tree)
     int requested_data_1 = 90;
     int requested_data_2 = 55;
     int requested_data_3 = 70;
+    int requested_data_4 = 60;
 
     /* Test 1 */
-    printf("\n\n%sRemoving %d%s", SET_BLUE_COLOR, requested_data_1, RESET_COLOR);
+    printf("\n\n%sRemoving %d(most right node)%s", SET_BLUE_COLOR, requested_data_1, RESET_COLOR);
     printf("%s", SET_RED_COLOR);
     AVLRemove(tree, &requested_data_1);
     AVLTreePrint(tree);
 
     /* Test 2 */
-    printf("\n\n%sRemoving %d%s", SET_BLUE_COLOR, requested_data_2, RESET_COLOR);
+    printf("\n\n%sRemoving %d(has only left child)%s", SET_BLUE_COLOR, requested_data_2, RESET_COLOR);
     printf("%s", SET_BLUE_COLOR);
     AVLRemove(tree, &requested_data_2);
     AVLTreePrint(tree);
 
     /* Test 3 */
-    printf("\n\n%sRemoving %d%s", SET_BLUE_COLOR, requested_data_3, RESET_COLOR);
+    printf("\n\n%sRemoving %d(has only right child)%s", SET_BLUE_COLOR, requested_data_3, RESET_COLOR);
     printf("%s", SET_CYAN_COLOR);
     AVLRemove(tree, &requested_data_3);
+    AVLTreePrint(tree);
+
+    /* Test 4 */
+    printf("\n\n%sRemoving %d(has 2 children)%s", SET_BLUE_COLOR, requested_data_4, RESET_COLOR);
+    printf("%s", SET_RED_COLOR);
+    AVLRemove(tree, &requested_data_4);
     AVLTreePrint(tree);
 }
 

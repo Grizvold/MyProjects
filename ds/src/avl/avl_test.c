@@ -102,7 +102,9 @@ static void TestAVLCreate(avl_t **tree)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 }
 
@@ -114,7 +116,9 @@ static void TestAVLInsert(int arr[], size_t arr_size, avl_t *tree)
     {
         AVLInsert(tree, &arr[iter]);
         AVLTreePrint(tree);
-        printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+        printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, 
+                                                AVLHeight(tree), 
+                                                RESET_COLOR);
         printf("%s**************************************************%s\n\n\n",
                 SET_CYAN_COLOR, RESET_COLOR);
     }
@@ -125,7 +129,9 @@ static void TestAVLInsert(int arr[], size_t arr_size, avl_t *tree)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 }
 
@@ -155,7 +161,9 @@ static void TestAVLFind(avl_t *tree)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 
     /* Test 2 */
@@ -165,7 +173,9 @@ static void TestAVLFind(avl_t *tree)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 
     /* Test 3 */
@@ -175,7 +185,9 @@ static void TestAVLFind(avl_t *tree)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 
     /* Test 4 */
@@ -185,7 +197,9 @@ static void TestAVLFind(avl_t *tree)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 }
 
@@ -199,7 +213,9 @@ static void TestAVLHeight(avl_t *tree, size_t height)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 }
 
@@ -211,7 +227,9 @@ static void TestAVLSize(avl_t *tree, size_t avl_tree_size)
     }
     else
     {
-        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, 
+                                                __LINE__, 
+                                                RESET_COLOR);
     }
 }
 
@@ -223,40 +241,60 @@ static void TestAVLRemove(avl_t *tree)
     int requested_data_4 = 60;
 
     /* Test 1 */
-    printf("\n\n%sRemoving %d(most right node)%s", SET_BLUE_COLOR, requested_data_1, RESET_COLOR);
+    printf("\n\n%sRemoving %d(most right node)%s", SET_BLUE_COLOR, 
+                                                    requested_data_1, 
+                                                    RESET_COLOR);
     printf("%s", SET_RED_COLOR);
     AVLRemove(tree, &requested_data_1);
     AVLTreePrint(tree);
-    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, 
+                                            AVLHeight(tree), 
+                                            RESET_COLOR);
     printf("%s**************************************************%s\n\n\n",
-                                                    SET_CYAN_COLOR, RESET_COLOR);
+                                                    SET_CYAN_COLOR, 
+                                                    RESET_COLOR);
 
     /* Test 2 */
-    printf("\n\n%sRemoving %d(has only left child)%s", SET_BLUE_COLOR, requested_data_2, RESET_COLOR);
+    printf("\n\n%sRemoving %d(has only left child)%s", SET_BLUE_COLOR, 
+                                                    requested_data_2, 
+                                                    RESET_COLOR);
     printf("%s", SET_BLUE_COLOR);
     AVLRemove(tree, &requested_data_2);
     AVLTreePrint(tree);
-    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, 
+                                            AVLHeight(tree), 
+                                            RESET_COLOR);
     printf("%s**************************************************%s\n\n\n",
-                                                    SET_CYAN_COLOR, RESET_COLOR);
+                                                    SET_CYAN_COLOR, 
+                                                    RESET_COLOR);
 
     /* Test 3 */
-    printf("\n\n%sRemoving %d(has only right child)%s", SET_BLUE_COLOR, requested_data_3, RESET_COLOR);
+    printf("\n\n%sRemoving %d(has only right child)%s", SET_BLUE_COLOR, 
+                                                        requested_data_3, 
+                                                        RESET_COLOR);
     printf("%s", SET_CYAN_COLOR);
     AVLRemove(tree, &requested_data_3);
     AVLTreePrint(tree);
-    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, 
+                                            AVLHeight(tree), 
+                                            RESET_COLOR);
     printf("%s**************************************************%s\n\n\n",
-                                                    SET_CYAN_COLOR, RESET_COLOR);
+                                                    SET_CYAN_COLOR, 
+                                                    RESET_COLOR);
 
     /* Test 4 */
-    printf("\n\n%sRemoving %d(has 2 children)%s", SET_BLUE_COLOR, requested_data_4, RESET_COLOR);
+    printf("\n\n%sRemoving %d(has 2 children)%s", SET_BLUE_COLOR, 
+                                                requested_data_4, 
+                                                RESET_COLOR);
     printf("%s", SET_RED_COLOR);
     AVLRemove(tree, &requested_data_4);
     AVLTreePrint(tree);
-    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, 
+                                            AVLHeight(tree), 
+                                            RESET_COLOR);
     printf("%s**************************************************%s\n\n\n",
-                                                    SET_CYAN_COLOR, RESET_COLOR);
+                                                    SET_CYAN_COLOR, 
+                                                    RESET_COLOR);
 }
 
 static void TestAVLDestroy(avl_t *tree)

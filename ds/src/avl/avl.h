@@ -19,15 +19,14 @@ typedef int (*avl_action_func_t)(void *data, void *param);
 typedef struct avl avl_t;
 /******************************************************************************/
 
-
 /******************************************************************************/
 /*                          AVL Functions Declaration                         */
 /******************************************************************************/
 /*  -Creates AVL tree.
     -Returns pointer to created avltree. */
 avl_t *AVLCreate(avl_is_before_t func, void *param);
- 
- /* -Destroy avl tree by <post-order>. */
+
+/* -Destroy avl tree by <post-order>. */
 void AVLDestroy(avl_t *tree);
 
 /*  -Insert new data to avl tree.
@@ -35,7 +34,7 @@ void AVLDestroy(avl_t *tree);
         0 for success.
         1 for failure. */
 int AVLInsert(avl_t *tree, const void *data);
- 
+
 void AVLRemove(avl_t *tree, const void *data);
 
 /*  -boolean function that returns:
@@ -64,4 +63,3 @@ void AVLTreePrint(const avl_t *tree);
 /******************************************************************************/
 
 #endif /* __AVL_H__ */
-

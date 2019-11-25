@@ -50,10 +50,10 @@ static void AVLTest()
 {
     avl_t *avl_tree = NULL;
     size_t arr_size = 12; 
-    size_t tree_height = 5; 
+    size_t tree_height = 4;  
     static int test_arr[] = {50, 60, 70, 55, 51, 40, 45, 30, 35, 20, 80, 90}; /* size 12 */
 
-    /* AVLCreate Test *//* current 4 */
+    /* AVLCreate Test */
     printf("\n\t%s AVLCreate Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
     TestAVLCreate(&avl_tree);
 
@@ -71,7 +71,7 @@ static void AVLTest()
 
     /* AVLHeight Test */
     printf("\n\t%s AVLHeight Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
-    TestAVLHeight(avl_tree, tree_height);
+    TestAVLHeight(avl_tree, tree_height); /* current height 4 */
 
     /* AVLSize Test */
     printf("\n\t%s AVLSize Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
@@ -113,6 +113,10 @@ static void TestAVLInsert(int arr[], size_t arr_size, avl_t *tree)
     for(iter = 0; iter < arr_size; iter++)
     {
         AVLInsert(tree, &arr[iter]);
+        AVLTreePrint(tree);
+        printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+        printf("%s**************************************************%s\n\n\n",
+                SET_CYAN_COLOR, RESET_COLOR);
     }
 
     if(iter == arr_size)
@@ -223,24 +227,36 @@ static void TestAVLRemove(avl_t *tree)
     printf("%s", SET_RED_COLOR);
     AVLRemove(tree, &requested_data_1);
     AVLTreePrint(tree);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%s**************************************************%s\n\n\n",
+                                                    SET_CYAN_COLOR, RESET_COLOR);
 
     /* Test 2 */
     printf("\n\n%sRemoving %d(has only left child)%s", SET_BLUE_COLOR, requested_data_2, RESET_COLOR);
     printf("%s", SET_BLUE_COLOR);
     AVLRemove(tree, &requested_data_2);
     AVLTreePrint(tree);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%s**************************************************%s\n\n\n",
+                                                    SET_CYAN_COLOR, RESET_COLOR);
 
     /* Test 3 */
     printf("\n\n%sRemoving %d(has only right child)%s", SET_BLUE_COLOR, requested_data_3, RESET_COLOR);
     printf("%s", SET_CYAN_COLOR);
     AVLRemove(tree, &requested_data_3);
     AVLTreePrint(tree);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%s**************************************************%s\n\n\n",
+                                                    SET_CYAN_COLOR, RESET_COLOR);
 
     /* Test 4 */
     printf("\n\n%sRemoving %d(has 2 children)%s", SET_BLUE_COLOR, requested_data_4, RESET_COLOR);
     printf("%s", SET_RED_COLOR);
     AVLRemove(tree, &requested_data_4);
     AVLTreePrint(tree);
+    printf("%sCurrent  Tree hight:%lu%s\n", SET_BLUE_COLOR, AVLHeight(tree), RESET_COLOR);
+    printf("%s**************************************************%s\n\n\n",
+                                                    SET_CYAN_COLOR, RESET_COLOR);
 }
 
 static void TestAVLDestroy(avl_t *tree)

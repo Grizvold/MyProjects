@@ -57,7 +57,7 @@ static int AVLHelperGetBalanceFactor(avl_node_t *node);
 static size_t AVLHelperGetChildHeight(avl_node_t *node, son_t child_side);
 
 static avl_node_t *AVLRecGetMostLeftChild(avl_t *tree, avl_node_t *node);
-static int AVLRecInsert(avl_t *tree, avl_node_t *node, const void *data);
+static avl_node_t *AVLRecInsert(avl_t *tree, avl_node_t *parent, avl_node_t *new_node);
 static int AVLRecForEach(avl_node_t *node, avl_action_func_t func, void *param);
 static void *AVLRecFind(const avl_t *tree, avl_node_t *node,const void *data);
 static void AVLRecSize(const avl_t *tree, avl_node_t *node, size_t *tree_size);
@@ -111,24 +111,26 @@ int AVLInsert(avl_t *tree, const void *data)
 {
     avl_node_t *new_node = NULL;
 
+    new_node = AVLHelperCreateNewNode(data);
+    if(NULL == new_node)
+    {
+
+        return FAILURE;
+    }
+
     /* if avl tree is empty -> init root */
     if(AVLIsEmpty(tree))
     {
-        new_node = AVLHelperCreateNewNode(data);
-        if(NULL == new_node)
-        {
-
-            return FAILURE;
-        }
-
         tree->root = new_node;
 
         return SUCCESS;
     }
 
     /* if avl tree is not empty -> insert recursively */
+    tree->root = AVLRecInsert(tree, tree->root, new_node);
+    AVLHelperNodeHeighUpdate(tree->root);
 
-    return AVLRecInsert(tree, tree->root, data);;
+    return SUCCESS;
 }
 
 int AVLIsEmpty(const avl_t *tree)
@@ -270,32 +272,25 @@ static avl_node_t *AVLHelperCreateNewNode(const void *data)
 }
 
 
-static int AVLRecInsert(avl_t *tree, avl_node_t *node, const void *data)
+static avl_node_t *AVLRecInsert(avl_t *tree, avl_node_t *parent, avl_node_t *new_node)
 {
     son_t side = LEFT; /* LEFT = 0 */
-    status_t curr_status = SUCCESS;
 
-    side = AVLHelperIsBefore(tree, node->data, data);
+    side = AVLHelperIsBefore(tree, parent->data, new_node->data);
     
-    if(NULL == node->child[side])
+    if(NULL == parent->child[side])
     {
-        node->child[side] = AVLHelperCreateNewNode(data);
+        parent->child[side] = new_node;
+        AVLHelperNodeHeighUpdate(parent);
 
-        if(NULL == node->child[side])
-        {
-            curr_status = FAILURE;
-        }
-
-        AVLHelperNodeHeighUpdate(node);
-
-        return curr_status;
+        return parent;
     }
 
-    curr_status = AVLRecInsert(tree, node->child[side], data);
+    parent->child[side] = AVLRecInsert(tree, parent->child[side], new_node);
+    AVLHelperNodeHeighUpdate(parent);
+    parent = AVLHelperBalanceNode(parent);
 
-    AVLHelperNodeHeighUpdate(node);
-    
-    return curr_status;
+    return parent;
 }
 
 
@@ -508,7 +503,7 @@ static avl_node_t *AVLHelperBalanceNode(avl_node_t *node)
             /* if balance of left-left child is "left-heavy" -> ROTATE LEFT-LEFT */
             else
             {
-                node = AVLHelperRotateLeft(node);
+                node = AVLHelperRotateRight(node);
             }
 
             break;

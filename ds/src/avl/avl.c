@@ -172,7 +172,7 @@ void AVLDestroy(avl_t *tree)
 
     free(tree);
 }
-
+ 
 void AVLRemove(avl_t *tree, const void *data)
 {
     tree->root = AVLRecRemove(tree, tree->root, data);

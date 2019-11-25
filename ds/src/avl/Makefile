@@ -11,7 +11,7 @@ PROJ_INC_DIR =
 
 # the executable file
 PROJ_OUT = avl_test.out
-
+ 
 # list of compiler flags (prepended with "-" sign)
 PROJ_CFLAGS = -Wunused-but-set-variable
 

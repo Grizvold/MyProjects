@@ -68,8 +68,8 @@ static void AVLTest()
     /* AVLFind Test */
     printf("\n\t%s AVLFind Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
     TestAVLFind(avl_tree);
-
-    /* AVLHeight Test */
+ 
+    /* AVLHeight Test */ 
     printf("\n\t%s AVLHeight Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
     TestAVLHeight(avl_tree, tree_height); /* current height 4 */
 

@@ -35,7 +35,7 @@ void AVLDestroy(avl_t *tree);
         0 for success.
         1 for failure. */
 int AVLInsert(avl_t *tree, const void *data);
-
+ 
 void AVLRemove(avl_t *tree, const void *data);
 
 /*  -boolean function that returns:

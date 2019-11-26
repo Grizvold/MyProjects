@@ -12,24 +12,22 @@
 /******************************************************************************/
 typedef enum
 {
-    LEFT,
+    LEFT = 0,
     RIGHT
 } son_t;
 
 typedef enum
 {
-    SUCCESS,
+    SUCCESS = 0,
     FAILURE
 } status_t;
 
-typedef struct avl_node avl_node_t;
-
-struct avl_node
+typedef struct avl_node
 {
     void *data;
     size_t height;
     avl_node_t *child[2];
-};
+} avl_node_t;
 
 struct avl
 {
@@ -245,6 +243,7 @@ static void AVLHelperFreeNode(avl_node_t *node)
     node->child[LEFT] = NULL;
 
     free(node);
+    node = NULL;
 }
 
 static avl_node_t *AVLHelperCreateNewNode(const void *data)

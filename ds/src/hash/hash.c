@@ -143,26 +143,26 @@ size_t HASHSize(const hash_t *hash_table)
 int HASHIsEmpty(const hash_t *hash_table)
 {
     size_t index = 0;
+    status_t is_empty = FAILURE;
 
     assert(NULL != hash_table);
 
-    for(index = 0; index < hash_table->capacity; index++)
+    for(index = 0; index < hash_table->capacity && FAILURE == is_empty; index++)
     {
-        if(!DLLIsEmpty(hash_table->table[index]))
-        {
-            return FAILURE;
-        }
+        is_empty = DLLIsEmpty(hash_table->table[index]);
     }
 
-    return SUCCESS;
+    return is_empty;
 }
 
 void *HASHFind(const hash_t *hash, const void *data)
 {
+
 }
 
 int HASHForEach(hash_t *hash, hash_action_func_t action_func, void *param)
 {
+    
 }
 /******************************************************************************/
 

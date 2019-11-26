@@ -11,7 +11,7 @@
         1 if is before.  */
 typedef int (*avl_is_before_t)(const void *data1, const void *data2, void *param);
 
-/*  user's boolean action function that returns status:
+/*  user's action function that returns status:
         0 for success.
         1 for failure.   */
 typedef int (*avl_action_func_t)(void *data, void *param);

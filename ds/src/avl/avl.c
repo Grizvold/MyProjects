@@ -43,9 +43,9 @@ struct avl
 /*                          Internal Component Declaration                    */
 /******************************************************************************/
 /* is_before function of AVL tree */
-static int AVLHelperIsBefore(const avl_t *avl_tree, 
-                            const void *data_1,
-                            const void *data_2);
+static int AVLHelperIsBefore(const avl_t *avl_tree,
+                             const void *data_1,
+                             const void *data_2);
 /* prints AVL tree in 2d, to help visualize the tree */
 static void AVLHelperPrintTree2D(avl_node_t *root, int space);
 /* upgrades node height by looking at it's highest child and adding + 1  */
@@ -54,8 +54,8 @@ static void AVLHelperNodeHeighUpdate(avl_node_t *curr_node);
 static void AVLHelperFreeNode(avl_node_t *node);
 /* comparison function between 2 const data variables */
 static int AVLHelperIsSameData(const avl_t *tree,
-                                const void *data_1,
-                                const void *data_2);
+                               const void *data_1,
+                               const void *data_2);
 /* creates new node and initialize values */
 static avl_node_t *AVLHelperCreateNewNode(const void *data);
 /* swap data between 2 nodes */
@@ -72,12 +72,11 @@ static avl_node_t *AVLRecInsert(avl_t *tree,
                                 avl_node_t *new_node);
 static int AVLRecForEach(avl_node_t *node, avl_action_func_t func, void *param);
 static void *AVLRecFind(const avl_t *tree, avl_node_t *node, const void *data);
-static void AVLRecSize(const avl_t *tree, avl_node_t *node, size_t *tree_size);
+static size_t AVLRecSize(avl_node_t *node);
 static void AVLRecDestroy(avl_node_t *node);
 static avl_node_t *AVLRecRemove(avl_t *tree,
                                 avl_node_t *node,
                                 const void *data);
-
 /******************************************************************************/
 /*                          Balancing Components Declaration                  */
 /******************************************************************************/
@@ -131,19 +130,15 @@ int AVLInsert(avl_t *tree, const void *data)
         return FAILURE;
     }
 
-    /* if avl tree is empty -> init root */
-    if (AVLIsEmpty(tree))
-    {
-        tree->root = new_node;
-
-        return SUCCESS;
-    }
-
-    /* if avl tree is not empty -> insert recursively */
     tree->root = AVLRecInsert(tree, tree->root, new_node);
     AVLHelperNodeHeighUpdate(tree->root);
-    
+
     return SUCCESS;
+}
+
+void AVLRemove(avl_t *tree, const void *data)
+{
+    tree->root = AVLRecRemove(tree, tree->root, data);
 }
 
 int AVLIsEmpty(const avl_t *tree)
@@ -172,23 +167,17 @@ void *AVLFind(const avl_t *tree, const void *data)
 
 size_t AVLSize(const avl_t *tree)
 {
-    size_t avl_tree_size = 0;
 
-    AVLRecSize(tree, tree->root, &avl_tree_size);
-
-    return avl_tree_size;
+    return AVLRecSize(tree->root);
 }
 
 void AVLDestroy(avl_t *tree)
 {
+    assert(NULL != tree);
+
     AVLRecDestroy(tree->root);
 
     free(tree);
-}
-
-void AVLRemove(avl_t *tree, const void *data)
-{
-    tree->root = AVLRecRemove(tree, tree->root, data);
 }
 
 /******************************************************************************/
@@ -196,9 +185,9 @@ void AVLRemove(avl_t *tree, const void *data)
 /******************************************************************************/
 /*                      Internal Component Definition                         */
 /******************************************************************************/
-static int AVLHelperIsBefore(const avl_t *avl_tree, 
-                            const void *data_1, 
-                            const void *data_2)
+static int AVLHelperIsBefore(const avl_t *avl_tree,
+                             const void *data_1,
+                             const void *data_2)
 {
     return avl_tree->func(data_1, data_2, avl_tree->func_param);
 }
@@ -209,26 +198,22 @@ static void AVLHelperNodeHeighUpdate(avl_node_t *curr_node)
     size_t left_son_height = 0;
 
     /* get height of children (if no child -> height = 0) */
-    right_son_height = (NULL == curr_node->child[RIGHT]) ? 
-                            0 : curr_node->child[RIGHT]->height;
-    left_son_height = (NULL == curr_node->child[LEFT]) ? 
-                            0 : curr_node->child[LEFT]->height;
+    right_son_height = (NULL == curr_node->child[RIGHT]) ? 0 : curr_node->child[RIGHT]->height;
+    left_son_height = (NULL == curr_node->child[LEFT]) ? 0 : curr_node->child[LEFT]->height;
 
     /* increase the height of current node by 1 */
-    curr_node->height = (right_son_height > left_son_height) ? 
-                            right_son_height + 1 : left_son_height + 1;
+    curr_node->height = (right_son_height > left_son_height) ? right_son_height + 1 : left_son_height + 1;
 }
 
 static int AVLHelperGetBalanceFactor(avl_node_t *node)
 {
-    return (int)(AVLHelperGetChildHeight(node, RIGHT) - 
-                        AVLHelperGetChildHeight(node, LEFT));
+    return (int)(AVLHelperGetChildHeight(node, RIGHT) -
+                 AVLHelperGetChildHeight(node, LEFT));
 }
 
 static size_t AVLHelperGetChildHeight(avl_node_t *node, son_t child_side)
 {
-    return (NULL == node->child[child_side]) ? 
-                            0 : node->child[child_side]->height;
+    return (NULL == node->child[child_side]) ? 0 : node->child[child_side]->height;
 }
 
 static int AVLHelperIsSameData(const avl_t *tree, const void *data_1,
@@ -250,8 +235,7 @@ static void AVLHelperSwapData(avl_node_t *node_1, avl_node_t *node_2)
 static avl_node_t *AVLRecGetMostLeftChild(avl_t *tree, avl_node_t *node)
 {
 
-    return (NULL == node->child[LEFT]) ? 
-                        node : AVLRecGetMostLeftChild(tree, node->child[LEFT]);
+    return (NULL == node->child[LEFT]) ? node : AVLRecGetMostLeftChild(tree, node->child[LEFT]);
 }
 
 static void AVLHelperFreeNode(avl_node_t *node)
@@ -288,21 +272,18 @@ static avl_node_t *AVLHelperCreateNewNode(const void *data)
     return NULL;
 }
 
-static avl_node_t *AVLRecInsert(avl_t *tree, avl_node_t *parent, 
-                                                avl_node_t *new_node)
+static avl_node_t *AVLRecInsert(avl_t *tree, avl_node_t *parent,
+                                avl_node_t *new_node)
 {
-    son_t side = LEFT; /* LEFT = 0 */
+    son_t side = LEFT;
 
-    side = AVLHelperIsBefore(tree, parent->data, new_node->data);
-
-    if (NULL == parent->child[side])
+    if (NULL == parent)
     {
-        parent->child[side] = new_node;
-        AVLHelperNodeHeighUpdate(parent);
 
-        return parent;
+        return new_node;
     }
 
+    side = AVLHelperIsBefore(tree, parent->data, new_node->data);
     parent->child[side] = AVLRecInsert(tree, parent->child[side], new_node);
     AVLHelperNodeHeighUpdate(parent);
     parent = AVLHelperBalanceNode(parent);
@@ -314,22 +295,22 @@ static int AVLRecForEach(avl_node_t *node, avl_action_func_t func, void *param)
 {
     /* perform action function on nodes in-order (left - root -right) */
     status_t cur_status = SUCCESS;
-    /* int is_success = 0; */
 
     if (NULL != node->child[LEFT])
     {
-        AVLRecForEach(node->child[LEFT], func, param);
+        cur_status = AVLRecForEach(node->child[LEFT], func, param);
     }
 
-    /* is_success = func(node->data, param); */
-    cur_status = func(node->data, param);
-
-    if (NULL != node->child[RIGHT])
+    if (FAILURE != cur_status)
     {
-        AVLRecForEach(node->child[RIGHT], func, param);
+        cur_status = func(node->data, param);
     }
 
-    /* return is_success; */
+    if (NULL != node->child[RIGHT] && FAILURE != cur_status)
+    {
+        cur_status = AVLRecForEach(node->child[RIGHT], func, param);
+    }
+
     return cur_status;
 }
 
@@ -345,51 +326,41 @@ static void *AVLRecFind(const avl_t *tree, avl_node_t *node, const void *data)
     /* Check data of current node */
     if (AVLHelperIsSameData(tree, node->data, data))
     {
+
         return node->data;
     }
 
     else
     {
         /* Go Right if (node->data) < (data), Left otherwise */
-        return AVLRecFind(tree, 
-                node->child[AVLHelperIsBefore(tree, node->data, data)], 
-                data);
+        return AVLRecFind(tree,
+                          node->child[AVLHelperIsBefore(tree, node->data, data)],
+                          data);
     }
 }
 
-static void AVLRecSize(const avl_t *tree, 
-                        avl_node_t *node, 
-                        size_t *avl_tree_size)
+static size_t AVLRecSize(avl_node_t *node)
 {
-    /* Count number of elements in pre-order (root - left - right) */
-    if (NULL != node)
+    if (NULL == node)
     {
-        *avl_tree_size += 1;
+        return 0;
     }
 
-    if (NULL != node->child[LEFT])
-    {
-        AVLRecSize(tree, node->child[LEFT], avl_tree_size);
-    }
-
-    if (NULL != node->child[RIGHT])
-    {
-        AVLRecSize(tree, node->child[RIGHT], avl_tree_size);
-    }
+    return 1 + AVLRecSize(node->child[LEFT]) + AVLRecSize(node->child[RIGHT]);
 }
 
 static void AVLRecDestroy(avl_node_t *node)
 {
     /* Destroying by post-order (left - right - root) */
-    if (NULL != node->child[LEFT])
+    if (NULL == node)
     {
-        AVLRecDestroy(node->child[LEFT]);
+
+        return;
     }
 
-    if (NULL != node->child[RIGHT])
-    {
-        AVLRecDestroy(node->child[RIGHT]);
-    }
+    AVLRecDestroy(node->child[LEFT]);
+
+    AVLRecDestroy(node->child[RIGHT]);
 
     AVLHelperFreeNode(node);
 }
@@ -416,7 +387,7 @@ static avl_node_t *AVLRecRemove(avl_t *tree, avl_node_t *node, const void *data)
 
         return return_node;
     }
-    /* if convicted node has no children */
+    /* if  convicted node has no children */
     if (NULL == node->child[LEFT] && NULL == node->child[RIGHT])
     {
         AVLHelperFreeNode(node);
@@ -424,26 +395,8 @@ static avl_node_t *AVLRecRemove(avl_t *tree, avl_node_t *node, const void *data)
 
         return NULL;
     }
-    /* if convicted node has LEFT child */
-    else if (NULL != node->child[LEFT] && NULL == node->child[RIGHT])
-    {
-        return_node = node->child[LEFT];
-        AVLHelperFreeNode(node);
-        node = NULL;
-
-        return return_node;
-    }
-    /* if convicted node has RIGHT child */
-    else if (NULL != node->child[RIGHT] && NULL == node->child[LEFT])
-    {
-        return_node = node->child[RIGHT];
-        AVLHelperFreeNode(node);
-        node = NULL;
-
-        return return_node;
-    }
     /* if convicted node has 2 children */
-    else
+    else if (NULL != node->child[RIGHT] && NULL != node->child[LEFT])
     {
         /* swap data between convicted node and replacer */
         /* replacer - go right 1 step, and get most left child */
@@ -452,6 +405,13 @@ static avl_node_t *AVLRecRemove(avl_t *tree, avl_node_t *node, const void *data)
         /* continue with recursion */
         node->child[RIGHT] = AVLRecRemove(tree, node->child[RIGHT], data);
         AVLHelperNodeHeighUpdate(node);
+    }
+    /* if convicted node has 1 child (left or right) */
+    else
+    {
+        return_node = (NULL != node->child[RIGHT]) ? node->child[RIGHT] : node->child[LEFT];
+        AVLHelperFreeNode(node);
+        node = NULL;
     }
 
     return AVLHelperBalanceNode(return_node);
@@ -544,6 +504,7 @@ static avl_node_t *AVLHelperRotateLeft(avl_node_t *node)
     replacer_node->child[LEFT] = node;
 
     AVLHelperNodeHeighUpdate(node);
+    AVLHelperNodeHeighUpdate(replacer_node);
 
     return replacer_node;
 }
@@ -559,6 +520,7 @@ static avl_node_t *AVLHelperRotateRight(avl_node_t *node)
     replacer_node->child[RIGHT] = node;
 
     AVLHelperNodeHeighUpdate(node);
+    AVLHelperNodeHeighUpdate(replacer_node);
 
     return replacer_node;
 }
@@ -572,9 +534,6 @@ static avl_node_t *AVLHelperRotateRightLeft(avl_node_t *node)
     node->child[RIGHT] = AVLHelperRotateRight(node->child[RIGHT]);
     replacer_node = AVLHelperRotateLeft(node);
 
-    AVLHelperNodeHeighUpdate(node);
-    AVLHelperNodeHeighUpdate(replacer_node);
-
     return replacer_node;
 }
 
@@ -586,9 +545,6 @@ static avl_node_t *AVLHelperRotateLeftRight(avl_node_t *node)
     /* make left rotation, then right */
     node->child[LEFT] = AVLHelperRotateLeft(node->child[LEFT]);
     replacer_node = AVLHelperRotateRight(node);
-
-    AVLHelperNodeHeighUpdate(node);
-    AVLHelperNodeHeighUpdate(replacer_node);
 
     return replacer_node;
 }

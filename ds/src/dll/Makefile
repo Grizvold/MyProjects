@@ -16,7 +16,7 @@ PROJ_OUT = dll_test.out
 # list of compiler flags (prepended with "-" sign)
 PROJ_CFLAGS = -Wunused-but-set-variable
 
-PROJ_MACROS = _BSD_SOURCE
+PROJ_MACROS = 
 
 # additional object files (created by other projects)
 PROJ_ADD_OBJS =

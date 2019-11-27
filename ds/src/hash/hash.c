@@ -90,13 +90,15 @@ void HASHDestroy(hash_t *hash_table)
     }   
 
     free(hash_table);
+    hash_table = NULL;
 }
 
 int HASHInsert(hash_t *hash_table, const void *data)
 {
     size_t index = 0;
  
-    assert(NULL != hash_table && NULL != data);
+    assert(NULL != hash_table);
+    assert(NULL != data);
 
     index = HASHHelperGetIndex(hash_table, data);
 
@@ -160,7 +162,8 @@ void *HASHFind(const hash_t *hash_table, const void *data)
     size_t index = 0;
     dll_iter_t itr_dll = {NULL};
 
-    assert(NULL != hash_table && NULL != data);
+    assert(NULL != hash_table);
+    assert(NULL != data);
 
     index = HASHHelperGetIndex(hash_table, data);
     itr_dll = DLLFind(DLLBegin(hash_table->table[index]), 

@@ -1,201 +1,304 @@
-#include <stdio.h>  /* printf */
-#include <string.h> /* strcmp */
-#include <stdlib.h>
+#include <stdio.h>  /* printf   */
+#include <string.h> /* strcmp   */
+#include <stdlib.h> /* free     */
+#include <time.h>   /* time     */
 
-#include "hash.h"
+#include "hash.h" /* HASH API */
 
 
+/******************************************************************************/
+/*                          Internal Component Declaration                    */
+/******************************************************************************/
+static const char *SET_RED_COLOR = "\033[0;31m";
+static const char *SET_BLUE_COLOR = "\033[0;34m";
+static const char *SET_CYAN_COLOR = "\033[0;36m";
+static const char *SET_GREEN_COLOR = "\033[0;32m";
+static const char *RESET_COLOR = "\033[0m";
+
+static const size_t SIZE = 10;
+
+typedef enum{SUCCESS = 0, FAILURE} is_success_t;
 
 typedef struct person
 {
     char *first_name;
     char *last_name;
     size_t id;
-}person_t;
+} person_t;
 
-#define SIZE 10
+/*  Initializing person_t struct fields. */
+void CreatePerson(person_t *person_arr);
+/*  Print array of perosn_t */
+void PrintPersonsList(person_t *person_arr);
+/*  Action function for ForEach. */
+int PrintSinglePerson(void *data, void *param);
 
-/*colors */
-#define NRM  "\x1B[0m"
-#define RED  "\x1B[1;31m"
-#define GRN  "\x1B[1;32m"
-#define YEL  "\x1B[1;33m"
+/*  HASH function that gets <key> and returns size_t value. */
+size_t HASHFunction(const void *key);
+/*  Compare function for HASH table. 
+    Returns:
+        1 if equal.
+        0 if not equal. */
+int CmpFunction(const void *data_1, const void *data_2);
+/******************************************************************************/
 
-size_t HashFunc(const void *data);
-int CmpFunc(const void *data1, const void *data2);
-int Print(void *data, void *param);
-void CreateData(person_t *data_array);
-
-void HASHTest(hash_t*table, person_t *data_array);
-
-void HASHInsertTest(hash_t*table, person_t *data_array);
-void HASHSizeTest(hash_t*table, person_t *data_array);
-void HASHForEachTest(hash_t*table, person_t *data_array);
-void HASHIsEmptyTest(hash_t*table, person_t *data_array);
-void HASHRemoveTest(hash_t*table, person_t *data_array);
-void HASHHeightTest(hash_t*table, person_t *data_array);
-void HASHFindTest(hash_t*table, person_t *data_array);
-
-/*******************************************************************/
+/******************************************************************************/
+/*                          Test Functions Declaration                        */
+/******************************************************************************/
+void TestHASH();
+hash_t *TestHASHCreate(hash_t *hash_table);
+void TestHASHInsert(hash_t *hash_table, person_t *person_arr);
+void TestHASHSize(hash_t *hash_table);
+void TestHASHFind(hash_t *hash_table);
+void TestHASHForEach(hash_t *hash_table);
+void TestHASHIsEmpty(hash_t *hash_table);
+void TestHASHRemove(hash_t *hash_table);
+/******************************************************************************/
 
 int main()
-{   
-    person_t *data_array = NULL;
-    hash_t *table = NULL;
+{
+    srand(time(NULL));
 
-    data_array = (person_t*)malloc(sizeof(person_t) * 10);
-    if (NULL == data_array)
+    TestHASH();
+
+    return 0;
+}
+
+/******************************************************************************/
+/*                          Test Functions Definition                        */
+/******************************************************************************/
+void TestHASH()
+{
+    static person_t *person_array = NULL;
+    static hash_t *test_hash_table = NULL;
+
+    while (1)
     {
-        return 1;
-    }
+        person_array = (person_t *)malloc(sizeof(person_t) * SIZE);
+        if (NULL == person_array)
+        {
+            perror("Malloc creating person_array in TestHASH failed");
+
+            break;
+        }
+
+        /* Create and Init list of persons */
+        printf("\n%s\t Created list of persons:%s\n", SET_CYAN_COLOR, RESET_COLOR);
+        CreatePerson(person_array);
+
+        /*  Print list of persons */
+        PrintPersonsList(person_array);
+
+        /*  HASHCreate Test */
+        printf("\n\t%s HASHCreate Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+        test_hash_table = TestHASHCreate(test_hash_table);
+        if(NULL == test_hash_table)
+        {
+            break;
+        }
+
+        /*  HASHInsert Test */
+        printf("\n\t%s HASHInsert Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+        TestHASHInsert(test_hash_table, person_array);
+
+        /*  HASHSize Test */
+        printf("\n\t%s HASHSize Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+        TestHASHSize(test_hash_table); 
+
+        /*  HASHForEach Test */
+        printf("\n\t%s HASHForEach Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+        TestHASHForEach(test_hash_table);
+
+        /*  HASHFind Test */
+        printf("\n\t%s HASHFind Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+        TestHASHFind(test_hash_table);
+
+        /*  HASHIsEmpty Test */
+        printf("\n\t%s HASHIsEmpty Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+        TestHASHIsEmpty(test_hash_table);
+
+        /*  HASHRemove Test */
+        printf("\n\t%s HASHRemove Test %s\n", SET_CYAN_COLOR, RESET_COLOR);
+        TestHASHRemove(test_hash_table);
+
+        HASHDestroy(test_hash_table);
+        test_hash_table = NULL;
      
-    table = HASHCreate(HashFunc, CmpFunc, SIZE);
-    if (NULL == table)
-    {
-        return 1;
+        break;
     }
-   
-    CreateData(data_array);
+
+    free(person_array);
+    person_array = NULL;
+}
+
+hash_t *TestHASHCreate(hash_t *hash_table)
+{
+    hash_table = HASHCreate(&HASHFunction, &CmpFunction, SIZE);
+    if(NULL == hash_table)
+    {
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR, __LINE__, RESET_COLOR);
+
+        return NULL;
+    }
+    else 
+    {
+        printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR);
+    }
+
+    return hash_table;
+}
+
+void TestHASHInsert(hash_t *hash_table, person_t *person_arr)
+{
+    size_t i = 0;
+    is_success_t status = SUCCESS;
+
+    for ( i = 0; i < SIZE; i++)
+    {
+        status = HASHInsert(hash_table, &person_arr[i]);
+
+        if(FAILURE == status)
+        {
+            break;
+        }
+    }
     
-    HASHTest(table, data_array);
-
-    HASHDestroy(table);
-
-    free(data_array);
-
-    return 0;
+    status == SUCCESS ? 
+        printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR) :
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR,
+                                                 __LINE__, 
+                                                 RESET_COLOR);
 }
 
-/**********************************************************************/
-
-int IsBefore(const void *data1, const void *data2, void *param)
-{ 
-    return (((person_t*)data1)->id < ((person_t*)data2)->id);
-} 
-
-int Print(void *data, void *param)
+void TestHASHSize(hash_t *hash_table)
 {
-    printf("%lu -    %s  %s\n", ((person_t*)data)->id, ((person_t*)data)->first_name, ((person_t*)data)->last_name);
-
-    return 0;
+    (SIZE == HASHSize(hash_table)) ? 
+        printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR) :
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR,
+                                                 __LINE__, 
+                                                 RESET_COLOR);
 }
 
-void CreateData(person_t *data_array)
+void TestHASHForEach(hash_t *hash_table)
 {
-    static char *first_name[SIZE] = {"hadas" , "gabriel", "ruslan", "shai", "maor",
-                                    "daniela" , "sigal", "dalia", "galor", "yuval"};
-
-    static char *last_name[SIZE] = {"edrei", "roth", "yamin", "gorbaty", "frank", "moyal", 
-                            "galker", "goel", "motro", "jakobouvitsh"};
-
-    static size_t id[SIZE] = {4626548, 1235214, 3772548, 4265637, 6532661 , 7536548,
-                    5734877, 9546832 , 2573835, 2346286};
-
-     person_t person;
-     size_t i =0;
-
-    for (i =0 ; i<SIZE; ++i)
-    {
-        person.first_name = first_name[i];
-        person.last_name = last_name[i];
-        person.id = id[i];
-
-        data_array[i] = person;
-    }
+    (SUCCESS == HASHForEach(hash_table, &PrintSinglePerson, NULL)) ?
+        printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR) :
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR,
+                                                 __LINE__, 
+                                                 RESET_COLOR);
 }
 
-
-void HASHTest(hash_t*table, person_t *data_array)
+void TestHASHFind(hash_t *hash_table)
 {
-    HASHInsertTest(table, data_array);
-    HASHForEachTest(table, data_array);
-    HASHSizeTest(table, data_array);
-    HASHIsEmptyTest(table, data_array);
-    HASHRemoveTest(table, data_array);
-    HASHFindTest(table, data_array); 
-}
+    person_t existing_person = {NULL};
+    person_t not_existing_person = {NULL};
+    int res_strcmp = 0;
 
-void HASHInsertTest(hash_t*table, person_t *data_array)
-{
-    size_t i =0;
+    existing_person.first_name = "Ruslan";
+    existing_person.last_name = NULL;
+    existing_person.id = 0;
+    not_existing_person.first_name = "MMMM";
+    not_existing_person.last_name = NULL;
+    not_existing_person.id = 0;
 
-    printf("%s Insert Test: %s \n", YEL, NRM);
-
-    for (i = 0; i < SIZE ; ++i)
-    {
-        HASHInsert(table, &data_array[i]);
-    }
-
-    (HASHSize(table) == SIZE) ? printf("%s Success\n", GRN) : printf("%s Failure\n", RED);
-}
-
-void HASHSizeTest(hash_t*table, person_t *data_array)
-{
-    printf("%s Size Test: %s\n", YEL, NRM);
-
-    (HASHSize(table) == SIZE) ? printf("%s Success\n", GRN) : printf("%s Failure\n", RED);
-    HASHRemove(table, &data_array[1]);
-    (HASHSize(table) == SIZE-1) ? printf("%s Success\n", GRN) : printf("%s Failure\n", RED);
-}
-
-void HASHIsEmptyTest(hash_t*table, person_t *data_array)
-{
-    hash_t*new_table;
-
-    printf("%s Is-Empty Test: %s\n", YEL, NRM);
-
-    new_table = HASHCreate(HashFunc, CmpFunc, SIZE);
-
-    (!HASHIsEmpty(table)) ? printf("%s Success\n", GRN) : printf("%s Failure\n", RED);
-    (HASHIsEmpty(new_table)) ? printf("%s Success\n", GRN) : printf("%s Failure\n", RED);
-
-    HASHDestroy(new_table);
-}
-
-void HASHRemoveTest(hash_t*table, person_t *data_array)
-{
-    printf("%s Remove Test: %s\n", YEL, NRM);
-
-    HASHRemove(table, &data_array[0]);
-    HASHRemove(table, &data_array[6]);
-    HASHRemove(table, &data_array[2]);
-    HASHRemove(table, &data_array[9]);
-
-    (HASHSize(table) == SIZE-5) ? printf("%s Success\n", GRN) : printf("%s Failure\n", RED);
-}
-
-
-void HASHFindTest(hash_t*table, person_t *data_array)
-{
-    person_t find;
-    person_t cant_find;
-
-    printf("%s Find Test: %s\n", YEL, NRM);
-
-    find.first_name = "maor";
-    cant_find.first_name = "Yosi";
-    printf("serching for name: \"maor\", found\n");
-    Print(HASHFind(table, &find), NULL);
-
-    (NULL == HASHFind(table, &cant_find)) ? printf("%s Success%s\n", GRN, NRM) : printf("%s Failure%s \n", RED, NRM);
+    res_strcmp = strcmp(existing_person.first_name, 
+        ((person_t *)HASHFind(hash_table, &existing_person))->first_name);
     
+    (SUCCESS == res_strcmp &&  
+        NULL == HASHFind(hash_table, &not_existing_person)) ? 
+            printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR) :
+            printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR,
+                                                    __LINE__, 
+                                                    RESET_COLOR);
 }
 
-void HASHForEachTest(hash_t*table, person_t *data_array)
+void TestHASHIsEmpty(hash_t *hash_table)
 {
-    printf("%s For-Each Test: %s\n", YEL, NRM);
-
-    printf("print the array:\n");
-    HASHForEach(table, Print, NULL);
+    (SUCCESS == HASHIsEmpty(hash_table)) ?
+        printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR) :
+        printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR,
+                                                 __LINE__, 
+                                                 RESET_COLOR);
 }
 
-
-size_t HashFunc(const void *data)
+void TestHASHRemove(hash_t *hash_table)
 {
-    return *(int *)((person_t *)data)->first_name;
+    person_t convicted_person = {NULL};
+
+    convicted_person.first_name = "Galor";
+    convicted_person.last_name = NULL;
+    convicted_person.id = 0;
+
+    HASHRemove(hash_table, &convicted_person);
+
+    (NULL == HASHFind(hash_table, &convicted_person) &&
+        SIZE - 1 == HASHSize(hash_table)) ? 
+            printf("\n%s SUCCESS %s\n", SET_BLUE_COLOR, RESET_COLOR) :
+            printf("\n%s FAILURE Line number:%d%s\n", SET_RED_COLOR,
+                                                    __LINE__, 
+                                                    RESET_COLOR);
+}
+/******************************************************************************/
+
+/******************************************************************************/
+/*                          Internal Component Declaration                    */
+/******************************************************************************/
+void PrintPersonsList(person_t *person_arr)
+{
+    size_t i = 0;
+
+    for (i = 0; i < SIZE; i++)
+    {
+        printf("%s\t FirstName:%s %s \t %sLastName:%s %s \t %sID:%s %lu\n",
+                SET_GREEN_COLOR, RESET_COLOR, person_arr[i].first_name,
+                SET_GREEN_COLOR, RESET_COLOR, person_arr[i].last_name,
+                SET_GREEN_COLOR, RESET_COLOR, person_arr[i].id);
+    }
 }
 
-int CmpFunc(const void *data1, const void *data2)
+int PrintSinglePerson(void *data, void *param)
 {
-    return !strcmp(((person_t *)data1)->first_name, ((person_t *)data2)->first_name);
+    printf("%s\t FirstName:%s %s \t %sLastName:%s %s \t %sID:%s %lu\n",
+                SET_GREEN_COLOR, RESET_COLOR, ((person_t *)data)->first_name,
+                SET_GREEN_COLOR, RESET_COLOR, ((person_t *)data)->last_name,
+                SET_GREEN_COLOR, RESET_COLOR, ((person_t *)data)->id);
+
+    return SUCCESS;
 }
+
+void CreatePerson(person_t *person_arr)
+{
+    size_t i = 0;
+    static char *first_name[] = {"Hadas", "Gabriel", "Ruslan", "Shai", "Maor",
+                                 "Daniela", "Sigal", "Dalia", "Galor", "Yuval"};
+    static char *last_name[] = {"Edrei", "Roth", "Yamin", "Gorbaty", "Frank",
+                                "Moyal", "Galker", "Goel", "Motro", "Jakbovich"};
+    for (i = 0; i < SIZE; i++)
+    {
+        person_arr[i].first_name = first_name[i];
+        person_arr[i].last_name = last_name[i];
+        /* rand() % (max_number + 1 - minimum_number) + minimum_number */
+        person_arr[i].id = (size_t)(rand() % (3000000 + 1 - 2000000) + 2000000);
+    }
+}
+
+size_t HASHFunction(const void *key)
+{
+    size_t hash = 0;
+    char *first_name = NULL;
+
+    for(first_name = ((person_t *)(key))->first_name;
+        '\0' != *first_name;
+        first_name++)
+    {
+        hash = *first_name + (hash << 6) + (hash << 16) - hash;
+    }
+
+    return hash;
+}
+
+int CmpFunction(const void *data_1, const void *data_2)
+{
+    return !strcmp(((person_t *)data_1)->first_name, ((person_t *)data_2)->first_name);
+}
+/******************************************************************************/

@@ -275,6 +275,12 @@ int DLLIterIsEqual(dll_iter_t iter_1, dll_iter_t iter_2)
 
 void *DLLIterGetData(dll_iter_t cur_iter)
 {
+	if(DLLIterIsEqual(cur_iter, DLLEnd(cur_iter.cur_list)))
+	{
+		
+		return NULL;
+	}
+
 	return cur_iter.cur_node->data;
 }
 /*------------------------------------------------------*/

@@ -7,7 +7,7 @@
 int Add(void* data, void* param);
 /* compers the <data> to <cmp>
 	returns 1 if they are equal, 0 if they are not */
-int Find(const void* data, void* cmp);
+int Find(const void* data, const void* cmp);
 
 int main()
 {
@@ -175,7 +175,7 @@ int Add(void* data, void* param)
 	return 0;
 }
 
-int Find(const void* data, void* cmp)
+int Find(const void* data, const void* cmp)
 {
 	return (*(int *)data == *(int *)cmp);
 }

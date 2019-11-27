@@ -155,17 +155,40 @@ int HASHIsEmpty(const hash_t *hash_table)
     return is_empty;
 }
 
-void *HASHFind(const hash_t *hash, const void *data)
+void *HASHFind(const hash_t *hash_table, const void *data)
 {
+    size_t index = 0;
+    dll_iter_t itr_dll = {NULL};
 
+    assert(NULL != hash_table && NULL != data);
+
+    index = HASHHelperGetIndex(hash_table, data);
+    itr_dll = DLLFind(DLLBegin(hash_table->table[index]), 
+                    DLLEnd(hash_table->table[index]), 
+                    hash_table->cmp_func, 
+                    (void *)data);
+
+    return DLLIterGetData(itr_dll);
 }
 
-int HASHForEach(hash_t *hash, hash_action_func_t action_func, void *param)
+int HASHForEach(hash_t *hash_table, hash_action_func_t action_func, void *param)
 {
-    
+    size_t index = 0;
+    status_t func_status = SUCCESS;
+
+    assert(NULL != hash_table);
+
+    for(index = 0; SUCCESS == func_status && hash_table->capacity > index; index++)
+    {
+        func_status = DLLForEach(DLLBegin(hash_table->table[index]), 
+                                DLLEnd(hash_table->table[index]), 
+                                action_func,
+                                param);
+    }
+
+    return func_status;
 }
 /******************************************************************************/
-
 
 /******************************************************************************/
 /*                          Internal Component Definition                     */

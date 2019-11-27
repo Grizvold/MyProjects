@@ -27,7 +27,7 @@ struct dll_iter
 typedef int (*dll_act_func_t)(void *data, void *param);
 
 /* 	typedef of action function for Find function		*/
-typedef int (*dll_cmp_func_t)(const void *data, void *param);
+typedef int (*dll_cmp_func_t)(const void *data, const void *param);
 /*################################################################*/
 
 /*####################### DLL Funtionality #######################*/

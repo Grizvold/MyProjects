@@ -3,6 +3,7 @@
 #include <stdio.h>  /*  perror      */
 #include <ulimit.h> /*  CHAR_BIT    */
 #include <string.h> /*    memcpy    */
+#include <assert.h> /*  assert      */
 
 #include "sort.h"
 
@@ -12,6 +13,15 @@ static void ResetHistorgram(size_t *histagram_arr, size_t histagram_size);
 static void CountRadix(size_t *original_arr, size_t *result_arr, 
                         size_t arr_size, size_t *histagram_arr,  
                         size_t n_bits, size_t itr);
+
+static void HeapSortHelperHeapify(void *base, 
+                            size_t arr_size, size_t element_size, 
+                            is_before_t func);
+static void HeapSortHelperSwap(void *data_1, void *data_2, size_t element_size);
+static void HeapSortHelperSiftDown(void *base, size_t index, 
+                            size_t arr_size, size_t element_size, 
+                            is_before_t func);
+static void *HeapSortHelperGetAddress(void *base, size_t element_size, size_t index);
 /******************************************************************************/
 
 /************************** Sorting Functions *********************************/
@@ -187,9 +197,24 @@ int RadixSort(size_t *original_arr, size_t arr_size, size_t n_bits)
 
     return status;
 }
+
+void HeapSort(void *base, size_t n_memb, size_t element_size, is_before_t func)
+{
+    HeapSortHelperHeapify(base, n_memb, element_size, func);
+   
+    for(; 0 < n_memb;)
+    {
+        HeapSortHelperSwap(base, 
+                    HeapSortHelperGetAddress(base, element_size, n_memb - 1),
+                    element_size);
+        
+        n_memb--;
+        HeapSortHelperSiftDown(base, 0, n_memb, element_size, func);
+    }
+}
 /******************************************************************************/
 
-/************************** Internal Functions *******************************/
+/************************** Internal Functions ********************************/
 static void ResetHistorgram(size_t *histagram_arr, size_t histagram_size)
 {
     size_t itr = 0;
@@ -242,4 +267,84 @@ static void MemberSwap(int *x, int *y)
     *x = *y;
     *y = temp;
 }
+
+void HeapSortHelperHeapify(void *base, 
+                            size_t arr_size, size_t element_size, 
+                            is_before_t func)
+{
+    int starting_point = 0;
+
+    assert(NULL != base);
+
+    for(starting_point = (arr_size - 1) / 2;
+            0 <= starting_point; 
+            starting_point--)
+    {
+        HeapSortHelperSiftDown(base, starting_point, 
+                                arr_size, element_size, func);
+    }
+}
+
+void HeapSortHelperSwap(void *data_1, void *data_2, size_t element_size)
+{
+    size_t i = 0;
+    char curr_char = '\0';
+
+    for (i = 0; i < element_size; i++)
+    {
+        curr_char = *((char *)data_1 + i);
+        *((char *)data_1 + i) = *((char *)data_2 + i);
+        *((char *)data_2 + i) = curr_char;
+    }
+}
+
+void HeapSortHelperSiftDown(void *base, size_t index, 
+                            size_t arr_size, size_t element_size, 
+                            is_before_t func)
+{
+    void *big_child = NULL;
+    void *parent = NULL;
+    void *child_1 = NULL;
+    void *child_2 = NULL;
+    size_t index_1 = 2 * index + 1; /* 1st child */
+    size_t index_2 = 2 * index + 2; /* 2nd child */
+
+    /* stop condition 1: if 1st child doesn't exists(end of vector) */
+    if(index_1 >= arr_size)
+    {
+        return;
+    }
+    
+    parent = HeapSortHelperGetAddress(base, element_size, index);
+    child_1 = HeapSortHelperGetAddress(base, element_size, index_1);
+    child_2 = HeapSortHelperGetAddress(base, element_size, index_2);
+
+    /* if 2nd child doesn't exists OR child_2 < child_1 -> go to child_1 */
+    if(arr_size <= index_2 || 
+        func(child_2, child_1, NULL))
+    {
+        big_child = child_1;
+        index = index_1;
+    }
+    /* if child_1 < child_2 */
+    else
+    {
+        big_child = child_2;
+        index = index_2;
+    }
+
+    /* if children are bigger than parent */
+    if(func(parent, big_child, NULL))
+    {
+        HeapSortHelperSwap(parent, big_child, element_size);
+        HeapSortHelperSiftDown(base, index, arr_size, element_size, func);
+    }
+}
+
+void *HeapSortHelperGetAddress(void *base, size_t element_size, size_t index)
+{
+    return ((char *)base + (index * element_size));
+}
+
+
 /******************************************************************************/

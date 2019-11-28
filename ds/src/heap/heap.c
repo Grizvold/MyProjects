@@ -128,6 +128,53 @@ size_t HEAPSize(const heap_t *heap)
 
     return VectorSize(heap->vector);
 }
+
+void *HEAPFind(heap_t *heap, is_match_t match_func, void *data)
+{
+    size_t index = 0;
+    void *temp_node = NULL;
+
+    assert(NULL != heap);
+
+    for(index = 0; HEAPSize(heap) > index; index++)
+    {
+        temp_node = VectorGetItemAddress(heap->vector, index);
+
+        if(match_func(*(void **)temp_node, data))
+        {
+
+            return *(void **)temp_node;
+        }
+    }
+
+    return NULL;
+}
+
+void HEAPRemove(heap_t *heap, is_match_t match_func, void *data)
+{
+    size_t index = 0;
+    void *temp_node = NULL;
+
+    assert(NULL != heap);
+
+    for(index = 0; HEAPSize(heap) > index; index++)
+    {
+        temp_node = VectorGetItemAddress(heap->vector, index);
+
+        /*  if we found requested element: 
+                    swap -> pop from back -> perform swifting   */
+        if(match_func(*(void **)temp_node, data))
+        {
+            HeapHelperSwap(temp_node, 
+                        VectorGetItemAddress(heap->vector, HEAPSize(heap) - 1));
+            VectorPopBack(heap->vector);
+            HeapHelperSiftUp(heap, index);
+            HeapHelperSiftDown(heap, index);
+
+            break;
+        }
+    }
+}
 /******************************************************************************/
 
 
@@ -157,7 +204,7 @@ void HeapHelperSiftUp(heap_t *heap, size_t index)
 
     /* else swap 2 nodes and go up recursively */
     HeapHelperSwap(child, parent);
-    HeapHelperSwap(heap, (index - 1) / 2);
+    HeapHelperSiftUp(heap, (index - 1) / 2);
 }
 
 void HeapHelperSiftDown(heap_t *heap, size_t index)
@@ -180,7 +227,7 @@ void HeapHelperSiftDown(heap_t *heap, size_t index)
     child_2 = VectorGetItemAddress(heap->vector, index_2);
 
     /* if 2nd child doesn't exists OR child_2 < child_1 -> go to child_1 */
-    if(VectorSize(heap->vector) <= child_2 || 
+    if(VectorSize(heap->vector) <= index_2 || 
         HeapHelperIsBefore(heap, child_2, child_1))
     {
         big_child = child_1;
@@ -193,21 +240,19 @@ void HeapHelperSiftDown(heap_t *heap, size_t index)
         index = index_2;
     }
 
-    /* stop condition 2: if my children are smaller than me */
-    if(HeapHelperIsBefore(heap, big_child, parent))
+    /* if children are bigger than parent */
+    if(HeapHelperIsBefore(heap, parent, big_child))
     {
-        return;
+        HeapHelperSwap(parent, big_child);
+        HeapHelperSiftDown(heap, index);
     }
-    
-    HeapHelperSwap(parent, big_child);
-    HeapHelperSiftDown(heap, index);
 }
 
 void HeapHelperSwap(void *ptr_1, void *ptr_2)
 {
-    void *temp_ptr = ptr_1;
-    ptr_1 = ptr_2;
-    ptr_2 = temp_ptr; 
+    size_t temp_ptr = *((size_t *)ptr_1);
+    *((size_t *)ptr_1) = *((size_t *)ptr_2);
+    *((size_t *)ptr_2) = temp_ptr; 
 }
 
 int HeapHelperIsBefore(heap_t *heap, const void *data_1, const void *data_2)

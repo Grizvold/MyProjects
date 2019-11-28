@@ -3,6 +3,16 @@
 
 #include <stddef.h> /* size_t */ 
 
+/******************************************************************************/
+/*                          Typedefs Declaration                              */
+/******************************************************************************/
+typedef int (*is_before_t)(const void *data1, const void *data2, void *param);
+/******************************************************************************/
+
+
+/******************************************************************************/
+/*                          Sort Functions Declaration                        */
+/******************************************************************************/
 /*  Algorithm that works by repeatedly swapping adjacent 
         elements if they are in wrong order.        
     Complexity:
@@ -58,4 +68,8 @@ int CountSort(const int *original_arr, size_t arr_size,
 
 /* */
 int RadixSort(size_t *original_arr, size_t arr_size, size_t n_bits);
+
+/* */
+void HeapSort(void *base, size_t n_memb, size_t ele_size, is_before_t func);
+/******************************************************************************/
 #endif /* __SORT_H__ */

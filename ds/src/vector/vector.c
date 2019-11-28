@@ -14,9 +14,9 @@ struct vector
 	void *base;
 };
 
-vector_t *VectorCreate(size_t element_size, size_t num_of_elements)
+vector_t *VectorCreate(size_t num_of_elements, size_t element_size)
 {
-	vector_t *vector = (vector_t *)malloc(sizeof(vector_t));
+	vector_t *vector = (vector_t *)malloc(sizeof(*vector));
 	if (NULL == vector)
 	{
 		perror("Malloc in VectorCreate failed");
@@ -44,7 +44,7 @@ void *VectorGetItemAddress(vector_t *vector, size_t index)
 
 int VectorPushBack(vector_t *vector, const void *data)
 {
-	float exponential_growth = 1.5;
+	int exponential_growth = 2;
 	
 	if (vector->size == vector->capacity)
 	{
@@ -70,12 +70,12 @@ int VectorPushBack(vector_t *vector, const void *data)
 int VectorPopBack(vector_t *vector)
 {
 	float exponential_decay = 0.75;
-	float new_size = 1.125;
+	int grow_factor = 2;
 	
-	if(vector->size <= (vector->capacity * exponential_decay))
+	if(vector->size == (vector->capacity / grow_factor))
 	{
 		void *new_vector = realloc(vector->base, 
-					vector->element_size * vector->size * new_size);
+				vector->element_size * vector->capacity * exponential_decay);
 		if (NULL == new_vector)
 		{
 			perror("Realloc in VectorPopBack failed");
@@ -84,7 +84,7 @@ int VectorPopBack(vector_t *vector)
 		}
 		
 			vector->base = new_vector;
-			vector->capacity = (vector->element_size * new_size);
+			vector->capacity *= exponential_decay;
 	}
 	
 	vector->size -= 1; 	

@@ -22,7 +22,8 @@ static double cpu_time_used = 0;
 static int int_arr[10] = {0}; 
 static size_t size_t_arr[10] = {0}; 
 static const size_t arr_size = 10; /* update to size of array */
-static const char print_str[] = "============================================="; 
+static const char print_str[] = "=============================================";
+int IsBefore(const void *data_1, const void *data_2, void *param); 
 /******************************************************************************/
 
 /**************************** Test Functions **********************************/
@@ -32,6 +33,7 @@ void InsertionSortTest();
 void SelectionSortTest();
 void CountSortTest();
 void RadixSortTest();
+static void HeapSortTest();
 /******************************************************************************/
 
 int main()
@@ -40,22 +42,25 @@ int main()
     srand(time(NULL));
     
     /* Buble Sort Test */
-    BubleSortTest();
+    /* BubleSortTest(); */
 
     /* Optimized Buble Sort Test */
-    OptimizedBubbleSortTest(); 
+    /* OptimizedBubbleSortTest();  */
 
     /* Insertion Sort Test */
-    InsertionSortTest(); 
+    /* InsertionSortTest();  */
 
     /* Selection Sort Test */
-    SelectionSortTest();
+    /* SelectionSortTest(); */
 
     /* Count Sort Test */
-    CountSortTest(); 
+    /* CountSortTest();  */
 
     /* RadixSort Sort Test */
-    RadixSortTest();
+    /* RadixSortTest(); */
+
+    /* HeapSortTest Sort Test */
+    HeapSortTest();
 
     return 0;
 }
@@ -175,6 +180,28 @@ void RadixSortTest()
     printf("\nTime taken by process: %f\n", cpu_time_used);
     puts(print_str);
 }
+
+static void HeapSortTest()
+{
+    size_t i = 0;
+    size_t ele_size = sizeof(int);
+    clock_t start, end;
+
+    printf("%soriginal input:%s \n", SET_RED_COLOR,RESET_COLOR);
+    for (i = 0 ; i < arr_size ; i++)
+    {
+        int_arr[i] = rand() % 98 ;
+    }
+    PrintIntArr(int_arr, arr_size);
+
+    start = clock();
+    HeapSort(int_arr, arr_size, ele_size, IsBefore);
+    end = clock();
+    
+    printf("%safter sorting:%s \n",SET_RED_COLOR,RESET_COLOR);
+    PrintIntArr(int_arr, arr_size);
+    printf("%stime evaluation: %f%s\n\n", SET_RED_COLOR, (double)(end - start) / CLOCKS_PER_SEC, RESET_COLOR);
+}
 /******************************************************************************/
 
 /************************** Auxiliary Functions *******************************/
@@ -227,5 +254,11 @@ static void PrintArrSizeT(size_t *arr, size_t arr_size)
 
     printf("%ld ", arr[itr]);
     printf("\n");
+}
+
+int IsBefore(const void *data_1, const void *data_2, void *param)
+{
+    (void)param;
+    return *((int *)data_1) < *((int *)data_2);
 }
 /******************************************************************************/

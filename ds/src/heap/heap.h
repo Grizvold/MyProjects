@@ -12,6 +12,7 @@ typedef struct heap heap_t;
         1 if true.
         0 if false. */
 typedef int (*is_before_t)(const void *data_1, const void *data_2, void *param);
+typedef int(*is_match_t)(const void *data_1, const void *data_2);
 /******************************************************************************/
 
 /******************************************************************************/
@@ -25,7 +26,10 @@ heap_t *HEAPCreate(is_before_t func, void *param);
 /*  -Destroys created HEAP. */
 void HEAPDestroy(heap_t *heap);
 
-/*  -Push to the most left child, and perform Sift-Up.  */
+/*  -Push to the most left child, and perform Sift-Up.
+    -Returns status:
+        0 for success.
+        1 for failure.  */
 int HEAPPush(heap_t *heap, const void *data);
 
 /*  -Pops up the <root> of the tree, and perform Sift-Down. */
@@ -41,9 +45,15 @@ void *HEAPPeek(heap_t *heap);
         0 if not empty. */
 int HEAPIsEmpty(const heap_t *heap);
 
+/*  -Returns number of elements in heap.    */
 size_t HEAPSize(const heap_t *heap);
 
+/*  -Find requested data in heap.
+    -Returns data of that element. */
+void *HEAPFind(heap_t *heap, is_match_t match_func, void *data);
 
+/*  -Removes requested element from heap.   */
+void HEAPRemove(heap_t *heap, is_match_t match_func, void *data); 
 /******************************************************************************/
 
 #endif /* __HEAP_H__ */

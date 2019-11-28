@@ -34,6 +34,7 @@ void SelectionSortTest();
 void CountSortTest();
 void RadixSortTest();
 static void HeapSortTest();
+static void QuickSortTest();
 /******************************************************************************/
 
 int main()
@@ -60,7 +61,10 @@ int main()
     /* RadixSortTest(); */
 
     /* HeapSortTest Sort Test */
-    HeapSortTest();
+    /* HeapSortTest(); */
+
+    /* QuickSortTest Sort Test */
+    QuickSortTest();
 
     return 0;
 }
@@ -201,6 +205,24 @@ static void HeapSortTest()
     printf("%safter sorting:%s \n",SET_RED_COLOR,RESET_COLOR);
     PrintIntArr(int_arr, arr_size);
     printf("%stime evaluation: %f%s\n\n", SET_RED_COLOR, (double)(end - start) / CLOCKS_PER_SEC, RESET_COLOR);
+}
+
+static void QuickSortTest()
+{
+    printf("\n\t%sQuickSortTest Sort Algo%s\n", SET_RED_COLOR, RESET_COLOR);
+    puts(print_str);
+    ArrValueRandomizer(int_arr, arr_size);
+    PrintIntArr(int_arr, arr_size);
+    /* calculate time taken by process */
+    start_time = clock();
+    QuickSort(int_arr, arr_size, sizeof(int), &IsBefore);
+    end_time = clock();
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+
+
+    PrintIntArr(int_arr, arr_size);
+    printf("\nTime taken by process: %f\n", cpu_time_used);
+    puts(print_str);
 }
 /******************************************************************************/
 

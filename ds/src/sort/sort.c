@@ -14,14 +14,25 @@ static void CountRadix(size_t *original_arr, size_t *result_arr,
                         size_t arr_size, size_t *histagram_arr,  
                         size_t n_bits, size_t itr);
 
+static void HelperSwap(void *data_1, void *data_2, size_t element_size);
+static void *HelperGetAddress(void *base, size_t element_size, size_t index);
+
 static void HeapSortHelperHeapify(void *base, 
                             size_t arr_size, size_t element_size, 
                             is_before_t func);
-static void HeapSortHelperSwap(void *data_1, void *data_2, size_t element_size);
 static void HeapSortHelperSiftDown(void *base, size_t index, 
                             size_t arr_size, size_t element_size, 
                             is_before_t func);
-static void *HeapSortHelperGetAddress(void *base, size_t element_size, size_t index);
+static void QuickSortHelper(void *base, 
+                            ptrdiff_t low_index, 
+                            ptrdiff_t high_index, 
+                            size_t element_size, 
+                            is_before_t func); 
+static ptrdiff_t QuickSortPartition(void *base, 
+                                ptrdiff_t low_index, 
+                                ptrdiff_t high_index, 
+                                size_t element_size,
+                                is_before_t func); 
 /******************************************************************************/
 
 /************************** Sorting Functions *********************************/
@@ -204,13 +215,18 @@ void HeapSort(void *base, size_t n_memb, size_t element_size, is_before_t func)
    
     for(; 0 < n_memb;)
     {
-        HeapSortHelperSwap(base, 
-                    HeapSortHelperGetAddress(base, element_size, n_memb - 1),
+        HelperSwap(base, 
+                    HelperGetAddress(base, element_size, n_memb - 1),
                     element_size);
         
         n_memb--;
         HeapSortHelperSiftDown(base, 0, n_memb, element_size, func);
     }
+}
+
+void QuickSort(void *base, size_t n_memb, size_t ele_size, is_before_t func)
+{
+    QuickSortHelper(base, 0, n_memb -1, ele_size, func); 
 }
 /******************************************************************************/
 
@@ -285,7 +301,7 @@ void HeapSortHelperHeapify(void *base,
     }
 }
 
-void HeapSortHelperSwap(void *data_1, void *data_2, size_t element_size)
+void HelperSwap(void *data_1, void *data_2, size_t element_size)
 {
     size_t i = 0;
     char curr_char = '\0';
@@ -315,9 +331,9 @@ void HeapSortHelperSiftDown(void *base, size_t index,
         return;
     }
     
-    parent = HeapSortHelperGetAddress(base, element_size, index);
-    child_1 = HeapSortHelperGetAddress(base, element_size, index_1);
-    child_2 = HeapSortHelperGetAddress(base, element_size, index_2);
+    parent = HelperGetAddress(base, element_size, index);
+    child_1 = HelperGetAddress(base, element_size, index_1);
+    child_2 = HelperGetAddress(base, element_size, index_2);
 
     /* if 2nd child doesn't exists OR child_2 < child_1 -> go to child_1 */
     if(arr_size <= index_2 || 
@@ -336,15 +352,73 @@ void HeapSortHelperSiftDown(void *base, size_t index,
     /* if children are bigger than parent */
     if(func(parent, big_child, NULL))
     {
-        HeapSortHelperSwap(parent, big_child, element_size);
+        HelperSwap(parent, big_child, element_size);
         HeapSortHelperSiftDown(base, index, arr_size, element_size, func);
     }
 }
 
-void *HeapSortHelperGetAddress(void *base, size_t element_size, size_t index)
+void *HelperGetAddress(void *base, size_t element_size, size_t index)
 {
     return ((char *)base + (index * element_size));
 }
 
+static void QuickSortHelper(void *base, 
+                            ptrdiff_t low_index, 
+                            ptrdiff_t high_index, 
+                            size_t element_size, 
+                            is_before_t func)
+{
+    ptrdiff_t partition_var = 0;
+
+
+    if(low_index < high_index)
+    {
+        partition_var = QuickSortPartition(base, 
+                                            low_index, 
+                                            high_index, 
+                                            element_size,
+                                            func);
+        QuickSortHelper(base, 
+                        low_index,
+                        partition_var - 1,
+                        element_size, func);
+        QuickSortHelper(base, 
+                        partition_var + 1, 
+                        high_index, 
+                        element_size, 
+                        func);
+    }
+}
+
+static ptrdiff_t QuickSortPartition(void *base, 
+                                ptrdiff_t low_index, 
+                                ptrdiff_t high_index, 
+                                size_t element_size,
+                                is_before_t func) 
+{
+    void *pivot = NULL;
+    ptrdiff_t i = 0;
+    ptrdiff_t j = 0;
+
+    pivot = HelperGetAddress(base, element_size, high_index);
+    i = low_index - 1;
+
+    for (j = low_index; high_index - 1 >=  j; j++)
+    {
+        if(func(HelperGetAddress(base, element_size, j), pivot, NULL))
+        {
+            i++;
+            HelperSwap(HelperGetAddress(base, element_size, i),
+                        HelperGetAddress(base, element_size, j),
+                        element_size);
+        }        
+    }
+
+    HelperSwap(HelperGetAddress(base, element_size, i + 1),
+                HelperGetAddress(base, element_size, high_index), 
+                element_size);
+
+    return (i + 1);
+}
 
 /******************************************************************************/

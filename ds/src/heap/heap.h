@@ -7,6 +7,7 @@
 /*                          Typedefs Declaration                              */
 /******************************************************************************/
 typedef struct heap heap_t;
+
 /*  -User is_before function.
     -Returns: if data_1 < data_2:
         1 if true.
@@ -18,6 +19,7 @@ typedef int(*is_match_t)(const void *data_1, const void *data_2);
 /******************************************************************************/
 /*                          Heap Functions Declaration                        */
 /******************************************************************************/
+
 /*  -Creates new HEAP.
     -Returns pointer to created HEAP.
         In case of failure returns NULL.    */

@@ -43,25 +43,25 @@ int main()
     srand(time(NULL));
     
     /* Buble Sort Test */
-    /* BubleSortTest(); */
+    BubleSortTest();
 
     /* Optimized Buble Sort Test */
-    /* OptimizedBubbleSortTest();  */
+    OptimizedBubbleSortTest(); 
 
     /* Insertion Sort Test */
-    /* InsertionSortTest();  */
+    InsertionSortTest(); 
 
     /* Selection Sort Test */
-    /* SelectionSortTest(); */
+    SelectionSortTest();
 
     /* Count Sort Test */
-    /* CountSortTest();  */
+    CountSortTest(); 
 
     /* RadixSort Sort Test */
-    /* RadixSortTest(); */
+    RadixSortTest();
 
     /* HeapSortTest Sort Test */
-    /* HeapSortTest(); */
+    HeapSortTest();
 
     /* QuickSortTest Sort Test */
     QuickSortTest();

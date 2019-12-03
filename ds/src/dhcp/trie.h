@@ -17,7 +17,7 @@ typedef struct trie trie_t;
 
 trie_t *TrieCreate(size_t height);
 
-int TrieInsert(trie_t *trie, uint32_t addr);
+int TrieInsert(trie_t *trie, uint32_t addr, void *data);
 
 int TrieFindNextFree(trie_t *trie, uint32_t *addr);
 

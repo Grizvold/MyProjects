@@ -21,8 +21,10 @@ typedef struct trie_node
 struct trie
 {
     size_t height;
-    trie_node_t root;
+    trie_node_t *root;
 };
+
+typedef enum{SUCCESS = 0, FAILURE} status_t;
 /******************************************************************************/
 
 /******************************************************************************/
@@ -37,6 +39,11 @@ static trie_node_t *TrieCreateNode(size_t height, void *data);
         2^(height + 1) - 2. Since height starts from 0. 
     -Return number of free children.    */
 static size_t GetFreeChildrenNum(size_t height);
+
+static trie_node_t *HelperRecursiveInsert(trie_node_t *node,
+                                    void *data,
+                                    uint32_t path,
+                                    size_t height);
 /******************************************************************************/
 
 /******************************************************************************/
@@ -52,19 +59,29 @@ trie_t *TrieCreate(size_t height)
         new_trie = (trie_t*)malloc(sizeof(*new_trie));
         if (NULL == new_trie)
         {
-            perror("Malloc failed in TrieCreate.\n");
+            perror("Malloc failed in TrieCreate trie.\n");
             break;
         }
 
-        new_trie->root.free_children_num = GetFreeChildrenNum(height);
-        new_trie->root.children[0] = NULL;
-        new_trie->root.children[1] = NULL;
-        new_trie->root.data = NULL;
+        new_trie->root = (trie_node_t *)malloc(sizeof(*new_trie->root));
+        if(NULL != new_trie->root)
+        {
+            perror("Malloc failed in TrieCreate root.\n");
+            break;
+        }
+
+        new_trie->root->free_children_num = GetFreeChildrenNum(height);
+        new_trie->root->children[0] = NULL;
+        new_trie->root->children[1] = NULL;
+        new_trie->root->data = NULL;
 
         new_trie->height = height;
     
         return new_trie;
     }
+
+    free(new_trie->root);
+    new_trie->root = NULL;
 
     free(new_trie);
     new_trie = NULL;
@@ -74,7 +91,12 @@ trie_t *TrieCreate(size_t height)
 
 int TrieInsert(trie_t *trie, uint32_t addr)
 {
-    
+    assert(NULL != trie);
+
+    trie->root = HelperRecursiveInsert(trie->root,
+                                        data,
+                                        addr,
+                                        trie->height);
 }
 
 int TrieFindNextFree(trie_t *trie, uint32_t *addr)
@@ -127,5 +149,13 @@ static trie_node_t *TrieCreateNode(size_t height, void *data)
 static size_t GetFreeChildrenNum(size_t height)
 {
     return ((1UL << (height + 1)) - 2);
+}
+
+static trie_node_t *HelperRecursiveInsert(trie_node_t *node,
+                                    void *data,
+                                    uint32_t path,
+                                    size_t height)
+{
+
 }
 /******************************************************************************/

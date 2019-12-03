@@ -84,7 +84,7 @@ int HEAPPush(heap_t *heap, const void *data)
 
     status = VectorPushBack(heap->vector, &data);
 
-    if(1 < HEAPSize(heap) && SUCCESS == status)
+    if(SUCCESS == status)
     {
         /* since index starts from 0 -> need "-1" */
         HeapHelperSiftUp(heap, HEAPSize(heap) - 1);
@@ -162,7 +162,7 @@ void HEAPRemove(heap_t *heap, is_match_t match_func, void *data)
         temp_node = VectorGetItemAddress(heap->vector, index);
 
         /*  if we found requested element: 
-                    swap -> pop from back -> perform swifting   */
+                    swap -> pop from back -> perform sifting */
         if(match_func(*(void **)temp_node, data))
         {
             HeapHelperSwap(temp_node, 

@@ -4,13 +4,13 @@
 ROOT_DIR = ../../..
 
 #PROJ_SRCS = $(shell xmlstarlet select -t -v //Unit/@filename xx.cbp | grep -e '\.c')
-PROJ_SRCS = trie.c trie_test.c
+PROJ_SRCS = dhcp.c dhcp_test.c
 
 # list of directories containing header files
-PROJ_INC_DIR =
+PROJ_INC_DIR = ../trie
 
 # the executable file
-PROJ_OUT = trie_test.out
+PROJ_OUT = dhcp_test.out
 
 # list of compiler flags (prepended with "-" sign)
 PROJ_CFLAGS = -Wunused-but-set-variable
@@ -18,7 +18,7 @@ PROJ_CFLAGS = -Wunused-but-set-variable
 PROJ_MACROS = 
 
 # additional object files (created by other projects)
-PROJ_ADD_OBJS =
+PROJ_ADD_OBJS = trie.o
 
 # additional libraries
 PROJ_LIBS =
@@ -27,6 +27,6 @@ PROJ_LIBS =
 PROJ_LDFLAGS =
 
 # list of projects (makefiles) this project depends on
-PROJ_DEPENDS  =
+PROJ_DEPENDS  = ../trie/Makefile
 
 include $(ROOT_DIR)/Make/Project.mak

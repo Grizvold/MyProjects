@@ -32,9 +32,9 @@ int main()
 	array[0].sched = sched;
 	array[1].msg = "bye";
 	array[1].sched = sched;
-	array[2].msg = "jakoubovitsh";
+	array[2].msg = "msg_2";
 	array[2].sched = sched;
-	array[3].msg = "hadas";
+	array[3].msg = "msg_1";
 	array[3].sched = sched;
 	array[4].msg = "world";
 	array[4].sched = sched;

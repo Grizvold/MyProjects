@@ -4,15 +4,17 @@
 #include <stdio.h>  /* perror       */
 
 #include "trie.h" /* Trie API */
-#include "dhcp.h" /* DHCP API */  
-
-
+#include "dhcp.h" /* DHCP API */
 
 /******************************************************************************/
 /*                          Typedefs Declaration                              */
 /******************************************************************************/
 
-typedef enum{SUCCESS = 0, FAILURE} status_t;
+typedef enum
+{
+    SUCCESS = 0,
+    FAILURE
+} status_t;
 
 struct dhcp
 {
@@ -30,7 +32,6 @@ struct dhcp
 static size_t CalculateHeight(uint32_t subnet_mask);
 /******************************************************************************/
 
-
 /******************************************************************************/
 /*                          DHCP Functions Definition                         */
 /******************************************************************************/
@@ -43,15 +44,16 @@ dhcp_t *DHCPCreate(uint32_t net_add, uint32_t subnet_mask)
     while (1)
     {
         new_DHCP = (dhcp_t *)malloc(sizeof(*new_DHCP));
-        if(NULL == new_DHCP)
+        if (NULL == new_DHCP)
         {
             perror("Malloc in DHCPCreate of new_DHCP failed\n");
-            break;
+            return NULL;
         }
 
         trie_height = CalculateHeight(subnet_mask);
+
         new_DHCP->trie = TrieCreate(trie_height);
-        if(NULL == new_DHCP->trie)
+        if (NULL == new_DHCP->trie)
         {
             perror("Malloc in DHCPCreate of new_DHCP->trie failed\n");
             break;
@@ -61,14 +63,12 @@ dhcp_t *DHCPCreate(uint32_t net_add, uint32_t subnet_mask)
         new_DHCP->subnet_mask = subnet_mask;
 
         /* save 3 addresses aside   */
-        /*      network address     */    
+        /*      network address     */
         TrieInsert(new_DHCP->trie, 0, NULL);
         /*      broadcast address     */
         TrieInsert(new_DHCP->trie, (1U << trie_height) - 1, NULL);
         /*      server address     */
         TrieInsert(new_DHCP->trie, (1U << trie_height) - 2, NULL);
-
-        return new_DHCP;
     }
 
     free(new_DHCP->trie);
@@ -77,7 +77,7 @@ dhcp_t *DHCPCreate(uint32_t net_add, uint32_t subnet_mask)
     free(new_DHCP);
     new_DHCP = NULL;
 
-    return NULL;
+    return new_DHCP;
 }
 
 int DHCPAllocIp(dhcp_t *dhcp, uint32_t *addr)
@@ -90,30 +90,29 @@ int DHCPAllocIp(dhcp_t *dhcp, uint32_t *addr)
 
     /* find next free <node> */
     status = TrieFindNextFree(dhcp->trie, &new_ip);
-    if(FAILURE == status)
+    if (FAILURE == status)
     {
         return FAILURE;
     }
 
     /* if free node was found -> create and insert */
     status = TrieInsert(dhcp->trie, new_ip, NULL);
-    if(FAILURE == status)
+    if (FAILURE == status)
     {
         return FAILURE;
     }
 
     *addr = dhcp->network_address | new_ip;
-    
-    return status;
+
+    return SUCCESS;
 }
 
 void DHCPRelease(dhcp_t *dhcp, uint32_t addr)
 {
-    
     assert(NULL != dhcp);
 
     addr = addr - dhcp->network_address;
-    
+
     TrieRemove(dhcp->trie, addr);
 }
 
@@ -124,7 +123,7 @@ void DHCPDestroy(dhcp_t *dhcp)
     TrieDestroy(dhcp->trie);
 
     free(dhcp);
-    dhcp=NULL;
+    dhcp = NULL;
 }
 /******************************************************************************/
 

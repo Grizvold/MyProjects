@@ -13,11 +13,11 @@ static const char *SET_BLUE_COLOR = "\033[0;34m";
 static const char *RESET_COLOR = "\033[0m";
 
 /* 	-refers to SIGUSR2.	*/
-static sig_atomic_t pong_value = 0;
+static sig_atomic_t ping_value = 0;
 
 /* 	-sa_handler for SIGUSR2
-	-set pong_value to 1 	*/
-static void my_handler_2();
+	-set ping_value to 1 	*/
+static void HandleSIGUSR2();
 
 /* 	-Ping-Pong using fork() & exec().	*/
 static void EX2();
@@ -34,9 +34,9 @@ int main()
 /*                          Internal Component Definition                     */
 /******************************************************************************/
 
-static void my_handler_2()
+static void HandleSIGUSR2()
 {
-    pong_value = 1;
+    ping_value = 1;
 }
 /******************************************************************************/
 
@@ -52,14 +52,14 @@ static void EX2()
     memset(&sig_action_2, '\0', sizeof(sig_action_2));
 
     /* set sa_handle function to my functions */
-    sig_action_2.sa_handler = &my_handler_2;
+    sig_action_2.sa_handler = &HandleSIGUSR2;
 
     /* returne value: 	
 					0  success
 					-1 failure  */
     if (0 > sigaction(SIGUSR2, &sig_action_2, NULL))
     {
-        perror("sigaction_2 error\n");
+        perror("sigaction_2 error");
 
         return;
     }
@@ -68,10 +68,12 @@ static void EX2()
     if(0 > child_pid)
     {
         perror("failed in fork\n");
+
+        return;
     }
     else if(0 == child_pid) /* fork was successful, currently at child */
     {
-        if(0 > execlp("pong_ex_2.out", "pong_ex_2.out"))
+        if(0 > execlp("pong.out", "", NULL))
         {
             perror("execlp failed \n");
 
@@ -81,12 +83,12 @@ static void EX2()
 
     while (1)
     {
-        if (1 == pong_value)
+        if (1 == ping_value)
         {
             printf("%sPING%s current process id: %d\n", SET_BLUE_COLOR,
                                                         RESET_COLOR,
                                                         getpid());
-            pong_value = 0;
+            ping_value = 0;
             sleep(1);
             kill(child_pid, SIGUSR1);
         }

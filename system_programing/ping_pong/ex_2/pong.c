@@ -13,7 +13,7 @@ static const char *SET_RED_COLOR = "\033[0;31m";
 static const char *RESET_COLOR = "\033[0m";
 
 /* 	-refers to SIGUSR1.	*/
-static int pong_value = 0;
+static sig_atomic_t pong_value = 0;
 
 /* 	-sa_handler for SIGUSR1
 	-set pong_value to 1 	*/

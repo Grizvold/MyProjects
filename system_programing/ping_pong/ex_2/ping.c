@@ -20,12 +20,12 @@ static sig_atomic_t ping_value = 0;
 static void HandleSIGUSR2();
 
 /* 	-Ping-Pong using fork() & exec().	*/
-static void EX2();
+static void SignalPing();
 /******************************************************************************/
 
 int main()
 {
-    EX2();
+    SignalPing();
 
     return 0;
 }
@@ -44,14 +44,13 @@ static void HandleSIGUSR2()
 /*                          Ping_Pong Functions Definition                    */
 /******************************************************************************/
 
-static void EX2()
+static void SignalPing()
 {
     struct sigaction sig_action_2;
     pid_t child_pid;
 
     memset(&sig_action_2, '\0', sizeof(sig_action_2));
 
-    /* set sa_handle function to my functions */
     sig_action_2.sa_handler = &HandleSIGUSR2;
 
     /* returne value: 	
@@ -67,20 +66,20 @@ static void EX2()
     child_pid = fork();
     if(0 > child_pid)
     {
-        perror("failed in fork\n");
+        perror("failed in fork");
 
         return;
     }
     else if(0 == child_pid) /* fork was successful, currently at child */
     {
-        if(0 > execlp("pong.out", "", NULL))
+        if (0 > execlp("pong.out", "", NULL))
         {
-            perror("execlp failed \n");
+            perror("execlp failed");
 
             return;
         }
     }
-
+     
     while (1)
     {
         if (1 == ping_value)

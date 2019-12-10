@@ -1,3 +1,11 @@
+/******************************************************************************/
+/* Name: Ruslan Gorbaty														  */
+/* Reviewer: Maor Moyal														  */
+/* Group: OL767															      */
+/* Description:	Implementation of exercise 3, exchange SIGUSR1 and SIGUSR2
+				between processes.                                            */
+/******************************************************************************/
+
 #define _POSIX_C_SOURCE 199309L
 #include <signal.h> 	/* SIGINT 	*/
 #include <sys/types.h>  /* pid_t  	*/
@@ -23,7 +31,7 @@ static void HandleSIGUSR2(int , siginfo_t *, void *);
 
 int main(int argc, char **argv)
 {
-    pid_t ping_pid = atoi(argv[1]);
+    pid_t ping_pid = 0;
 
     struct sigaction sig_action2;
 
@@ -31,6 +39,8 @@ int main(int argc, char **argv)
     sig_action2.sa_flags = SA_SIGINFO;
     (void)argc;
 
+    ping_pid = atoi(argv[1]);
+    
     if(0 > sigaction(SIGUSR2, &sig_action2, NULL))
     {
         perror("sigaction_2 error");

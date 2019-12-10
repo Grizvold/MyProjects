@@ -1,3 +1,11 @@
+/******************************************************************************/
+/* Name: Ruslan Gorbaty														  */
+/* Reviewer: Maor Moyal														  */
+/* Group: OL767															      */
+/* Description:	Implementation of exercise 1, send signals SIGUSR1 and SIGUSR2
+				between parent and child.								      */
+/******************************************************************************/
+
 #define _POSIX_C_SOURCE 199309L
 #include <signal.h> 	/* SIGINT 	*/
 #include <sys/types.h>  /* pid_t  	*/
@@ -53,8 +61,8 @@ static void SignalPong()
 	
 	sig_action_1.sa_handler = &HandleSIGUSR1;
 
-	/* returne value: 	
-					0  success
+	/* return value: 	
+					 0 success
 					-1 failure  */
 	if (0 > sigaction(SIGUSR1, &sig_action_1, NULL))
 	{

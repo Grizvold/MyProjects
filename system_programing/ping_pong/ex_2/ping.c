@@ -1,3 +1,11 @@
+/******************************************************************************/
+/* Name: Ruslan Gorbaty														  */
+/* Reviewer: Maor Moyal														  */
+/* Group: OL767															      */
+/* Description:	Implementation of exercise 2, exchange SIGUSR1 and SIGUSR2
+				between processes when parent process forks and executes.     */
+/******************************************************************************/
+
 #define _POSIX_C_SOURCE 199309L
 #include <signal.h>    /* SIGINT 	*/
 #include <sys/types.h> /* pid_t  	*/
@@ -53,8 +61,8 @@ static void SignalPing()
 
     sig_action_2.sa_handler = &HandleSIGUSR2;
 
-    /* returne value: 	
-					0  success
+    /* return value: 	
+					 0 success
 					-1 failure  */
     if (0 > sigaction(SIGUSR2, &sig_action_2, NULL))
     {
@@ -72,12 +80,10 @@ static void SignalPing()
     }
     else if(0 == child_pid) /* fork was successful, currently at child */
     {
-        if (0 > execlp("pong.out", "", NULL))
-        {
-            perror("execlp failed");
+        execlp("pong.out", "", NULL);
+        perror("execlp failed");
 
-            return;
-        }
+        return;
     }
      
     while (1)

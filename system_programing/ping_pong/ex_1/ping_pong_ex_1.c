@@ -1,8 +1,16 @@
+/******************************************************************************/
+/* Name: Ruslan Gorbaty														  */
+/* Reviewer: Maor Moyal														  */
+/* Group: OL767															      */
+/* Description:	Implementation of exercise 1, send signals SIGUSR1 and SIGUSR2
+				between parent and child.								      */
+/******************************************************************************/
+
 #define _POSIX_C_SOURCE 199309L
 #include <signal.h> 	/* SIGINT 	*/
 #include <sys/types.h>  /* pid_t  	*/
 #include <stdio.h>		/* printf 	*/
-#include <string.h> 	/*	memset	*/
+#include <string.h> 	/* memset	*/
 #include <unistd.h>		/* getpid/getppid */
 
 
@@ -72,28 +80,31 @@ static void EX1()
 	sig_action_1.sa_handler = &my_handler_1;
 	sig_action_2.sa_handler = &my_handler_2;
 
-	/* returne value: 	
-					0  success
+	/* return value: 	
+					 0 success
 					-1 failure  */
 	if (0 > sigaction(SIGUSR1, &sig_action_1, NULL))
 	{
 		perror("sigaction_1 error\n");
+
 		return;
 	}
+
 	if (0 > sigaction(SIGUSR2, &sig_action_2, NULL))
 	{
 		perror("sigaction_2 error\n");
+		
 		return;
 	}
 
 	pid = fork();
-	/* first signal */
-	kill(pid, SIGUSR2);
+
+	kill(pid, SIGUSR2); /* first signal */
 
 	while (1)
 	{
-		if (0 == pid)
-		{ /*son running here*/
+		if (0 == pid) /* son running here */
+		{ 
 			p_pid = getppid();
 
 			if (1 == ping_value)
@@ -106,7 +117,7 @@ static void EX1()
 				kill(p_pid, SIGUSR1);
 			}
 		}
-		else if (pid > 0) /*parent will run here*/
+		else if (pid > 0) /* parent will run here */
 		{
 
 			if (1 == pong_value)
@@ -119,9 +130,10 @@ static void EX1()
 				kill(pid, SIGUSR2);
 			}
 		}
-		else /*fork has failed*/
+		else /* fork has failed */
 		{
 			printf("failed in fork\n");
+			break;
 		}
 	}
 }

@@ -1,3 +1,11 @@
+/******************************************************************************/
+/* Name: Ruslan Gorbaty														  */
+/* Reviewer: Maor Moyal														  */
+/* Group: OL767															      */
+/* Description:	Implementation of exercise 3, exchange SIGUSR1 and SIGUSR2
+				between processes.                                            */
+/******************************************************************************/
+
 #define _POSIX_C_SOURCE 199309L
 #include <signal.h> 	/* SIGINT 	*/
 #include <sys/types.h>  /* pid_t  	*/

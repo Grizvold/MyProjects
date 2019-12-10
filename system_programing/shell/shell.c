@@ -117,6 +117,7 @@ static void ShellByForkExec()
         if (0 > process_id)
         {
             perror("Error in forking \n");
+            exit(1);
             break;
         }
         /* if process id = 0 -> we are at child process */
@@ -125,7 +126,8 @@ static void ShellByForkExec()
             execvp_return_value = execvp(*args, args);
             if(0 > execvp_return_value)
             {
-                perror("execvp failed in ShellByForkExec\n");                
+                perror("execvp failed in ShellByForkExec\n");
+                exit(1);                
             }
             /* waite untill wait return process id child  */
             while (wait(&wait_status) != process_id)

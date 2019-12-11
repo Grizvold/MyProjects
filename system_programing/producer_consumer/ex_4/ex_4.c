@@ -3,17 +3,17 @@
 /* Reviewer: Hadas Jakoubovitsh                                               */
 /* Group: OL767                                                               */
 /* Description: Implementation of exercises:
-                                    3. M producers N comsumers 
-                                        1 mutex + 1 semaphore                 */
+                                    4. M producers N comsumers 
+                                        1 mutex + 2 semaphore                 */
 /******************************************************************************/
 
-#include <stdio.h>   /* printf          */
-#include <stdlib.h>  /* rand            */
-#include <unistd.h>  /* pthread_t,pthread_mutex_t       */
-#include <pthread.h> /* pthread_create, pthread_detach, pthread_mutex_lock   */
-#include <semaphore.h> /* semaphore */
+#include <semaphore.h>  /* semaphore */
+#include <stdio.h>      /* printf          */
+#include <stdlib.h>     /* rand            */
+#include <unistd.h>     /* pthread_t,pthread_mutex_t       */
+#include <pthread.h>    /* pthread_create, pthread_detach, pthread_mutex_lock */
 
-#include "dll.h" /* Based on DLL ADT */
+#include "cir_buffer.h" /* FSQ */
 
 /******************************************************************************/
 /*                          Internal Component Declaration                    */
@@ -51,11 +51,12 @@ static void ProducerConsumer()
 {
     size_t i = 0;
     int status = 0;
+    size_t cir_buffer_capacity = 30;
     static pthread_t producer_th_arr[PRODUCER_NUM];
     static pthread_t consumer_th_arr[CONSUMER_NUM];
-    static dll_t *dll_temp = NULL;
+    static cir_buffer_t *cir_buffer = NULL;
 
-    dll_temp = DLLCreate();
+    cir_buffer = CBCreate(cir_buffer_capacity);
     sem_init(&semaphore_1, 0, 0);
 
     for (i = 0; i < PRODUCER_NUM; i++)
@@ -64,7 +65,7 @@ static void ProducerConsumer()
         {
             status = pthread_create(&producer_th_arr[i], NULL,
                                     &ProducerThread,
-                                    dll_temp);
+                                    cir_buffer);
         } while (status != 0);
     }
 
@@ -74,7 +75,7 @@ static void ProducerConsumer()
         {
             status = pthread_create(&consumer_th_arr[i], NULL,
                                     &ConsumerThread,
-                                    dll_temp);
+                                    cir_buffer);
         } while (status != 0);
     }
 
@@ -88,26 +89,28 @@ static void ProducerConsumer()
         pthread_join(consumer_th_arr[i], NULL);
     }
 
-    DLLDestroy(dll_temp);
+    CBDestroy(cir_buffer);
 }
 
-static void *ProducerThread(void *dll_list)
+static void *ProducerThread(void *cir_buffer)
 {
     size_t element = 0;
     size_t minimum_number = 1;
     size_t max_number = 100;
-    size_t dll_size = 0;
 
     while (1)
     {
         pthread_mutex_lock(&mutex_1);
 
         element = rand() % (max_number + 1 - minimum_number) + minimum_number;
-        DLLPushFront(dll_list, (void *)element);
-        dll_size = DLLSize(dll_list);
-        printf("%sProducer DLL Element:%s %lu\n", SET_BLUE_COLOR, RESET_COLOR, element);
-        printf("%sProducer DLL Size:%s %lu\n", SET_BLUE_COLOR, RESET_COLOR, dll_size);
-
+        if(sizeof(size_t) != CBWrite(cir_buffer, &element, sizeof(size_t)))
+        {
+            perror("CBWrite failed \n");
+            break;
+        }
+        printf("%sProducer CIRB Element:%s %lu\n", SET_BLUE_COLOR, 
+                                                    RESET_COLOR, 
+                                                    element);
         sem_post(&semaphore_1);
         pthread_mutex_unlock(&mutex_1);
     }
@@ -115,20 +118,23 @@ static void *ProducerThread(void *dll_list)
     return NULL;
 }
 
-static void *ConsumerThread(void *dll_list)
+static void *ConsumerThread(void *cir_buffer)
 {
     size_t element = 0;
-    size_t dll_size = 0;
 
     while (1)
     {
         sem_wait(&semaphore_1);
         pthread_mutex_lock(&mutex_1);
 
-        element = (size_t)DLLPopBack(dll_list);
-        dll_size = DLLSize(dll_list);
-        printf("%sConsumer DLL element:%s %lu\n", SET_RED_COLOR, RESET_COLOR, element);
-        printf("%sConsumer DLL size:%s %lu\n", SET_RED_COLOR, RESET_COLOR, dll_size);
+        if(sizeof(size_t) != CBRead(cir_buffer, &element, sizeof(size_t)))
+        {
+            perror("CBRead failed \n");
+            break;
+        }
+        printf("%sConsumer CIRB element:%s %lu\n", SET_RED_COLOR, 
+                                                    RESET_COLOR, 
+                                                    element);
 
         pthread_mutex_unlock(&mutex_1);   
     }

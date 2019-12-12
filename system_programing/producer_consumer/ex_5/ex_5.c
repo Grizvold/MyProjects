@@ -3,8 +3,8 @@
 /* Reviewer: Hadas Jakoubovitsh                                               */
 /* Group: OL767                                                               */
 /* Description: Implementation of exercises:
-                                    4. M producers N comsumers 
-                                        1 mutex + 2 semaphore                 */
+                                    5. M producers N comsumers 
+                                        2 mutex + 2 semaphore                 */
 /******************************************************************************/
 
 #include <semaphore.h>  /* semaphore */
@@ -32,7 +32,8 @@ static void *ProducerThread(void *data);
 
 static void *ConsumerThread(void *data);
 
-static pthread_mutex_t mutex_1 = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex_read = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex_write = PTHREAD_MUTEX_INITIALIZER;
 static sem_t semaphore_write;
 static sem_t semaphore_read;
 /******************************************************************************/
@@ -92,6 +93,8 @@ static void ProducerConsumer()
     }
 
     CBDestroy(cir_buffer);
+    sem_destroy(&semaphore_read);
+    sem_destroy(&semaphore_write);
 }
 
 static void *ProducerThread(void *cir_buffer)
@@ -103,7 +106,7 @@ static void *ProducerThread(void *cir_buffer)
     while (1)
     {
         sem_wait(&semaphore_write);
-        pthread_mutex_lock(&mutex_1);
+        pthread_mutex_lock(&mutex_write);
 
         element = rand() % (max_number + 1 - minimum_number) + minimum_number;
         if(sizeof(size_t) != CBWrite(cir_buffer, &element, sizeof(size_t)))
@@ -116,7 +119,7 @@ static void *ProducerThread(void *cir_buffer)
                                                                 element,
                                                                 pthread_self());
         sem_post(&semaphore_read);
-        pthread_mutex_unlock(&mutex_1);
+        pthread_mutex_unlock(&mutex_write);
     }
 
     return NULL;
@@ -129,7 +132,7 @@ static void *ConsumerThread(void *cir_buffer)
     while (1)
     {
         sem_wait(&semaphore_read);
-        pthread_mutex_lock(&mutex_1);
+        pthread_mutex_lock(&mutex_read);
 
         if(sizeof(size_t) != CBRead(cir_buffer, &element, sizeof(size_t)))
         {
@@ -142,7 +145,7 @@ static void *ConsumerThread(void *cir_buffer)
                                                                 pthread_self());
 
         sem_post(&semaphore_write);
-        pthread_mutex_unlock(&mutex_1);   
+        pthread_mutex_unlock(&mutex_read);   
     }
 
     return NULL;

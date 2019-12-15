@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Name: Ruslan Gorbaty                                                       */
-/* Reviewer: Hadas Jakoubovitsh                                               */
+/* Reviewer: Shai Roth                                              	      */
 /* Group: OL767                                                               */
 /* Description: Implementation of exercises:
                                     4. M producers N comsumers 

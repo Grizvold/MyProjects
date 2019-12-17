@@ -2,21 +2,21 @@
 /* Name: Ruslan Gorbaty                                                       */
 /* Reviewer: Sigal Galker                                                     */
 /* Group: OL767                                                               */
-/* Description: Program implementation, write every time-interval to file.    */
+/* Description: MakeMeImmortal implementation & LetMeDie.                     */
 /******************************************************************************/
 
-#define _POSIX_C_SOURCE 199309L /* required for sigaction */
-#include <stddef.h>     /* size_t   */
-#include <pthread.h>
-#include <unistd.h>     /* fork     */
-#include <signal.h> 
-#include <stdlib.h>     /* malloc   */
-#include <stdio.h>      /* perror   */
+#define _POSIX_C_SOURCE 200112L /* required for sigaction/env variable */
+#include <stddef.h>             /* size_t   */
+#include <pthread.h>            /* pthread_create */
+#include <unistd.h>             /* fork     */
+#include <signal.h>             /* sigaction */
+#include <stdlib.h>             /* malloc, setenv   */
+#include <stdio.h>              /* perror   */
+#include <sys/types.h>
+#include <string.h>
 
-
-#include "watchdog.h"   /* WatchDog API     */
-#include "sched.h"      /* Schedular API    */
-
+#include "watchdog.h"       /* WatchDog API     */
+#include "signal_manager.h" /* Creation of schedular with tasks */
 
 /******************************************************************************/
 /*                          Internal Component Declaration                    */
@@ -25,24 +25,19 @@
 struct watchdog
 {
     pid_t pid;
-    const char *path;
+    char *path;
+    pthread_t pthread_id;
 };
 
-static int is_alive;
+/*  -Char buffer for environmental variables.   */
+static char temp_buffer[30];
 
-/*  -Send signal to partner. 
-    -Returns status:
-                    1 - to keep running.
-                    0 - to stop running.    */
-static int TaskSend();
+/*  -Reboots requested thread.      */
+static void *CreateThread(void *data);
 
-/*  -Check received signal, to insure that partner is alive.    */
-static int TaskCheck();
-
-/*  -Reboots requested task.    */
-static int CreateTask();
+/*  -SIGUSR1 handle function.       */
+static void HandleSignalUSR1(int a, siginfo_t *b, void *c);
 /******************************************************************************/
-
 
 /******************************************************************************/
 /*                          WatchDog Functions Definition                     */
@@ -50,83 +45,109 @@ static int CreateTask();
 
 wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
 {
-    wd_t *watchdog_str = NULL;
+    wd_t *watchdog_handle = NULL;
+    size_t signal_counter = 3;
 
-    watchdog_str = malloc(sizeof(*watchdog_str));
-    if(NULL == watchdog_str)
+    watchdog_handle = malloc(sizeof(*watchdog_handle));
+    if (NULL == watchdog_handle)
     {
         perror("Malloc failed in MakeMeImmortal\n");
 
         return NULL;
     }
 
-    watchdog_str->path = path;
+    watchdog_handle->path = path;
 
-    switch (watchdog_str->pid = fork())
+    /* init environment variables */
+    sprintf(temp_buffer, "%ld", frequency);
+    setenv("WATCH_DOG_FREQUENCY", temp_buffer, 1);
+
+    sprintf(temp_buffer, "%ld", grace);
+    setenv("WATCH_DOG_GRACE", temp_buffer, 1);
+
+    sprintf(temp_buffer, "%ld", signal_counter);
+    setenv("WATCH_DOG_SIGNAL_COUNTER", temp_buffer, 1);
+
+    /* if watch dog doesn't exist, first time initiation */
+    if (NULL == getenv("WATCH_DOG_ISALIVE"))
     {
-    case -1:
-        perror("fork failed in MakeMeImmortal\n");
-        break;
-    case 0:
-        /* TODO: remove printf */
-        printf("inside child\n");
-        printf("path: %s", watchdog_str->path);
-        /* child exec */
-        if(0 > execvp(watchdog_str->path, argv))
+        switch (watchdog_handle->pid = fork())
         {
-            perror("execvp failed in MakeMeImmortal\n");
+        case -1:
+
+            perror("fork failed in MakeMeImmortal\n");
+            free(watchdog_handle);
+
+            return NULL;
+            break;
+        case 0: /* child exec */
+
+            sprintf(temp_buffer, "%d", getppid()); /* prog is parent of w_d */
+            setenv("WATCH_DOG_PARENT_PID", temp_buffer, 1);
+
+            if (0 > execvp(watchdog_handle->path, argv))
+            {
+                perror("execvp failed in MakeMeImmortal\n");
+                free(watchdog_handle);
+
+                return NULL;
+            }
+            break;
+        default:
+            break;
         }
-        break;
-    default:
-        /* calling program thread */
-        /* pthread_create(&prog_sched, NULL, &ActFunction, ); */
-        break;
     }
+
+    setenv("WATCH_DOG_ISALIVE", "1", 1);
+    /* TODO: not sure if needed. */
+    sprintf(temp_buffer, "%d", watchdog_handle->pid);
+    setenv("WATCH_DOG_PID", temp_buffer, 1);
+
+    pthread_create(&watchdog_handle->pthread_id,
+                   NULL,
+                   &CreateThread,
+                   watchdog_handle);
+
+    return watchdog_handle;
 }
 
 void LetMeDie(wd_t *watchdog)
 {
-
 }
 /******************************************************************************/
-
 
 /******************************************************************************/
 /*                          Internal Component Definition                     */
 /******************************************************************************/
 
-/* static int TaskSend()
+static void *CreateThread(void *data)
 {
-    kill(partner_pid, SIGUSR1);
+    struct sigaction sig_act = {NULL};
+    char *path = NULL;
 
-    return 1;
+    memset(&sig_act, '\0', sizeof(sig_act));
+
+    /* TODO: not sure if needed. */
+    path = ((wd_t *)data)->path;
+    sig_act.sa_sigaction = &HandleSignalUSR1;
+    if (0 > sigaction(SIGUSR1, &sig_act, NULL))
+    {
+        perror("sigaction in watchdog.c CreateThread failed\n");
+    }
+
+    /* TODO: add arguments. */
+    SchedularActivate(((wd_t *)data)->path, ((wd_t *)data)->pid);
+
+    return NULL;
 }
- */
-/*static int TaskCheck()
+
+static void HandleSignalUSR1(int a, siginfo_t *b, void *c)
 {
-    static int counter;
+    (void)a;
+    (void)b;
+    (void)c;
 
-    if(is_alive)
-    {
-        is_alive = 0;
-        counter = 0;
-    }
-    else
-    {
-        counter++;
-    }
-
-    if(counter == grace)
-    {
-        CreateTask();
-    }
-    
-    /* to keep alive */
-    /*return 1;
-}*/
-
-static int CreateTask()
-{
-    return 1;
+    /* reset signal counter back to 3 (signals to waite until reboot)   */
+    setenv("WATCH_DOG_SIGNAL_COUNTER", "3", 1);
 }
 /******************************************************************************/

@@ -16,6 +16,9 @@ typedef struct watchdog wd_t;
 
 /*  -Make calling process immortal - automatically reboot the calling process 
         due to unrecoverable software errors.
+            -path - path to watch dog.
+            -frequency for sending signals.
+            -grace - how much to wait until reboot.
     -Returns handler to watchdog struct. */
 wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace);
 

@@ -16,6 +16,7 @@ typedef int (*operation_func_t)(void *param);
 /******************************************************************************/
 /*                          Schedule Functions Declaration                    */
 /******************************************************************************/
+
 /*	-Creates empty schedular.
 	-Returns pointer to schedular.	*/
 sched_t *SchedCreate();

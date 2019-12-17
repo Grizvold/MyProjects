@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 static int WriteToFile(int argc, char **argv)
 {
     wd_t *watchdog_handler = NULL;
-    size_t task_frequency = 3; 
+    size_t task_frequency = 1; 
     size_t task_grace = 5;
 
     size_t i = 0;
@@ -93,7 +93,7 @@ static int WriteToFile(int argc, char **argv)
         printf("%lu \n", i);
     }
 
-    watchdog_handler = MakeMeImmortal("./watch_dog.o", 
+    watchdog_handler = MakeMeImmortal("./watch_dog_app.o", 
                                         argv, 
                                         task_frequency, 
                                         task_grace);

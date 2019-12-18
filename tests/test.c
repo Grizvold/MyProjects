@@ -16,9 +16,9 @@ int main(int argc, char **argv)
     size_t count = 0;
     char *str = NULL;
 
-    setenv("TEST_VAR", "1", 1);
+    setenv("TEST_VAR", "0", 1);
 
-    if(strcmp(getenv("TEST_VAR"), "BLA") == 0)
+    if(strcmp(getenv("TEST_VAR"), "0") == 0)
     {
         printf("Success \n");
     }
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     str = getenv("TEST_VAR");
     count = atoi(str);
 
-    printf("%ld\n", count);
+    printf("count :%ld\n", count);
 
     return 0;
 }

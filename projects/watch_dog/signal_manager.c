@@ -25,8 +25,8 @@
 
 typedef struct
 {
-    char **argv; /* path to requested executable */
-    pid_t pid;  /* pid of calling process */
+    char **argv;          /* path to requested executable */
+    pid_t pid_to_send_to; /* pid of calling process */
 } sched_signal_t;
 
 /*  -Char buffer for environmental variables.   */
@@ -52,16 +52,19 @@ void SchedularActivate(char **argv, pid_t pid)
     sched_t *new_sched = NULL;
 
     new_signal.argv = argv;
-    new_signal.pid = pid;
+    new_signal.pid_to_send_to = pid;
 
     new_sched = SchedCreate();
 
+    /* TODO: remove sleep */
+    sleep(2); 
+
     SchedAddTask(new_sched,
-                 *(size_t *)getenv("WATCH_DOG_FREQUENCY"),
+                 atol(getenv("WATCH_DOG_FREQUENCY")),
                  TaskSignalSend,
                  &new_signal);
     SchedAddTask(new_sched,
-                 *(size_t *)getenv("WATCH_DOG_FREQUENCY"),
+                 atol(getenv("WATCH_DOG_FREQUENCY")),
                  TaskSignalCheck,
                  &new_signal);
     SchedRun(new_sched);
@@ -75,7 +78,7 @@ void SchedularActivate(char **argv, pid_t pid)
 
 static int TaskSignalSend(void *data)
 {
-    kill(((sched_signal_t *)data)->pid, SIGUSR1);
+    kill(((sched_signal_t *)data)->pid_to_send_to, SIGUSR1);
 
     return 1;
 }
@@ -87,9 +90,9 @@ static int TaskSignalCheck(void *data)
     size_t counter = 0;
 
     env_counter_str = getenv("WATCH_DOG_SIGNAL_COUNTER");
-
+    printf("counter: %d\n", atoi(env_counter_str));
     /* if counter reached 0 */
-    if (0 == strcmp(env_counter_str, '0'))
+    if (0 == strcmp(env_counter_str, "0"))
     {
         pid = fork();
         while (0 > pid)
@@ -99,13 +102,17 @@ static int TaskSignalCheck(void *data)
 
         if (0 == pid)
         {
-            if (0 > execvp(((sched_signal_t *)data)->argv, ((sched_signal_t *)data)->argv))
+            printf("program path for wd: %s \n", *((sched_signal_t *)data)->argv);
+            if (0 > execvp(*(((sched_signal_t *)data)->argv), ((sched_signal_t *)data)->argv))
             {
-                perror("execvp failed in TaskSignalCheck\n");
-            }
+                perror("execvp failed in TaskSignalCheck");
+            } 
 
-            return 1;
         }
+
+        ((sched_signal_t *)data)->pid_to_send_to = pid;
+        /* TODO: remove */
+        sleep(6);
     }
     else
     {
@@ -115,8 +122,7 @@ static int TaskSignalCheck(void *data)
         sprintf(temp_buffer, "%ld", counter);
         setenv("WATCH_DOG_SIGNAL_COUNTER", temp_buffer, 1);
     }
-    
 
-    return 0;
+    return 1;
 }
 /******************************************************************************/

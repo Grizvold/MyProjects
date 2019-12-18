@@ -51,12 +51,15 @@ wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
     watchdog_handle = malloc(sizeof(*watchdog_handle));
     if (NULL == watchdog_handle)
     {
-        perror("Malloc failed in MakeMeImmortal\n");
+        perror("Malloc failed in MakeMeImmortal");
 
         return NULL;
     }
 
     watchdog_handle->path = path;
+
+
+    printf("PROGRAM PID: %d \n", getpid());
 
     /* init environment variables */
     sprintf(temp_buffer, "%ld", frequency);
@@ -75,19 +78,17 @@ wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
         {
         case -1:
 
-            perror("fork failed in MakeMeImmortal\n");
+            perror("fork failed in MakeMeImmortal");
             free(watchdog_handle);
 
             return NULL;
             break;
         case 0: /* child exec */
 
-            sprintf(temp_buffer, "%d", getppid()); /* prog is parent of w_d */
-            setenv("WATCH_DOG_PARENT_PID", temp_buffer, 1);
-
+            /* TODO: remove printf */
             if (0 > execvp(watchdog_handle->path, argv))
             {
-                perror("execvp failed in MakeMeImmortal\n");
+                perror("execvp failed in MakeMeImmortal");
                 free(watchdog_handle);
 
                 return NULL;
@@ -98,10 +99,13 @@ wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
         }
     }
 
-    setenv("WATCH_DOG_ISALIVE", "1", 1);
-    /* TODO: not sure if needed. */
-    sprintf(temp_buffer, "%d", watchdog_handle->pid);
-    setenv("WATCH_DOG_PID", temp_buffer, 1);
+    else
+    {
+        watchdog_handle->pid = getppid(); /* if wd created program */
+    }
+    
+
+
 
     pthread_create(&watchdog_handle->pthread_id,
                    NULL,
@@ -123,20 +127,20 @@ void LetMeDie(wd_t *watchdog)
 static void *CreateThread(void *data)
 {
     struct sigaction sig_act = {NULL};
-    char *path = NULL;
+    /* TODO: unneeded */
+    /*  char *path = NULL; */
 
     memset(&sig_act, '\0', sizeof(sig_act));
 
     /* TODO: not sure if needed. */
-    path = ((wd_t *)data)->path;
+    /* path = ((wd_t *)data)->path; */
     sig_act.sa_sigaction = &HandleSignalUSR1;
     if (0 > sigaction(SIGUSR1, &sig_act, NULL))
     {
-        perror("sigaction in watchdog.c CreateThread failed\n");
+        perror("sigaction in watchdog.c CreateThread failed");
     }
-
-    /* TODO: add arguments. */
-    SchedularActivate(((wd_t *)data)->path, ((wd_t *)data)->pid);
+    printf("program sending path to wd: %s \n", ((wd_t *)data)->path);
+    SchedularActivate(&((wd_t *)data)->path, ((wd_t *)data)->pid);
 
     return NULL;
 }

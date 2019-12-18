@@ -5,7 +5,6 @@
 /* Description: WatchDog implementation.                                      */
 /******************************************************************************/
 
-
 #define _POSIX_C_SOURCE 200112L /* required for sigaction/env variable */
 #include <stddef.h>             /* size_t   */
 #include <pthread.h>            /* pthread_create */
@@ -14,9 +13,9 @@
 #include <stdlib.h>             /* malloc, setenv   */
 #include <stdio.h>              /* perror   */
 #include <sys/types.h>
-#include <string.h>   /* sleep  */
+#include <string.h> /* sleep  */
 
-#include "signal_manager.h" 
+#include "../signal_manager.h"
 
 /******************************************************************************/
 /*                          Internal Component Declaration                    */
@@ -30,16 +29,19 @@ int main(int argc, char **argv)
 {
     struct sigaction sig_act = {NULL};
     (void)argc;
-    
+
     sig_act.sa_sigaction = &HandleSignalUSR1;
     if (0 > sigaction(SIGUSR1, &sig_act, NULL))
     {
-        perror("sigaction in watchdog.c CreateThread failed\n");
+        perror("sigaction in watchdog.c CreateThread failed");
 
         return 1;
     }
 
-    SchedularActivate(argv, *(int *)getenv("WATCH_DOG_PARENT_PID"));
+    /* TODO:remove printfs */
+    printf("watch dog pid %d\n",getpid());
+    setenv("WATCH_DOG_ISALIVE", "1", 1);
+    SchedularActivate(argv,getppid());
 
     return 0;
 }

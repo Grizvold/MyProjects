@@ -35,7 +35,7 @@ typedef enum
 typedef struct file_info
 {
     FILE *ptr_file;
-    sched_t *sched;
+    /* sched_t *sched; */
     char *name_of_file;
 } file_info_t;
 
@@ -75,7 +75,7 @@ static int WriteToFile(int argc, char **argv)
     }
 
     requested_file->name_of_file = "program_output.txt";
-    requested_file->sched = SchedCreate();
+    /* requested_file->sched = SchedCreate(); */
     requested_file->ptr_file = fopen(requested_file->name_of_file, "w");
     if (NULL == requested_file->ptr_file)
     {
@@ -121,7 +121,12 @@ static int WriteToFile(int argc, char **argv)
     }
 
     /* TODO: remove sleep */
-    sleep(5);
+    /* sleep(5); */
+    while (1)
+    {
+        /* code */
+    }
+    
 
     free(watchdog_handler);
 

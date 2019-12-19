@@ -15,6 +15,12 @@
 #include <stdio.h>              /* perror   */
 #include <sys/types.h>
 #include <string.h>
+#include <semaphore.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <time.h>
+
 
 #include "sched.h"
 #include "signal_manager.h"
@@ -40,6 +46,10 @@ static int TaskSignalSend(void *data);
 
 /*  -Check received signal, to insure that partner is alive.    */
 static int TaskSignalCheck(void *data);
+
+/* TODO: rewrite */
+/*  -Stop running tasks and destroy sched.  */
+static int TaskStop(void *data);
 /******************************************************************************/
 
 /******************************************************************************/
@@ -50,6 +60,7 @@ void SchedularActivate(char **argv, pid_t pid)
 {
     sched_signal_t new_signal = {NULL};
     sched_t *new_sched = NULL;
+    sem_t *protecting_sem = NULL;
 
     new_signal.argv = argv;
     new_signal.pid_to_send_to = pid;
@@ -67,6 +78,13 @@ void SchedularActivate(char **argv, pid_t pid)
                  atol(getenv("WATCH_DOG_FREQUENCY")),
                  TaskSignalCheck,
                  &new_signal);
+
+    protecting_sem = sem_open("protecting_sem", O_RDWR);
+    sem_post(protecting_sem);
+    sem_close(protecting_sem);
+
+
+
     SchedRun(new_sched);
     SchedDestroy(new_sched);
 }
@@ -88,6 +106,9 @@ static int TaskSignalCheck(void *data)
     pid_t pid;
     char *env_counter_str = NULL;
     size_t counter = 0;
+    struct timespec ts = {0};
+    sem_t *time_sem = NULL;
+    int status = 0;
 
     env_counter_str = getenv("WATCH_DOG_SIGNAL_COUNTER");
     printf("counter: %d\n", atoi(env_counter_str));
@@ -109,10 +130,20 @@ static int TaskSignalCheck(void *data)
             } 
 
         }
-
         ((sched_signal_t *)data)->pid_to_send_to = pid;
         /* TODO: remove */
-        sleep(6);
+        /* TODO: semaphore for program to get ready */
+            clock_gettime(CLOCK_REALTIME,&ts);
+            ts.tv_sec += atoi(getenv("WATCH_DOG_GRACE"));
+        
+            time_sem = sem_open("time_sem", O_RDWR);
+            status = sem_timedwait(time_sem, &ts);
+            if(-1 == status)
+            {
+                perror("time_sem semaphore failure");
+            }
+
+            sem_close(time_sem);
     }
     else
     {
@@ -124,5 +155,10 @@ static int TaskSignalCheck(void *data)
     }
 
     return 1;
+}
+
+static int TaskStop(void *data)
+{
+    return 0;
 }
 /******************************************************************************/

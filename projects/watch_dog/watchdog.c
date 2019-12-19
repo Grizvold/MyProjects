@@ -6,6 +6,7 @@
 /******************************************************************************/
 
 #define _POSIX_C_SOURCE 200112L /* required for sigaction/env variable */
+#define SEM_PERMS (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP) 
 #include <stddef.h>             /* size_t   */
 #include <pthread.h>            /* pthread_create */
 #include <unistd.h>             /* fork     */
@@ -14,6 +15,11 @@
 #include <stdio.h>              /* perror   */
 #include <sys/types.h>
 #include <string.h>
+#include <semaphore.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 #include "watchdog.h"       /* WatchDog API     */
 #include "signal_manager.h" /* Creation of schedular with tasks */
@@ -47,6 +53,7 @@ wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
 {
     wd_t *watchdog_handle = NULL;
     size_t signal_counter = 3;
+    sem_t *protecting_sem = NULL;
 
     watchdog_handle = malloc(sizeof(*watchdog_handle));
     if (NULL == watchdog_handle)
@@ -84,6 +91,12 @@ wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
             return NULL;
             break;
         case 0: /* child exec */
+            sem_unlink("/time_sem"); /* semaphore delay until partner comes alive */
+            sem_unlink("/protecting_sem"); /* before wd comes to live */
+
+        /* TODO: opening semaphores */
+            sem_open("/time_sem", O_CREAT, SEM_PERMS, 0);
+            sem_open("/protecting_sem", O_CREAT, SEM_PERMS, 0);
 
             /* TODO: remove printf */
             if (0 > execvp(watchdog_handle->path, argv))
@@ -102,7 +115,7 @@ wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
     else
     {
         watchdog_handle->pid = getppid(); /* if wd created program */
-    }
+    } 
     
 
 
@@ -112,11 +125,26 @@ wd_t *MakeMeImmortal(char *path, char **argv, size_t frequency, size_t grace)
                    &CreateThread,
                    watchdog_handle);
 
+
+ /* TODO:semaphore to sign that WD was created */
+    protecting_sem = sem_open("protecting_sem", O_RDWR);
+    sem_wait(protecting_sem);
+    sem_close(protecting_sem);
+
+
     return watchdog_handle;
 }
 
 void LetMeDie(wd_t *watchdog)
 {
+    kill(watchdog->pid, SIGUSR2);
+
+    pthread_cancel(watchdog->pthread_id);
+    /* TODO: remove from sched */
+    pthread_join(watchdog->pthread_id, NULL);
+
+    free(watchdog);
+    watchdog = NULL;
 }
 /******************************************************************************/
 

@@ -8,6 +8,8 @@
 !.gitignore
 
 # Don't ignore c, h, make files, shared libraries
+!*.jar
+!*.java
 !*.c
 !*.h
 !*.sh

@@ -21,8 +21,8 @@ public class SinglyLinkedListTest
 		SinglyLinkedList testLinkedList = new SinglyLinkedList();
 		
 		System.out.println("Test result for: pushFront: " + pushFrontTest(testLinkedList));
-		//System.out.println("Test result for: popFront: " + popFrontTest(testLinkedList));
-		//System.out.println("Test result for: find: " + findTest(testLinkedList));
+		System.out.println("Test result for: popFront: " + popFrontTest(testLinkedList));
+		System.out.println("Test result for: find: " + findTest(testLinkedList));
 		
 		testLinkedList.clear();
 	}
@@ -30,25 +30,13 @@ public class SinglyLinkedListTest
 	private static String findTest(SinglyLinkedList list) 
 	{
 		boolean isSuccess = true;
-		Integer testVar1 = new Integer(1);
-		Integer testVar2 = new Integer(2);
-		Integer testVar3 = new Integer(3);
-		Integer testVar4 = new Integer(4);
 
 		for(int i = 0; i < 10; i++)
 		{
 			list.pushFront(i);
 		}
 		
-		System.out.println(list.find(5).next().equals(5));
-		
-		for(int i = 0; i < 10; i++)
-		{
-			System.out.println(list.popFront());
-		}
-		
-		
-		
+		isSuccess &= list.find(5).next().equals(5);
 		
 		if(isSuccess)
 		{
@@ -67,9 +55,9 @@ public class SinglyLinkedListTest
 		isSuccess &= (true == list.isEmpty());
 		list.pushFront(testVar1);
 		isSuccess &= (1 == list.getSize());
-		/*list.pushFront(testVar2);
+		list.pushFront(testVar2);
 		isSuccess &= (2 == list.getSize());
-		isSuccess &= (false == list.isEmpty());*/
+		isSuccess &= (false == list.isEmpty());
 		
 		if(isSuccess)
 		{

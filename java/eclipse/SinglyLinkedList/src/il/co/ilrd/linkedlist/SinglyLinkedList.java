@@ -10,6 +10,8 @@ package il.co.ilrd.linkedlist;
 public class SinglyLinkedList 
 {
 	
+	private Node headNode;
+
 	private class Node 
 	{
 		@SuppressWarnings("unused")
@@ -52,9 +54,7 @@ public class SinglyLinkedList
 		{
 			return "Itr data = " + currentNode.data ;
 		}
-	}
-		
-	private Node headNode;
+	}	
 	
 	/**
 	 * 
@@ -106,11 +106,12 @@ public class SinglyLinkedList
 	public int getSize() 
 	{
 		int counter = 0;
-		Node currentNode = this.headNode;
+
+		IteratorLinkedList iteratorLinkedList = new IteratorLinkedList(headNode);
 		
-		for(counter = 0; null != currentNode; counter++)
+		for (counter = 0; null != iteratorLinkedList.currentNode; ++counter) 
 		{
-			currentNode = currentNode.nextNode;
+			iteratorLinkedList.next();
 		}
 		
 		return (counter);

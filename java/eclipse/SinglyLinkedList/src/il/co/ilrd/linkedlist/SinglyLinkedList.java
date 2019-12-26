@@ -1,11 +1,10 @@
 package il.co.ilrd.linkedlist;
-/**
- * 
- */
 
 /**
- * @author Ruslan_Gorbaty_FS767
- *
+ * @Author      Ruslan Gorbaty
+ * @Reviewer    Hadas Jakoubovitsh
+ * @Group       FS767
+ * @Description Implementation of Singly Linked List.
  */
 
 public class SinglyLinkedList 
@@ -15,12 +14,12 @@ public class SinglyLinkedList
 	{
 		@SuppressWarnings("unused")
 		private Object data;
-		private Node next;
+		private Node nextNode;
 		
-		private Node(Object data, Node next)
+		private Node(Object data, Node nextNode)
 		{
 			this.data = data;
-			this.next = next;
+			this.nextNode = nextNode;
 		}
 	}
 	
@@ -30,22 +29,22 @@ public class SinglyLinkedList
 		
 		private IteratorLinkedList(Node node)
 		{
-			currentNode = node;
+			this.currentNode = node;
 		}
 		
 		@Override
 		public Object next() 
 		{
-			Object curr = currentNode;
-			currentNode = currentNode.next;
+			Object returnObject = this.currentNode.data;
+			this.currentNode = this.currentNode.nextNode;
 			
-			return curr;
+			return returnObject;
 		}
 
 		@Override
 		public boolean hasNext() 
 		{
-			return (null != currentNode);
+			return (null != this.currentNode.nextNode);
 		}
 		
 		@Override
@@ -57,24 +56,28 @@ public class SinglyLinkedList
 		
 	private Node headNode;
 	
-	/** -Insert new node to the front of the list. */
+	/**
+	 * 
+	 * -Insert new node to the front of the list.
+	 * @param Object data.
+	 */
 	public void pushFront(Object data)
 	{
-		headNode = new Node(data, headNode);
+		this.headNode = new Node(data, headNode);
 	}
 	
-	/** -Remove node from the front of the list.
-	 *  -Return status: 
-	 *  				true - success
-	 *  				false - failure */
+	/**
+	 * 
+	 * @return Object data.
+	 */
 	public Object popFront()
 	{
 		Object nodeData = null;
 		
 		if (null != headNode)
 		{
-			nodeData = headNode.data;
-			headNode = headNode.next;
+			nodeData = this.headNode.data;
+			headNode = this.headNode.nextNode;
 			
 			return nodeData;
 		}
@@ -89,32 +92,42 @@ public class SinglyLinkedList
 	
 	/**
 	 * 
-	 * @return
+	 * @return true if empty, false if not empty.
 	 */
 	public boolean isEmpty() 
 	{
-		return (null == headNode);
+		return (null == this.headNode);
 	}
 	
+	/**
+	 * 
+	 * @return Size of linked list.
+	 */
 	public int getSize() 
 	{
 		int counter = 0;
-		GenericIterator itr = begin();
+		Node currentNode = this.headNode;
 		
-		while (itr.hasNext())
+		for(counter = 0; null != currentNode; counter++)
 		{
-			counter++;
-			itr.next();
+			currentNode = currentNode.nextNode;
 		}
 		
 		return (counter);
 	}
 
+	/**
+	 * 
+	 * @return Iterator to the head node of the list.
+	 */
 	public GenericIterator begin() 
 	{
-		return (new IteratorLinkedList(headNode));
+		return (new IteratorLinkedList(this.headNode));
 	}
 	
+	/**
+	 * @return Returns text representation of first node in linked list.
+	 */
 	public String toString()
 	{
 		IteratorLinkedList itr = new IteratorLinkedList(headNode);
@@ -122,9 +135,14 @@ public class SinglyLinkedList
 		return itr.toString();
 	}
 	
+	/**
+	 * 
+	 * @param Object data.
+	 * @return Returns iterator if found, if not found returns null.
+	 */
 	public GenericIterator find(Object data) 
 	{		
-		IteratorLinkedList itr = new IteratorLinkedList(headNode);
+		IteratorLinkedList itr = new IteratorLinkedList(this.headNode);
 		
 		while (null != itr.currentNode) 
 		{

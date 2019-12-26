@@ -55,6 +55,7 @@ public class TestClass {
 		short s3 = (short) (s1 & s2);
 		Ruslan rusTest = new Ruslan();
 		
+		System.out.println(s3);
 		System.out.println(rusTest);
 		//rusTest.toString();
 	}

@@ -25,7 +25,7 @@ public class SinglyLinkedList
 		}
 	}
 	
-	private class IteratorLinkedList implements GenericIterator 
+	private static class IteratorLinkedList implements GenericIterator 
 	{		
 		private Node currentNode;
 		

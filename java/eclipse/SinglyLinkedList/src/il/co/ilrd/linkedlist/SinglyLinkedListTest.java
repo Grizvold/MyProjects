@@ -36,7 +36,15 @@ public class SinglyLinkedListTest
 			list.pushFront(i);
 		}
 		
+		/* -find first. */
+		isSuccess &= list.find(1).next().equals(1);
+
+		/* -find middle element. */
 		isSuccess &= list.find(5).next().equals(5);
+		
+		
+		/* -find last element. */
+		isSuccess &= list.find(9).next().equals(9);
 		
 		if(isSuccess)
 		{

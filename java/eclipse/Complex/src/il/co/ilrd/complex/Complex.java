@@ -2,6 +2,7 @@ package il.co.ilrd.complex;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Scanner;
 
 @SuppressWarnings("unused")
 
@@ -13,6 +14,15 @@ public class Complex implements Comparable<Complex>{
 	public Complex(double real, double imaginary) {
 		this.real = real;
 		this.imaginary = imaginary;
+	}
+	
+	public Complex(String complexstr) {
+
+		String[] arrayStrings = null;
+			
+		arrayStrings = complexstr.split("(?=-)|\\+|i");
+		real = Double.parseDouble(arrayStrings[0]);
+		imaginary = Double.parseDouble(arrayStrings[1]);
 	}
 	
 	public void setReal(double real) {

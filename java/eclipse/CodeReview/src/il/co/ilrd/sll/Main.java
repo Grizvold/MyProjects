@@ -1,5 +1,7 @@
 package il.co.ilrd.sll;
 
+import java.util.Scanner;
+
 public class Main {
 	
 	public static void main(String[] args) {

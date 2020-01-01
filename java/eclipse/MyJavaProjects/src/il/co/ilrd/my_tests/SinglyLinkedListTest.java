@@ -1,11 +1,6 @@
-package il.co.ilrd.collections;
+package il.co.ilrd.my_tests;
 
-/**
- * @Author      Ruslan Gorbaty
- * @Reviewer    Hadas Jakoubovitsh
- * @Group       FS767
- * @Description Tests of Singly Linked List.
- */
+import il.co.ilrd.collections.SinglyLinkedList;
 
 public class SinglyLinkedListTest 
 {

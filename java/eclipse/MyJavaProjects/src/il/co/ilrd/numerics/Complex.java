@@ -3,6 +3,12 @@ package il.co.ilrd.numerics;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @Author      Ruslan Gorbaty
+ * @Reviewer    Shai Roth
+ * @Group       FS767
+ * @Description Implementation of complex number.
+ */
 
 public class Complex implements Comparable<Complex>{
 	

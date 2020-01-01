@@ -17,7 +17,7 @@ class Parent{
 		printTest();
 	}
 	
-	public void printTest() {
+	public void printTest(){
 	//	int x = 4;
 		System.out.println("test parent");
 	}
@@ -27,6 +27,23 @@ class Child extends Parent{
 	int x = 4;
 	public void printTest() {
 		System.out.println(x);
+	}
+}
+
+class Foo {
+	public void foo(short x)
+	{
+		System.out.println("inside short");
+	}
+	
+	public void foo(long x)
+	{
+		System.out.println("inside long");
+	}
+	
+	public void foo(Integer x)
+	{
+		System.out.println("inside Integer");
 	}
 }
 
@@ -71,6 +88,9 @@ public class TestClass {
 		
 		Child child = new Child();
 		child.printTest();
+		
+		Foo testFoo = new Foo();
+		testFoo.foo(10);
 		
 		/*String text    =
 		        "This is the text to be searched " +

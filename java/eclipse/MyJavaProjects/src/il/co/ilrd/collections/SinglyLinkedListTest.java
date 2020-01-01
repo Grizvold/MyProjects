@@ -1,8 +1,4 @@
-package il.co.ilrd.linkedlist;
-
-import java.io.Console;
-
-import org.omg.CORBA.PRIVATE_MEMBER;
+package il.co.ilrd.collections;
 
 /**
  * @Author      Ruslan Gorbaty

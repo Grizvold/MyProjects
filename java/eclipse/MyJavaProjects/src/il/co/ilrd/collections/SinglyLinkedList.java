@@ -1,4 +1,4 @@
-package il.co.ilrd.linkedlist;
+package il.co.ilrd.collections;
 
 /**
  * @Author      Ruslan Gorbaty
@@ -14,7 +14,6 @@ public class SinglyLinkedList
 
 	private class Node 
 	{
-		@SuppressWarnings("unused")
 		private Object data;
 		private Node nextNode;
 		

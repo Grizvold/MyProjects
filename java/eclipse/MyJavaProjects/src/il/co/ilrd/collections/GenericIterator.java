@@ -1,4 +1,4 @@
-package il.co.ilrd.linkedlist;
+package il.co.ilrd.collections;
 
 /**
  * @Author      Ruslan Gorbaty

@@ -1,6 +1,4 @@
-package il.co.ilrd.sll;
-
-import java.util.Scanner;
+package il.co.ilrd.code_review;
 
 public class Main {
 	

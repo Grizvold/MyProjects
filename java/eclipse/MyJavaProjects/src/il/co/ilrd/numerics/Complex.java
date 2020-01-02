@@ -12,40 +12,41 @@ import java.util.regex.Pattern;
 
 public class Complex implements Comparable<Complex>{
 	
-	private int real;
-	private int imaginary;
+	private double real;
+	private double imaginary;
 	
 	public Complex () {
-		this(0, 0);		
+		this.real = 0.0;
+		this.imaginary = 0.0;
 	}
 	
-	public Complex(int real, int imaginary) {
+	public Complex(double real, double imaginary) {
 		this.real = real;
 		this.imaginary = imaginary;
 	}
 	
-	public void setReal(int real) {
+	public void setReal(double real) {
 		this.real = real;
 	}
 
-	public void setImaginary(int imaginary) {
+	public void setImaginary(double imaginary) {
 		this.imaginary = imaginary;
 	}
 	
-	public int getReal() {
+	public double getReal() {
 		return real;
 	}
 
-	public int getImaginary() {
+	public double getImaginary() {
 		return imaginary;
 	}
 
 	public boolean isReal() {
-		return 0 == imaginary;
+		return 0.0 == imaginary;
 	}
 	
 	public boolean isImaginary() {
-		return (0 != imaginary && 0 == real);
+		return (0.0 != imaginary && 0 == real);
 	}
 
 	public Complex add(Complex numComplex) {
@@ -58,7 +59,7 @@ public class Complex implements Comparable<Complex>{
 	
 	public static Complex parseString(String complexString)
 	{
-		String regex = "(^\\-?[0-9]++)([\\-|\\+]?+[0-9]++)i$";
+		String regex = "(^\\-?[0-9]++[.]{1}[0-9]++)([\\-|\\+]?+[0-9]++[.]{1}[0-9]++)i$";
 		Pattern complexPattern = Pattern.compile(regex);
 		Matcher complexMatcher = complexPattern.matcher(complexString);
 		
@@ -67,17 +68,17 @@ public class Complex implements Comparable<Complex>{
 			return null;
 		}
 		
-		return new Complex(Integer.parseInt(complexMatcher.group(1)),
-							Integer.parseInt(complexMatcher.group(2)));
+		return new Complex(Double.parseDouble(complexMatcher.group(1)),
+							Double.parseDouble(complexMatcher.group(2)));
 	}
 	
 	@Override
 	public String toString() {
-		if(0 == imaginary)
+		if(0.0 == imaginary)
 		{
 			return String.valueOf(real);
 		}
-		else if(0 < imaginary)
+		else if(0.0 < imaginary)
 		{
 			return real + " + " + imaginary + "i";
 		}
@@ -92,7 +93,7 @@ public class Complex implements Comparable<Complex>{
 		return getComplexPower(this) - getComplexPower(complexnum);
 	}
 
-	private int getComplexPower(Complex num1)
+	private double getComplexPower(Complex num1)
 	{
 		return (num1.real * num1.real + num1.imaginary * num1.imaginary);
 	}

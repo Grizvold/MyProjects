@@ -9,6 +9,12 @@ import java.util.Arrays;
  *
  */
 
+enum Level{
+	High,
+	Medium,
+	Low
+}
+
 class Parent{
 	//int x = 5;
 	
@@ -31,6 +37,8 @@ class Child extends Parent{
 }
 
 class Foo {
+	public String exerciseString = "exerciseString";
+	
 	public void foo(short x)
 	{
 		System.out.println("inside short");
@@ -45,6 +53,10 @@ class Foo {
 	{
 		System.out.println("inside Integer");
 	}
+}
+
+class Foo2 {
+	public String exerciseString2 = "exerciseString";
 }
 
 public class TestClass {
@@ -101,6 +113,20 @@ public class TestClass {
 		boolean matches = Pattern.matches(regex, text);
 
 		System.out.println("matches = " + matches);*/
+		Boolean boolean1 = true;
+		System.out.println(boolean1? true:false);
+		
+		String str = new String("exerciseString");
+		
+		Foo exerciseTest1 = new Foo();
+		Foo2 exerciseTestFoo2 = new Foo2();
+		System.out.println(exerciseTest1.exerciseString + " " + exerciseTestFoo2.exerciseString2);
+		System.out.println(exerciseTest1.exerciseString == exerciseTestFoo2.exerciseString2);
+		System.out.println(exerciseTest1.exerciseString == str);
+		
+		Level enumtestLevel = Level.High;
+		enumtestLevel = Level.Low;
+		System.out.println(enumtestLevel);
 	}
 
 }

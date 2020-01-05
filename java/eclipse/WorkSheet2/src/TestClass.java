@@ -27,6 +27,12 @@ class Parent{
 	//	int x = 4;
 		System.out.println("test parent");
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "overriden string";
+	}
 }
 
 class Child extends Parent{
@@ -127,6 +133,10 @@ public class TestClass {
 		Level enumtestLevel = Level.High;
 		enumtestLevel = Level.Low;
 		System.out.println(enumtestLevel);
+		
+		Parent testParent = new Parent();
+		Child testChild = new Child();
+		System.out.println(testChild);
 	}
 
 }

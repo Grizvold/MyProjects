@@ -1,168 +1,155 @@
 package il.co.ilrd.my_tests;
 import il.co.ilrd.numerics.*;
+
+
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ComplexTestJUnit {
 
+	//1
 	@Test
-	void testGet() {
-		Complex complexNum1 = new Complex();
-		Complex complexNum2 = new Complex(1.1, 2.2);
-		Complex complexNum3 = Complex.parseString("3.2+4.4i");
-	
-		assertEquals(0.0, complexNum1.getImaginary());
-		assertEquals(0.0, complexNum1.getReal());
-		assertEquals(1.1, complexNum2.getReal());
-		assertEquals(2.2, complexNum2.getImaginary());
-		assertEquals(3.2, complexNum3.getReal());
-		assertEquals(4.4, complexNum3.getImaginary());
+	void testReal() {
+		Complex x = new Complex(2.0, 5.0);
+
+		assertEquals(2, x.getReal(), 0.01);
 	}
-	
-	/*@Test
-	void testSet() {
-		Complex complexNum1 = new Complex();
-		Complex complexNum2 = new Complex(1,2);
-		Complex complexNum3 = Complex.parseString("3+4i");
-		
-		complexNum1.setImaginary(1);
-		assertEquals(1, complexNum1.getImaginary());
-		complexNum1.setReal(1);
-		assertEquals(1, complexNum1.getReal());
-		
-		complexNum2.setImaginary(2);
-		assertEquals(2, complexNum2.getImaginary());
-		complexNum2.setReal(3);
-		assertEquals(3, complexNum2.getReal());
-		
-		complexNum3.setImaginary(5);
-		assertEquals(5, complexNum3.getImaginary());
-		complexNum3.setReal(7);
-		assertEquals(7, complexNum3.getReal());
-	}
-	
+
+	//2
 	@Test
-	void testAdd() {
-		Complex complexNum1 = new Complex();
-		Complex complexNum2 = new Complex(1,2);
-		Complex complexNum3 = Complex.parseString("3+4i");
-		Complex complexResult = new Complex();
+	void testImaginary() {
+		Complex x = new Complex(2.0, 5.0);
 		
-		complexResult = complexNum1.add(complexNum1);
-		assertEquals(0, complexResult.getReal());
-		assertEquals(0, complexResult.getImaginary());
-		
-		complexResult = complexNum1.add(complexNum2);
-		assertEquals(1, complexResult.getReal());
-		assertEquals(2, complexResult.getImaginary());
-		
-		complexResult = complexNum1.add(complexNum3);
-		assertEquals(3, complexResult.getReal());
-		assertEquals(4, complexResult.getImaginary());
-		
-		complexResult = complexNum1.add(complexNum1).add(complexNum2).add(complexNum3);
-		assertEquals(4, complexResult.getReal());
-		assertEquals(6, complexResult.getImaginary());
-		
-		complexNum3 = complexNum1.add(complexNum1).add(complexNum2).add(complexNum3);;
-		assertEquals(4, complexNum3.getReal());
-		assertEquals(6, complexNum3.getImaginary());
+		assertEquals(5, x.getImaginary(), 0.01);
 	}
 	
-	@Test
-	void testSubstract() {
-		Complex complexNum1 = new Complex();
-		Complex complexNum2 = new Complex(1,2);
-		Complex complexNum3 = Complex.parseString("3+4i");
-		Complex complexResult = new Complex();
-		
-		complexResult = complexNum1.substract(complexNum1);
-		assertEquals(0, complexResult.getReal());
-		assertEquals(0, complexResult.getImaginary());
-		
-		complexResult = complexNum2.substract(complexNum1);
-		assertEquals(1, complexResult.getReal());
-		assertEquals(2, complexResult.getImaginary());
-		
-		complexResult = complexNum1.substract(complexNum3);
-		assertEquals(-3, complexResult.getReal());
-		assertEquals(-4, complexResult.getImaginary());
-		
-		complexResult = complexNum1.substract(complexNum2).substract(complexNum3);
-		assertEquals(-4, complexResult.getReal());
-		assertEquals(-6, complexResult.getImaginary());
-		
-		complexNum3 = complexNum1.substract(complexNum1).substract(complexNum2).substract(complexNum3);;
-		assertEquals(-4, complexNum3.getReal());
-		assertEquals(-6, complexNum3.getImaginary());
-	}
-	
-	@Test
-	void testEquals() {
-		Complex complexNum1 = new Complex();
-		Complex complexNum2 = new Complex(1,2);
-		Complex complexNum3 = Complex.parseString("3+4i");
-		
-		//Reflexive relation
-		assertTrue(complexNum1.equals(complexNum1));
-		assertTrue(complexNum2.equals(complexNum2));
-		assertTrue(complexNum3.equals(complexNum3));
-		
-		//Symmetric relation
-		complexNum1.setReal(1);
-		complexNum1.setImaginary(2);
-		assertTrue(complexNum1.equals(complexNum2));
-		assertTrue(complexNum2.equals(complexNum1));
-		
-		//Transitive relation
-		complexNum1.setReal(3);
-		complexNum1.setImaginary(4);
-		complexNum2.setReal(3);
-		complexNum2.setImaginary(4);
-		assertTrue(complexNum1.equals(complexNum2));
-		assertTrue(complexNum2.equals(complexNum3));
-		assertTrue(complexNum1.equals(complexNum3));
-		
-		assertFalse(complexNum1.equals(null));
-		assertFalse(complexNum2.equals(null));
-		assertFalse(complexNum3.equals(null));
-	}
-	
-	@Test
-	void testHash() {
-		Complex complexNum1 = new Complex();
-		Complex complexNum2 = new Complex(1,2);
-		Complex complexNum3 = Complex.parseString("3+4i");
-		
-		//Multiple invocations
-		assertEquals(complexNum1.hashCode(), complexNum1.hashCode());
-		assertEquals(complexNum2.hashCode(), complexNum2.hashCode());
-		assertEquals(complexNum3.hashCode(), complexNum3.hashCode());
-		
-		//If equals true -> same hash value
-		complexNum1.setReal(1);
-		complexNum1.setImaginary(2);
-		assertTrue(complexNum1.equals(complexNum2));
-		assertTrue(complexNum2.equals(complexNum1));
-		assertEquals(complexNum1.hashCode(), complexNum2.hashCode());
-		
-		complexNum3.setReal(1);
-		complexNum3.setImaginary(2);
-		assertTrue(complexNum1.equals(complexNum3));
-		assertEquals(complexNum1.hashCode(), complexNum3.hashCode());
-	}
-	
+	//3
 	@Test
 	void testParse() {
-		Complex complexNum3 = Complex.parseString("3+4i");
-		Complex resultComplex = new Complex(3,4);
+		Complex x = new Complex(2.0, 4.0);
+		Complex y = new Complex(8.0, 4.0);
 		
-		assertNull(Complex.parseString("+3+4i"));
-		assertNull(Complex.parseString("3+4"));
-		assertNull(Complex.parseString("3+-4i"));
-		assertNull(Complex.parseString("a3+4i"));
-		assertNull(Complex.parseString("i"));
-		assertTrue(complexNum3.equals(resultComplex));
-	}*/
+		Complex z = Complex.parseString("8.0+4.0i");
+		
+		
+		assertEquals(z, y);
+		assertEquals(x.getImaginary(), y.getImaginary(), 0.01);
+	}
+	
+	//4
+	@Test
+	void testSet() {
+		Complex x = new Complex(2.0, 4.0);
+		Complex y = new Complex(8.0, 5.0);
+		Complex z = Complex.parseString("8.0+4.0i");
+		
+		x.setReal(8.0);
+		y.setImaginary(4.0);
+		
+		assertEquals(z, y);
+		assertEquals(x, y);
+		assertEquals(x, z);
+	}
+	
+	//5
+	@Test
+	void testNgativeParsing() {
+	
+		Complex x = new Complex(-8.0, -4.0);
+		Complex z = Complex.parseString("-8.0-4.0i");
+		
+		assertEquals(z, x);
+	}
+	
+	//6
+	@Test
+	void testCompareTo() {
+	
+		Complex x = new Complex(-8.0, -4.0);
+		Complex z = Complex.parseString("-8.0-4.0i");
+		
+		assertEquals(0.0, x.compareTo(z), 0.01);
+	}
+	
+	//7
+	@Test
+	void testCompareToBigger() {
+		
+		Complex x = new Complex(2.0, 2.0);
+		Complex z = Complex.parseString("3.0-2.0i");
+		
+		
+		assertEquals(-2.0, z.getImaginary(), 0.01);
+		assertEquals(-5.0, x.compareTo(z), 0.01);
+	}
+	
+	//8
+	@Test
+	void testParsing() {
+		
+		Complex exp = new Complex(-3.0, -2.0);
+		Complex x = Complex.parseString("-3.0-2.0i");
+		Complex z = Complex.parseString("+3.0-2.0i");
+		Complex y = Complex.parseString("+3.0-+2.0i");
+		
+		assertEquals(exp, x);
+		assertEquals(null, z);
+		assertEquals(null, y);
+	}
+	
+	//9
+		@Test
+		void testEquals() {
+			
+			Complex x = Complex.parseString("3.0-2.0i");
+			Complex z = Complex.parseString("3.0-2.0i");
+			Complex y = Complex.parseString("3.0-2.0i");
+			
+			assertTrue(x.equals(x));
+			
+			assertTrue(x.equals(y));
+			assertTrue(y.equals(x));
+			
+			assertTrue(x.equals(y));
+			assertTrue(y.equals(z));
+			assertTrue(x.equals(z));
+			
+			assertFalse(x.equals(null));
+		}
+		
+
+		//10
+			@Test
+			void testAdd() {
+				Complex exp = Complex.parseString("10.5-7.1i");
+				
+				Complex x = Complex.parseString("3.50-2.3i");
+				Complex z = Complex.parseString("3.75-2.3i");
+				Complex y = Complex.parseString("3.25-2.5i");
+				
+			
+			assertEquals(exp, x.add(z).add(y));
+			}
+			
+		//11
+		@Test
+		void testEqualsDouble() {
+			
+			Complex x = Complex.parseString("3.50+2.3i");
+			Complex z = Complex.parseString("3.50+2.3i");
+			Complex y = Complex.parseString("3.40+1.3i");
+			Complex q = Complex.parseString("0.1+1.0i");
+			
+			y = y.add(q);
+
+			assertTrue(x.equals(y));
+			assertTrue(y.equals(z));
+			assertTrue(x.equals(z));
+		}
 }

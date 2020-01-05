@@ -10,121 +10,129 @@ import java.util.regex.Pattern;
  * @Description Implementation of complex number.
  */
 
-public class Complex implements Comparable<Complex>{
-	
-	private double real;
-	private double imaginary;
-	
-	public Complex () {
+public class Complex implements Comparable <Complex>{
+	private double real =  0.0;
+	private double imaginary = 0.0;
+	private static final Pattern complexNumberPattern = 
+						Pattern.compile("(^\\-?[0-9]+[.]{1}?[0-9]+)([-|+]{1}[0-9]+[.]{1}?[0-9]+)i$");
+
+	public Complex() {
 		this.real = 0.0;
 		this.imaginary = 0.0;
 	}
 	
-	public Complex(double real, double imaginary) {
-		this.real = real;
-		this.imaginary = imaginary;
+	public Complex(double realNumber, double imaginaryNumber) {
+		this.real = realNumber;
+		this.imaginary = imaginaryNumber;
 	}
 	
-	public void setReal(double real) {
-		this.real = real;
-	}
-
-	public void setImaginary(double imaginary) {
-		this.imaginary = imaginary;
-	}
-	
+	//Class methods
 	public double getReal() {
 		return real;
 	}
-
-	public double getImaginary() {
+	
+	
+	public double getImaginary() {	
 		return imaginary;
 	}
-
-	public boolean isReal() {
-		return 0.0 == imaginary;
+	
+	
+	public void setReal(double num) {
+		real = num;
 	}
+	
+	
+	public void setImaginary(double num) {
+		imaginary = num;
+	}
+	
+	
+	public Complex add(Complex num ) {	
+		return new Complex(real + num.real, imaginary + num.imaginary) ;
+	}
+	
+	
+	public Complex substract(Complex num ) {	
+		return new Complex(real - num.real, imaginary - num.imaginary) ;
+	}
+	
+	
+	public boolean isReal() {		
+		return (imaginary == 0.0);
+	}
+	
 	
 	public boolean isImaginary() {
-		return (0.0 != imaginary && 0 == real);
-	}
-
-	public Complex add(Complex numComplex) {
-		return new Complex(real + numComplex.real, imaginary + numComplex.imaginary);
+		return (imaginary != 0.0 && real == 0.0);
 	}
 	
-	public Complex substract(Complex numComplex) {
-		return new Complex(real - numComplex.real, imaginary - numComplex.imaginary);
-	}
 	
-	public static Complex parseString(String complexString)
-	{
-		String regex = "(^\\-?[0-9]++[.]{1}[0-9]++)([\\-|\\+]?+[0-9]++[.]{1}[0-9]++)i$";
-		Pattern complexPattern = Pattern.compile(regex);
-		Matcher complexMatcher = complexPattern.matcher(complexString);
+	public static Complex parseString(String  str) {
+		double real = 0;
+		double imaginary = 0;
 		
-		if(!complexMatcher.find())
-		{
+	    Matcher complexNumberMatcher = complexNumberPattern.matcher(str);
+
+	    if (complexNumberMatcher.find()) { 
+	    	real = Double.parseDouble(complexNumberMatcher.group(1)); 
+	    	imaginary = Double.parseDouble(complexNumberMatcher.group(2)); 
+	    }
+	    else {
+	    	
 			return null;
 		}
-		
-		return new Complex(Double.parseDouble(complexMatcher.group(1)),
-							Double.parseDouble(complexMatcher.group(2)));
+	    
+	    return new Complex(real, imaginary);
 	}
 	
 	@Override
-	public String toString() {
-		if(0.0 == imaginary)
-		{
-			return String.valueOf(real);
-		}
-		else if(0.0 < imaginary)
-		{
-			return real + " + " + imaginary + "i";
-		}
-		else 
-		{
-			return real + " - " + (imaginary * -1) + "i";
-		}
+	public int compareTo(Complex complexObject) {
+		double thisPow = getSumOfPows(real, imaginary);
+		double argPow = getSumOfPows(complexObject.real, complexObject.imaginary);
+	    
+		return (int)(thisPow - argPow);
 	}
 	
-	@Override
-	public int compareTo(Complex complexnum) {;
-		return getComplexPower(this) - getComplexPower(complexnum);
-	}
-
-	private double getComplexPower(Complex num1)
+	private double getSumOfPows(double real, double imaginary)
 	{
-		return (num1.real * num1.real + num1.imaginary * num1.imaginary);
+		return real * real + imaginary * imaginary;
 	}
-
+	
 	@Override
-	public boolean equals(Object complexnum) {
-		if(null == complexnum)
-		{
+	public boolean equals(Object complexObject) {
+		if(null == complexObject) {
+			
 			return false;
 		}
-		if(this == complexnum)
-		{
+		
+		if (this == complexObject) {
+			
 			return true;
 		}
-		if(complexnum instanceof Complex)
-		{
-			return (this.real == ((Complex)complexnum).real &&
-					this.imaginary == ((Complex)complexnum).imaginary);
+		
+		if (complexObject instanceof Complex) {	
+			
+			return (Math.abs(real - ((Complex)complexObject).getReal()) < 0.01) 
+					&& (Math.abs(imaginary - ((Complex)complexObject).getImaginary()) < 0.01);
 		}
 		
 		return false;
 	}
 	
+	
 	@Override
 	public int hashCode() {
 		int result = 17;
-		int primevalNum = 31;
-	
-		result = primevalNum * result + this.real;
-		result = primevalNum * result + this.imaginary;
+		int prime = 31;
+		
+		long tempReal = Double.doubleToLongBits(real);
+		tempReal = tempReal>>>32;
+		long tempImaginary = Double.doubleToLongBits(imaginary);
+		tempImaginary = tempImaginary>>>32;
+		
+		result = prime * result + (int)tempReal;
+		result = prime * result + (int)tempImaginary;
 		
 		return result;
-	}
+	}	
 }

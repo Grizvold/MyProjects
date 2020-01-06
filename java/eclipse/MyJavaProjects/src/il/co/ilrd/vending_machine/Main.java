@@ -10,7 +10,7 @@ import il.co.ilrd.vending_machine.VendingMachine.MachineSlot;
 
 /**
  * @Author      Ruslan Gorbaty
- * @Reviewer    First_name Last_name
+ * @Reviewer    Yuval Shlomo
  * @Group       FS767
  * @Description
  */
@@ -38,7 +38,11 @@ public class Main {
 		machineSlotMap.put(4, new MachineSlot(13, productTwix));
 		machineSlotMap.put(5, new MachineSlot(15, productBounty));
 		
-		
+		mainTest.runVendingMachine(mainTest, testVendingMachine, machineSlotMap);
+	}
+	
+	private void runVendingMachine(Main mainTest, VendingMachine testVendingMachine,
+									HashMap<Integer, MachineSlot> machineSlotMap) {
 		int usersMenuChoice = 0;
 		float usersMoney = 0.0f;
 		int usersProductId = 0;
@@ -52,17 +56,17 @@ public class Main {
 			usersMenuChoice = userChoiseScanner.nextInt();
 			switch (usersMenuChoice) {
 			case 0:
-				System.out.println("Machine ready for use");	
+				System.out.println("\nMachine ready for use\n\n");	
 				testVendingMachine.slotConfiguration(machineSlotMap);
 				break;
 			case 1:
-				System.out.println("Please enter amount of money");
+				System.out.println("\nPlease enter amount of money\n\n");
 				usersMoney = userChoiseScanner.nextFloat();
 				testVendingMachine.insertMoney(usersMoney);
 				break;
 				
 			case 2:
-				System.out.println("Enter your product id");
+				System.out.println("\nEnter your product id\n\n");
 				usersProductId = userChoiseScanner.nextInt();
 				testVendingMachine.selectProduct(usersProductId);
 				break;
@@ -72,7 +76,7 @@ public class Main {
 				break;
 				
 			case 4:
-				System.out.println("Shutting down");
+				System.out.println("\nShutting down\n\n");
 				break;
 			default:
 				break;

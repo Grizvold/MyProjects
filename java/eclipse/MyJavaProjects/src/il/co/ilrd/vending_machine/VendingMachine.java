@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 /**
  * @Author      Ruslan Gorbaty
- * @Reviewer    First_name Last_name
+ * @Reviewer    Yuval Shlomo
  * @Group       FS767
  * @Description Vending Machine implementation.
  */
@@ -14,6 +14,7 @@ public class VendingMachine {
 	private State currState = State.INIT;
 	private HashMap<Integer, MachineSlot> machineSlotMap;
 	private View printStream;
+	Thread vmThread;
 	
 	VendingMachine(View printObject){
 		this.printStream = printObject;
@@ -86,7 +87,7 @@ public class VendingMachine {
 		IDLE{
 			@Override
 			public void insertMoney(VendingMachine vm, float amount) {
-				vm.currBalance += amount;
+				vm.currBalance = amount;
 				vm.currState = COLLECT_MONEY;
 				vm.printStream.print("Current balance: " + vm.currBalance);
 			}
@@ -124,10 +125,12 @@ public class VendingMachine {
 					chosenSlot.dispense();
 					vm.printStream.print("You have bought " + 
 											chosenSlot.product.getName());
+					vm.printStream.print("Change " + 
+											(vm.currBalance - chosenSlot.product.getPrice()));
 					vm.printStream.print("Thanks for the purchase");
-					vm.currBalance = 0.0f;
-					vm.currState = IDLE;
 				}
+				vm.currBalance = 0.0f;
+				vm.currState = IDLE;
 			}
 			
 			@Override
@@ -163,7 +166,23 @@ public class VendingMachine {
 	
 	public void error() {
 		this.printStream.print("Sorry an error has occured");
+		this.currBalance = 0.0f;
 		this.currState = State.INIT;
+	}
+	
+	private Timeout 
+	
+	public class Timeout implements Runnable{
+
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(5000);
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
 

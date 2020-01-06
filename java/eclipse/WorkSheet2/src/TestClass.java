@@ -15,6 +15,24 @@ enum Level{
 	Low
 }
 
+class Point {
+	int x = 0;
+	int y;
+	
+	/*public Point() {
+		this(0, 0);
+	}*/
+	
+	/*public Point() {
+		this(x, 0);
+	}*/
+	
+	public Point(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+}
+
 class Parent{
 	//int x = 5;
 	
@@ -137,6 +155,7 @@ public class TestClass {
 		Parent testParent = new Parent();
 		Child testChild = new Child();
 		System.out.println(testChild);
+		System.out.println(testParent);
 	}
 
 }

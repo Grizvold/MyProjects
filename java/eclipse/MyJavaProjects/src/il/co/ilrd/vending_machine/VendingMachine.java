@@ -77,11 +77,11 @@ public class VendingMachine {
 			}
 			@Override
 			public void insertMoney(VendingMachine vm, float amount) {
-				System.out.println("Vending Machine is in initializing state");
+				vm.printStream.print("Vending Machine is in initializing state");
 			}
 			@Override
 			public void selectProduct(VendingMachine vm, int slotId) {
-				System.out.println("Vending Machine is in initializing state");
+				vm.printStream.print("Vending Machine is in initializing state");
 			}
 		},
 		IDLE{
@@ -89,22 +89,30 @@ public class VendingMachine {
 			public void insertMoney(VendingMachine vm, float amount) {
 				vm.currBalance = amount;
 				vm.currState = COLLECT_MONEY;
+				vm.vmThread = vm.getNewThread();
+				vm.vmThread.start();
 				vm.printStream.print("Current balance: " + vm.currBalance);
 			}
 			@Override
-			public void selectProduct(VendingMachine vm, int slotId) {}
+			public void selectProduct(VendingMachine vm, int slotId) {
+				vm.printStream.print("Insert money first please");
+			}
 			@Override
 			public void allOk(VendingMachine vm){}
 		},
 		COLLECT_MONEY{
 			@Override
 			public void insertMoney(VendingMachine vm, float amount) {
+				vm.vmThread.interrupt();
 				vm.currBalance += amount;
 				vm.printStream.print("Current balance: " + vm.currBalance);
+				vm.vmThread = vm.getNewThread();
+				vm.vmThread.start();
 			}
 			
 			@Override
 			public void selectProduct(VendingMachine vm, int slotId) {
+				vm.vmThread.interrupt();
 				MachineSlot chosenSlot = vm.machineSlotMap.get(slotId);
 				if(chosenSlot == null)
 				{
@@ -170,17 +178,20 @@ public class VendingMachine {
 		this.currState = State.INIT;
 	}
 	
-	private Timeout 
+	private Thread getNewThread() {
+		return new Thread(new Timeout());
+	}
 	
 	public class Timeout implements Runnable{
 
 		@Override
 		public void run() {
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(3000);
+				currBalance = 0.0f;
+				currState = State.IDLE;
 				
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 	}

@@ -9,12 +9,6 @@ import java.util.Arrays;
  *
  */
 
-enum Level{
-	High,
-	Medium,
-	Low
-}
-
 class Point {
 	int x = 0;
 	int y;
@@ -128,15 +122,7 @@ public class TestClass {
 		Foo testFoo = new Foo();
 		testFoo.foo(10);
 		
-		/*String text    =
-		        "This is the text to be searched " +
-		        "for occurrences of the http:// pattern.";
 
-		String regex = ".*tex.*";
-
-		boolean matches = Pattern.matches(regex, text);
-
-		System.out.println("matches = " + matches);*/
 		Boolean boolean1 = true;
 		System.out.println(boolean1? true:false);
 		
@@ -148,14 +134,9 @@ public class TestClass {
 		System.out.println(exerciseTest1.exerciseString == exerciseTestFoo2.exerciseString2);
 		System.out.println(exerciseTest1.exerciseString == str);
 		
-		Level enumtestLevel = Level.High;
-		enumtestLevel = Level.Low;
-		System.out.println(enumtestLevel);
-		
 		Parent testParent = new Parent();
 		Child testChild = new Child();
 		System.out.println(testChild);
 		System.out.println(testParent);
-	}
-
+	}	
 }

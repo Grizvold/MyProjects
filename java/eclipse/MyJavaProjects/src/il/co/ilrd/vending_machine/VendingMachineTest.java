@@ -36,6 +36,8 @@ public class VendingMachineTest {
 		machineSlotMap.put(4, new MachineSlot(13, productTwix));
 		machineSlotMap.put(5, new MachineSlot(15, productBounty));
 		
+		testVendingMachine.slotConfiguration(machineSlotMap);
+		
 		runVendingMachine(testVendingMachine, machineSlotMap);
 	}
 	
@@ -54,17 +56,14 @@ public class VendingMachineTest {
 			usersMenuChoice = userChoiseScanner.nextInt();
 			switch (usersMenuChoice) {
 			case 0:
-				System.out.println("\nMachine ready for use\n\n");	
-				testVendingMachine.slotConfiguration(machineSlotMap);
+				testVendingMachine.allOk();	
 				break;
 			case 1:
-				System.out.println("\nPlease enter amount of money\n\n");
 				usersMoney = userChoiseScanner.nextFloat();
 				testVendingMachine.insertMoney(usersMoney);
 				break;
 				
 			case 2:
-				System.out.println("\nEnter your product id\n\n");
 				usersProductId = userChoiseScanner.nextInt();
 				testVendingMachine.selectProduct(usersProductId);
 				break;
@@ -74,7 +73,6 @@ public class VendingMachineTest {
 				break;
 				
 			case 4:
-				System.out.println("\nShutting down\n\n");
 				break;
 			default:
 				break;

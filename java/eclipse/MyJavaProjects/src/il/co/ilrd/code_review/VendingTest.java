@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import il.co.ilrd.code_review.Product;
-import il.co.ilrd.code_review.VendingMachine.MachineSlot;
-import il.co.ilrd.code_review.VendingMachine;
+import il.co.ilrd.code_review.VendingMachine.*;
 import il.co.ilrd.code_review.View;
 
 public class VendingTest {

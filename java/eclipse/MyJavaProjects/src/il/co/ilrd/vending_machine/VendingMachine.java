@@ -13,8 +13,9 @@ public class VendingMachine {
 	private float currBalance = 0.0f;
 	private State currState = State.INIT;
 	private HashMap<Integer, MachineSlot> machineSlotMap = null;
-	private View printStream = null;
-	private Thread vmThread = null;
+	private final View printStream;
+	private Thread vmThread = new Thread(new Timeout());
+	private boolean threadFlag = false;
 	
 	VendingMachine(View printObject){
 		this.printStream = printObject;
@@ -74,7 +75,9 @@ public class VendingMachine {
 		INIT{
 			@Override
 			public void allOk(VendingMachine vm){
+				handleState(vm);
 				vm.currState = IDLE;
+				vm.currState.handleState(vm);
 			}
 			@Override
 			public void insertMoney(VendingMachine vm, float amount) {
@@ -83,6 +86,10 @@ public class VendingMachine {
 			@Override
 			public void selectProduct(VendingMachine vm, int slotId) {
 				vm.printStream.print("Vending Machine is in initializing state");
+			}
+			@Override
+			public void handleState(VendingMachine vm) {
+				vm.printStream.print("Vending Machine has been initialized and ready to use.\n");
 			}
 		},
 		IDLE{
@@ -90,42 +97,45 @@ public class VendingMachine {
 			public void insertMoney(VendingMachine vm, float amount) {
 				vm.currBalance = amount;
 				vm.currState = COLLECT_MONEY;
+				vm.currState.handleState(vm);
 				vm.printStream.print("Current balance: " + vm.currBalance);
-				vm.vmThread = new Thread(vm.new Timeout());
-				vm.vmThread.start();
 			}
 			@Override
 			public void selectProduct(VendingMachine vm, int slotId) {
-				vm.printStream.print("Insert money first please");
+				vm.printStream.print("Insert money first please.");
+			}
+			@Override
+			public void handleState(VendingMachine vm) {
+				vm.printStream.print("Choose Insert Money Option and insert money.\n");
 			}
 		},
 		COLLECT_MONEY{
 			@Override
 			public void insertMoney(VendingMachine vm, float amount) {
-				vm.vmThread.interrupt();
 				vm.currBalance += amount;
 				vm.printStream.print("Current balance: " + vm.currBalance);
-				vm.vmThread = new Thread(vm.new Timeout());
-				vm.vmThread.start();
+				handleState(vm);
 			}
 			
 			@Override
 			public void selectProduct(VendingMachine vm, int slotId) {
-				vm.vmThread.interrupt();
 				MachineSlot chosenSlot = vm.machineSlotMap.get(slotId);
 				if(chosenSlot == null)
 				{
 					vm.printStream.print("Wrong input, try again.");
+					currentStateStartTime = System.currentTimeMillis();
 				}
 				else if(vm.currBalance < chosenSlot.getPrice())
 				{
 					vm.printStream.print("Not enought money, missing " + 
 										(chosenSlot.getPrice() - vm.currBalance));
+					currentStateStartTime = System.currentTimeMillis();
 				}
 				else if(chosenSlot.isEmpty())
 				{
 					vm.printStream.print("Sorry, out of " + 
 											chosenSlot.product.getName());
+					currentStateStartTime = System.currentTimeMillis();
 				}
 				else
 				{
@@ -134,25 +144,54 @@ public class VendingMachine {
 											chosenSlot.product.getName());
 					vm.printStream.print("Change " + 
 											(vm.currBalance - chosenSlot.product.getPrice()));
-					vm.printStream.print("Thanks for the purchase");
+					vm.printStream.print("Thanks for the purchase\n\n");
+					vm.currBalance = 0.0f;
+					vm.currState = IDLE;
 				}
-				vm.currBalance = 0.0f;
-				vm.currState = IDLE;
-			}					
+				
+				vm.currState.handleState(vm);
+			}
+			
+			@Override
+			public void handleState(VendingMachine vm) {
+				vm.printStream.print("Insert more money or choose product.");
+				currentStateStartTime = System.currentTimeMillis();
+			}
+			
+			@Override
+			public void timeout(VendingMachine vm) {
+				if((System.currentTimeMillis() - currentStateStartTime) >= 8000)
+				{
+					vm.currState = IDLE;
+					vm.currBalance = 0.0f;
+					vm.currState.handleState(vm);
+					vm.printStream.print("No action has been taken, reseting.\n\n");
+				}
+			}
 		};
 		
-		public void insertMoney(VendingMachine vm, float amount) {}
-		
+		public long currentStateStartTime;
+		public void timeout(VendingMachine vm) {}		
+		public void handleState(VendingMachine vm) {}
+		public void insertMoney(VendingMachine vm, float amount) {}		
 		public void selectProduct(VendingMachine vm, int slotId) {}
-
 		public void allOk(VendingMachine vm){}
+		
 	}
 		
 	public void slotConfiguration(HashMap<Integer, MachineSlot>machineSlotMap) {
 		this.machineSlotMap = machineSlotMap;
-		allOk();
 	}
 	
+	public void startVendingMachine() {
+		threadFlag = true;
+		vmThread.start();
+	}
+	
+	public void stopVendingMachine() {
+		threadFlag = false;
+		printStream.print("Shuting down vending machine.");
+	}
 	//events
 	public void insertMoney(float amount) {
 		currState.insertMoney(this, amount);
@@ -163,16 +202,13 @@ public class VendingMachine {
 	}
 	
 	public void allOk() {
-		this.printStream.print("Ready for purchase, insert money and choose product");
-		this.currState = State.IDLE;
-		this.vmThread.interrupt();
+		currState.allOk(this);
 	}
 	
 	public void error() {
 		this.printStream.print("Sorry an error has occured");
 		this.currBalance = 0.0f;
 		this.currState = State.INIT;
-		this.vmThread.interrupt();
 	}
 	
 	public class Timeout implements Runnable{
@@ -180,10 +216,11 @@ public class VendingMachine {
 		@Override
 		public void run() {
 			try {
-				Thread.sleep(5000);
-				currBalance = 0.0f;
-				currState = State.IDLE;
-				printStream.print("You didnt take any action, reseting machine.");
+				while (threadFlag)
+				{					
+					Thread.sleep(1000);
+					currState.timeout(VendingMachine.this);
+				}
 			} catch (InterruptedException e) {}
 		}
 	}

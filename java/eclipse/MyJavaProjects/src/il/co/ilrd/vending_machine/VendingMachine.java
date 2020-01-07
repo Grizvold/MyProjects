@@ -12,23 +12,17 @@ public class VendingMachine {
 	
 	private float currBalance = 0.0f;
 	private State currState = State.INIT;
-	private HashMap<Integer, MachineSlot> machineSlotMap;
-	private View printStream;
-	Thread vmThread;
+	private HashMap<Integer, MachineSlot> machineSlotMap = null;
+	private View printStream = null;
+	private Thread vmThread = null;
 	
 	VendingMachine(View printObject){
 		this.printStream = printObject;
-		machineSlotMap = null;
 	}
 	
 	public static class MachineSlot{
-		private int quantity;
-		private Product product;
-		
-		public MachineSlot() {
-			this.quantity = 0;
-			this.product = null;
-		}
+		private int quantity = 0;
+		private Product product = null;
 		
 		public MachineSlot(int quantity, Product product)
 		{
@@ -37,19 +31,19 @@ public class VendingMachine {
 		}
 		
 		public void setPrice(float price) {
-			this.product.setPrice(price);
+			product.setPrice(price);
 		}
 		
 		public float getPrice() {
-			return this.product.getPrice();
+			return product.getPrice();
 		}
 		
 		/**
-		 * 
+		 * 				
 		 * @return true is empty, false if not.
 		 */
 		public boolean isFull() {
-			return (this.quantity == this.product.getMaxPerSlot());
+			return (quantity == product.getMaxPerSlot());
 		}
 		
 		/**
@@ -57,15 +51,22 @@ public class VendingMachine {
 		 * @return true is empty, false if not.
 		 */
 		public boolean isEmpty() {
-			return (this.quantity == 0);
+			return (quantity == 0);
 		}
 
 		public void setQuantity(int amount) {
-			this.quantity = amount;
+			if(amount > product.getMaxPerSlot())
+			{
+				quantity = product.getMaxPerSlot();
+			}
+			else 
+			{				
+				quantity = amount;
+			}
 		}
 		
 		public void dispense() {			
-			this.quantity--;
+			--quantity;
 		}
 	}
 	
@@ -89,16 +90,14 @@ public class VendingMachine {
 			public void insertMoney(VendingMachine vm, float amount) {
 				vm.currBalance = amount;
 				vm.currState = COLLECT_MONEY;
-				vm.vmThread = vm.getNewThread();
-				vm.vmThread.start();
 				vm.printStream.print("Current balance: " + vm.currBalance);
+				vm.vmThread = new Thread(vm.new Timeout());
+				vm.vmThread.start();
 			}
 			@Override
 			public void selectProduct(VendingMachine vm, int slotId) {
 				vm.printStream.print("Insert money first please");
 			}
-			@Override
-			public void allOk(VendingMachine vm){}
 		},
 		COLLECT_MONEY{
 			@Override
@@ -106,7 +105,7 @@ public class VendingMachine {
 				vm.vmThread.interrupt();
 				vm.currBalance += amount;
 				vm.printStream.print("Current balance: " + vm.currBalance);
-				vm.vmThread = vm.getNewThread();
+				vm.vmThread = new Thread(vm.new Timeout());
 				vm.vmThread.start();
 			}
 			
@@ -139,11 +138,7 @@ public class VendingMachine {
 				}
 				vm.currBalance = 0.0f;
 				vm.currState = IDLE;
-			}
-			
-			@Override
-			public void allOk(VendingMachine vm){}
-			
+			}					
 		};
 		
 		public void insertMoney(VendingMachine vm, float amount) {}
@@ -170,16 +165,14 @@ public class VendingMachine {
 	public void allOk() {
 		this.printStream.print("Ready for purchase, insert money and choose product");
 		this.currState = State.IDLE;
+		this.vmThread.interrupt();
 	}
 	
 	public void error() {
 		this.printStream.print("Sorry an error has occured");
 		this.currBalance = 0.0f;
 		this.currState = State.INIT;
-	}
-	
-	private Thread getNewThread() {
-		return new Thread(new Timeout());
+		this.vmThread.interrupt();
 	}
 	
 	public class Timeout implements Runnable{
@@ -187,12 +180,11 @@ public class VendingMachine {
 		@Override
 		public void run() {
 			try {
-				Thread.sleep(3000);
+				Thread.sleep(5000);
 				currBalance = 0.0f;
 				currState = State.IDLE;
-				
-			} catch (InterruptedException e) {
-			}
+				printStream.print("You didnt take any action, reseting machine.");
+			} catch (InterruptedException e) {}
 		}
 	}
 }

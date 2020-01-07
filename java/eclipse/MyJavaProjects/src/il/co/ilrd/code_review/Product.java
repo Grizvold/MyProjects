@@ -1,16 +1,9 @@
-package il.co.ilrd.vending_machine;
-
-/**
- * @Author      Ruslan Gorbaty
- * @Reviewer    Yuval Shlomo
- * @Group       FS767
- * @Description Product implementation. (Used in Vending Machine).
- */
+package il.co.ilrd.code_review;
 
 public class Product {
-	private String name = null;
-	private float price = 0.0f;
-	private int maxPerSlot = 0;
+	private String name;
+	private float price;
+	private int maxPerSlot;
 	
 	public Product(String name, float price, int maxPerSlot){
 		this.name = name;
@@ -19,7 +12,7 @@ public class Product {
 	}
 
 	public int getMaxPerSlot() {
-		return maxPerSlot;
+		return this.maxPerSlot;
 	}
 	
 	public String getName() {
@@ -33,4 +26,5 @@ public class Product {
 	public void setPrice(float price) {
 		this.price = price;
 	}
+
 }

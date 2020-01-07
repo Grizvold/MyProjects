@@ -15,15 +15,13 @@ import il.co.ilrd.vending_machine.VendingMachine.MachineSlot;
  * @Description
  */
 
-public class Main {
+public class VendingMachineTest {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Main mainTest = new Main();
-		View outputView = new PrintView();
-		VendingMachine testVendingMachine = new VendingMachine(outputView);
+		VendingMachine testVendingMachine = new VendingMachine(new PrintView());
 		HashMap<Integer, MachineSlot> machineSlotMap = new HashMap<>(); 
 		
 		Product productCoke = new Product("Coke", 3.0f, 10);
@@ -38,10 +36,10 @@ public class Main {
 		machineSlotMap.put(4, new MachineSlot(13, productTwix));
 		machineSlotMap.put(5, new MachineSlot(15, productBounty));
 		
-		mainTest.runVendingMachine(mainTest, testVendingMachine, machineSlotMap);
+		runVendingMachine(testVendingMachine, machineSlotMap);
 	}
 	
-	private void runVendingMachine(Main mainTest, VendingMachine testVendingMachine,
+	static private void runVendingMachine(VendingMachine testVendingMachine,
 									HashMap<Integer, MachineSlot> machineSlotMap) {
 		int usersMenuChoice = 0;
 		float usersMoney = 0.0f;
@@ -50,8 +48,8 @@ public class Main {
 		
 		while(usersMenuChoice != 4)
 		{			
-			mainTest.printMenuHeader();
-			mainTest.printMenuOptions();
+			printMenuHeader();
+			printMenuOptions();
 			
 			usersMenuChoice = userChoiseScanner.nextInt();
 			switch (usersMenuChoice) {
@@ -86,13 +84,13 @@ public class Main {
 		userChoiseScanner.close();
 	}
 	
-	private void printMenuHeader() {
+	static private void printMenuHeader() {
 		System.out.println("+-------------------------------------+");
 		System.out.println("|      Welcome to Vending Machine     |");
 		System.out.println("+-------------------------------------+");
 	}
 	
-	private void printMenuOptions() {
+	static private void printMenuOptions() {
 		System.out.println("Please make selection: ");
 		System.out.println("1. Insert money");
 		System.out.println("2. Choose product");

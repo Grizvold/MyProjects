@@ -56,7 +56,7 @@ public class VendingMachineTest {
 			usersMenuChoice = userChoiseScanner.nextInt();
 			switch (usersMenuChoice) {
 			case 0:
-				testVendingMachine.allOk();	
+				testVendingMachine.startVendingMachine();;	
 				break;
 			case 1:
 				usersMoney = userChoiseScanner.nextFloat();
@@ -73,6 +73,7 @@ public class VendingMachineTest {
 				break;
 				
 			case 4:
+				testVendingMachine.stopVendingMachine();
 				break;
 			default:
 				break;

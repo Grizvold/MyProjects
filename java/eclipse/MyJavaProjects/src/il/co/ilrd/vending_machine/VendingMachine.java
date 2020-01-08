@@ -123,19 +123,16 @@ public class VendingMachine {
 				if(chosenSlot == null)
 				{
 					vm.printStream.print("Wrong input, try again.");
-					currentStateStartTime = System.currentTimeMillis();
 				}
 				else if(vm.currBalance < chosenSlot.getPrice())
 				{
 					vm.printStream.print("Not enought money, missing " + 
 										(chosenSlot.getPrice() - vm.currBalance));
-					currentStateStartTime = System.currentTimeMillis();
 				}
 				else if(chosenSlot.isEmpty())
 				{
 					vm.printStream.print("Sorry, out of " + 
 											chosenSlot.product.getName());
-					currentStateStartTime = System.currentTimeMillis();
 				}
 				else
 				{
@@ -160,12 +157,12 @@ public class VendingMachine {
 			
 			@Override
 			public void timeout(VendingMachine vm) {
-				if((System.currentTimeMillis() - currentStateStartTime) >= 8000)
+				if((System.currentTimeMillis() - currentStateStartTime) >= 5000)
 				{
 					vm.currState = IDLE;
 					vm.currBalance = 0.0f;
+					vm.printStream.print("\nNo action has been taken, reseting.\n\n");
 					vm.currState.handleState(vm);
-					vm.printStream.print("No action has been taken, reseting.\n\n");
 				}
 			}
 		};
@@ -186,6 +183,7 @@ public class VendingMachine {
 	public void startVendingMachine() {
 		threadFlag = true;
 		vmThread.start();
+		allOk();
 	}
 	
 	public void stopVendingMachine() {

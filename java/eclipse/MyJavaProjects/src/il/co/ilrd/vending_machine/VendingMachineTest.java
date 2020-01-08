@@ -48,6 +48,7 @@ public class VendingMachineTest {
 		int usersProductId = 0;
 		Scanner userChoiseScanner = new Scanner(System.in);
 		
+		testVendingMachine.startVendingMachine();	
 		while(usersMenuChoice != 4)
 		{			
 			printMenuHeader();
@@ -56,7 +57,7 @@ public class VendingMachineTest {
 			usersMenuChoice = userChoiseScanner.nextInt();
 			switch (usersMenuChoice) {
 			case 0:
-				testVendingMachine.startVendingMachine();;	
+				testVendingMachine.allOk();
 				break;
 			case 1:
 				usersMoney = userChoiseScanner.nextFloat();

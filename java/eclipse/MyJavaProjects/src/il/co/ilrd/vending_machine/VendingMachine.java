@@ -16,6 +16,7 @@ public class VendingMachine {
 	private final View printStream;
 	private Thread vmThread = new Thread(new Timeout());
 	private boolean threadFlag = false;
+	public long currentStateStartTime = 0L;
 	
 	VendingMachine(View printObject){
 		this.printStream = printObject;
@@ -75,9 +76,7 @@ public class VendingMachine {
 		INIT{
 			@Override
 			public void allOk(VendingMachine vm){
-				handleState(vm);
-				vm.currState = IDLE;
-				vm.currState.handleState(vm);
+				changeState(vm, IDLE);
 			}
 			@Override
 			public void insertMoney(VendingMachine vm, float amount) {
@@ -89,15 +88,14 @@ public class VendingMachine {
 			}
 			@Override
 			public void handleState(VendingMachine vm) {
-				vm.printStream.print("Vending Machine has been initialized and ready to use.\n");
+				vm.printStream.print("To initialize the machine press '0'.\n");
 			}
 		},
 		IDLE{
 			@Override
 			public void insertMoney(VendingMachine vm, float amount) {
 				vm.currBalance = amount;
-				vm.currState = COLLECT_MONEY;
-				vm.currState.handleState(vm);
+				changeState(vm, COLLECT_MONEY);
 				vm.printStream.print("Current balance: " + vm.currBalance);
 			}
 			@Override
@@ -146,18 +144,18 @@ public class VendingMachine {
 					vm.currState = IDLE;
 				}
 				
-				vm.currState.handleState(vm);
+				changeState(vm, vm.currState);
 			}
 			
 			@Override
 			public void handleState(VendingMachine vm) {
 				vm.printStream.print("Insert more money or choose product.");
-				currentStateStartTime = System.currentTimeMillis();
+				vm.currentStateStartTime = System.currentTimeMillis();
 			}
 			
 			@Override
 			public void timeout(VendingMachine vm) {
-				if((System.currentTimeMillis() - currentStateStartTime) >= 5000)
+				if((System.currentTimeMillis() - vm.currentStateStartTime) >= 5000)
 				{
 					vm.currState = IDLE;
 					vm.currBalance = 0.0f;
@@ -167,13 +165,20 @@ public class VendingMachine {
 			}
 		};
 		
-		public long currentStateStartTime;
 		public void timeout(VendingMachine vm) {}		
 		public void handleState(VendingMachine vm) {}
 		public void insertMoney(VendingMachine vm, float amount) {}		
 		public void selectProduct(VendingMachine vm, int slotId) {}
-		public void allOk(VendingMachine vm){}
-		
+		public void allOk(VendingMachine vm) {}
+		public void error(VendingMachine vm) {
+			vm.currBalance = 0.0f;
+			vm.currState = State.INIT;
+			vm.printStream.print("Sorry an error has occured");
+		}
+		void changeState(VendingMachine vm, State newState) {
+			vm.currState = newState;
+			vm.currState.handleState(vm);
+		}
 	}
 		
 	public void slotConfiguration(HashMap<Integer, MachineSlot>machineSlotMap) {
@@ -183,7 +188,7 @@ public class VendingMachine {
 	public void startVendingMachine() {
 		threadFlag = true;
 		vmThread.start();
-		allOk();
+		currState.handleState(this);
 	}
 	
 	public void stopVendingMachine() {
@@ -204,9 +209,7 @@ public class VendingMachine {
 	}
 	
 	public void error() {
-		this.printStream.print("Sorry an error has occured");
-		this.currBalance = 0.0f;
-		this.currState = State.INIT;
+		currState.error(this);
 	}
 	
 	public class Timeout implements Runnable{

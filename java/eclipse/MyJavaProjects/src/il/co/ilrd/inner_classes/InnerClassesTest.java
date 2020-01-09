@@ -2,7 +2,7 @@ package il.co.ilrd.inner_classes;
 
 public class InnerClassesTest {
 
-    public int x = 0;
+   public int x = 0;
 
     class FirstLevel {
 

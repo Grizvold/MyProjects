@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class ConcurrencyWorkSheet {
+public class PingingProcess {
 
 	static void commands(ArrayList<String> commandList) throws Exception 
 	{
 		ProcessBuilder builder = new ProcessBuilder(commandList);
 		Process localProcess = builder.start();
+		
+		/*Runtime runtime = Runtime.getRuntime();
+		Process localProcess = runtime.exec(commandList.toString());*/
+		
 		String outputString = null;
 		
 		BufferedReader inputBufferedReader = 
@@ -37,12 +41,12 @@ public class ConcurrencyWorkSheet {
 		ArrayList<String> commandList = new ArrayList<String>();
 		
 		commandList.add("ping");
-		commandList.add("www,google.com");
+		commandList.add("www.google.com");
 		commandList.add("-i");
 		commandList.add("1");
 		
 		try {
-			ConcurrencyWorkSheet.commands(commandList);
+			PingingProcess.commands(commandList);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

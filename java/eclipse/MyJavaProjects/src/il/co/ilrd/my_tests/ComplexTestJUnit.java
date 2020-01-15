@@ -1,10 +1,9 @@
 package il.co.ilrd.my_tests;
-import il.co.ilrd.numerics.*;
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+
+import il.co.ilrd.numerics.*;
 
 class ComplexTestJUnit {
 

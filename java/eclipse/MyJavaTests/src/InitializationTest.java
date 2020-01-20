@@ -41,13 +41,24 @@ public class InitializationTest {
  
 	public static void main(String[] args) {
 		InitializationTest a = new InitializationTest();
+		System.out.println(a.x);
+		System.out.println(a.y);
+		System.out.println(a.z);
 		
 		int[] intArr = new int[5];
 		System.out.println(intArr.length);
 		//new InitializationTest();
 		
-		System.out.println(a.x);
-		System.out.println(a.y);
-		System.out.println(a.z);
+		ChildOfInitializer random = new ChildOfInitializer();
+		
+	}
+}
+
+class ChildOfInitializer extends InitializationTest
+{
+	public ChildOfInitializer()
+	{
+		super();
+		System.out.println("random ctor");
 	}
 }

@@ -38,6 +38,10 @@ public class QuizSortAndTripletRuslanGorbaty
 				int sum = arr[firstElem] + arr[secondElem] + arr[thirdElem];
 				if(num == sum)
 				{
+					System.out.println(String.format("\nValues of triplet are: %d %d %d", 
+										arr[firstElem], 
+										arr[secondElem], 
+										arr[thirdElem]));
 					return true;
 				}
 				else if(num > sum) 

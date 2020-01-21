@@ -1,14 +1,38 @@
 public class NewClass { 
+	
     public class superclass { 
     	int x = 6;
+    	 superclass() {
+			System.out.println("default parent");
+		}
+    	
+    	 superclass(int y) {
+    		System.out.println("second of parent");
+    		this.x = y;
+    		this.print();
+		}
+    	
          void print() 
         { 
             System.out.println("print in superclass."); 
         } 
     } 
+    
     public class subclass extends superclass { 
     	int x = 3;
     	
+    	 subclass() {
+    		this("something");
+    		//super(2);
+    		System.out.println("resume default ctor");
+		}
+    	 
+    	 subclass(String name)
+    	 {
+    		 System.out.println("2nd ctor" + name);
+    	 }
+    	
+    	@Override
          void print() 
         { 
         	 System.out.println(x);
@@ -23,12 +47,15 @@ public class NewClass {
     public static void main(String[] args) 
     { 
     	NewClass N = new NewClass();
-        superclass A = N.new superclass(); 
+        /*superclass A = N.new superclass(); 
         superclass B = N.new subclass(); 
         A.print(); 
         B.print(); 
         //B.foo();
         System.out.println(A.x);
-        System.out.println(B.x);  
+        System.out.println(B.x);  */
+        
+        subclass C = N.new subclass();
+        System.out.println(C.x);
     } 
 } 

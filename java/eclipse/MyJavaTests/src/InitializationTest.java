@@ -40,13 +40,13 @@ public class InitializationTest {
 	}
  
 	public static void main(String[] args) {
-		InitializationTest a = new InitializationTest();
-		System.out.println(a.x);
-		System.out.println(a.y);
-		System.out.println(a.z);
-		
-		int[] intArr = new int[5];
-		System.out.println(intArr.length);
+//		InitializationTest a = new InitializationTest();
+//		System.out.println(a.x);
+//		System.out.println(a.y);
+//		System.out.println(a.z);
+//		
+//		int[] intArr = new int[5];
+//		System.out.println(intArr.length);
 		//new InitializationTest();
 		
 		ChildOfInitializer random = new ChildOfInitializer();
@@ -56,9 +56,18 @@ public class InitializationTest {
 
 class ChildOfInitializer extends InitializationTest
 {
+	static
+	{
+		System.out.println("child static block");
+	}
+	
+	{
+		System.out.println("child non static block");
+	}
+	
 	public ChildOfInitializer()
 	{
 		super();
-		System.out.println("random ctor");
+		System.out.println("child ctor");
 	}
 }

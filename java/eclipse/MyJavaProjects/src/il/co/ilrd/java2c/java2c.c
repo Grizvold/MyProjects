@@ -2,7 +2,7 @@
 #include <stdlib.h> /* malloc,free     */
 /******************************************************************************/
 /* Name: Ruslan Gorbaty                                                       */
-/* Reviewer: Gabriel Yamin.                                                   */
+/* Reviewer: Doron Ben-Zaken.                                                 */
 /* Group: FS767                                                               */
 /* Description: Java2c implementation.                                        */
 /******************************************************************************/
@@ -347,6 +347,7 @@ class_t *Dog_ClassLoader(class_t *super)
     dog_functions = (method_t *)malloc(sizeof(method_t) * 6);
     if(NULL == dog_functions)
     {
+        free(dog_class);
         perror("Malloc in Dog_ClassLoader dog_functions failed");
         return NULL;
     }
@@ -419,6 +420,7 @@ class_t *Cat_ClassLoader(class_t *super)
     cat_functions = (method_t *)malloc(sizeof(method_t) * 6);
     if(NULL == cat_functions)
     {
+        free(cat_class);
         perror("Malloc in Cat_ClassLoader cat_functions failed");
         return NULL;
     }
@@ -486,6 +488,7 @@ class_t *LegendaryAnimal_ClassLoader(class_t *super)
     legendary_method = (method_t *)malloc(sizeof(method_t) * 6);
     if(NULL == legendary_method)
     {
+        free(legendary_class);
         perror("Malloc in LegendaryAnimal_ClassLoader legendary_method failed");
         return NULL;
     }
@@ -538,7 +541,6 @@ int main()
     int i = 0;
 
     class_t *object_class = NULL;
-    object_t *object_instance = NULL;
     class_t *animal_class = NULL;
     class_t *dog_class = NULL;
     class_t *cat_class = NULL;
@@ -553,22 +555,19 @@ int main()
 
     object_class = Object_ClassLoader();
 
-    object_instance = CreateInstance(object_class); /*Object obj;*/
-    (void)object_instance;
-
     animal_class = Animal_ClassLoader(object_class);
     animal = (Animal_t *)CreateInstance(animal_class);
     Animal_Constructor_1(animal);
 
-    dog_class = Dog_ClassLoader(object_class);
+    dog_class = Dog_ClassLoader(animal_class);
     dog = (Dog_t *)CreateInstance(dog_class);
     Dog_Constructor(dog);
 
-    cat_class = Cat_ClassLoader(object_class);
+    cat_class = Cat_ClassLoader(animal_class);
     cat = (Cat_t * )CreateInstance(cat_class);
     Cat_Constructor_1(cat);
 
-    legendary_class = LegendaryAnimal_ClassLoader(object_class);
+    legendary_class = LegendaryAnimal_ClassLoader(cat_class);
     legendary_animal = (LegendaryAnimal_t *)CreateInstance(legendary_class);
     LegendaryAnimal_Constructor_1(legendary_animal);
 
@@ -625,7 +624,6 @@ int main()
 
     free(object_class->vtable);
     free(object_class);
-    free(object_instance);
 
     return 0;
 }

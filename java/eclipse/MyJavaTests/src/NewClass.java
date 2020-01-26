@@ -29,7 +29,8 @@ public class NewClass {
     	 
     	 subclass(String name)
     	 {
-    		 System.out.println("2nd ctor" + name);
+    		 System.out.println("2nd ctor " + name);
+    		 System.out.println(this.x);
     	 }
     	
     	@Override

@@ -187,8 +187,8 @@ public class Java2c {
 			foo(a);
 		}
 		
-		//System.gc();
-		//System.out.println("After gc");
-		//Runtime.runFinalizersOnExit(true);
+		System.gc();
+		System.out.println("After gc");
+		Runtime.runFinalizersOnExit(true);
 	}
 }

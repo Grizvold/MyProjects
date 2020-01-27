@@ -13,7 +13,7 @@
 
 typedef void (*method_t)();
 
-static char g_toString_output[100];
+static char g_toString_output[1024];
 static int g_animal_counter = 0;
 
 enum FUNCTIONS{HASHCODE = 0, 

@@ -24,7 +24,7 @@ public class SinglyLinkedList
 		}
 	}
 	
-	private static class IteratorLinkedList implements GenericIterator 
+	private static class IteratorLinkedList implements GlobalIterator 
 	{		
 		private Node currentNode;
 		
@@ -120,7 +120,7 @@ public class SinglyLinkedList
 	 * 
 	 * @return Iterator to the head node of the list.
 	 */
-	public GenericIterator begin() 
+	public GlobalIterator begin() 
 	{
 		return (new IteratorLinkedList(this.headNode));
 	}
@@ -140,7 +140,7 @@ public class SinglyLinkedList
 	 * @param Object data.
 	 * @return Returns iterator if found, if not found returns null.
 	 */
-	public GenericIterator find(Object data) 
+	public GlobalIterator find(Object data) 
 	{		
 		IteratorLinkedList itr = new IteratorLinkedList(this.headNode);
 		

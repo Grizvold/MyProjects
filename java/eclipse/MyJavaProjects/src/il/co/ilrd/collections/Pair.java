@@ -23,20 +23,34 @@ public class Pair<K, V> implements Map.Entry<K, V>{
 	}
 
 	@Override
-	public V setValue(V value) {
-		
-		return null;
+	public V setValue(V newValue) {
+		V oldValue = val;
+		val = newValue;
+		return oldValue;
 	}
 	
 	@Override
-	public boolean equals(Object arg0) {
+	public boolean equals(Object obj) {
+		if(null == obj) {
+			return false;
+		}
+		
+		if(this == obj) {
+			return true;
+		}
+		
+		if(obj instanceof Pair) {
+			return (((Pair<?, ?>)obj).key.equals(key) && 
+						((Pair<?, ?>)obj).val.equals(val));
+		}
 		
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return 0;
+		return (key == null ? 0 : key.hashCode()) ^ 
+				(val == null ? 0 : val.hashCode());
 	}
 	
 	@Override
@@ -45,15 +59,29 @@ public class Pair<K, V> implements Map.Entry<K, V>{
 		return "key value: " + key + "value: " + val;
 	}
 	
-	public static <K,V> Pair<V, K> swap(K key, V value){
-		return null;
+	public static <K,V> Pair<V, K> swap(Pair<K, V> pair){
+		return new Pair<>(pair.val, pair.key);
 	}
 	
 	public static <K,V> Pair<K, V> of(K key, V value){
-		return null;
+		return new Pair<>(key, value);
 	}
 	
-	public static <T> Pair<T, T> minMax(T[] arr){
-		return null;
+	public static <T extends Comparable<T>> Pair<T, T> minMax(T[] arr){
+		T min, max;
+		
+		min = arr[0];
+		max = arr[0];
+		
+		for (T t : arr) {
+			if(t.compareTo(min) < 0) {
+				min = t;
+			}
+			if (t.compareTo(max) > 0) {
+				max = t;
+			}
+		}
+		
+		return new Pair<T, T>(min, max);
 	}
 }

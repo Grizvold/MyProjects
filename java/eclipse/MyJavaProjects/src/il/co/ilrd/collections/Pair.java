@@ -53,7 +53,7 @@ public class Pair<K, V> implements Map.Entry<K, V>{
 		return null;
 	}
 	
-	public static <T> Pair<T, T> minmax(T[] arr){
+	public static <T> Pair<T, T> minMax(T[] arr){
 		return null;
 	}
 }

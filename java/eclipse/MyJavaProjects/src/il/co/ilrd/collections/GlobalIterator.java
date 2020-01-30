@@ -2,7 +2,7 @@ package il.co.ilrd.collections;
 
 /**
  * @Author      Ruslan Gorbaty
- * @Reviewer    Hadas Jakoubovitsh
+ * @Reviewer    Dalia Frank
  * @Group       FS767
  * @Description Interface of iterator.
  */

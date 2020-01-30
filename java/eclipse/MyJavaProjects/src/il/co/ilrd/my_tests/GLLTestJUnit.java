@@ -10,74 +10,57 @@ class GLLTestJUnit {
 	
 	GenericLinkedList<Integer> intGLL;
 	GenericLinkedList<String> strGLL;
-	Integer num1, num2, num3, num4, num5;
-	String str1, str2, str3, str4, str5;
+	String[] strArray = {"a", "b", "c", "d", "e"};
+	int[] intArray =  {1, 2, 3, 4, 5};
+	
 	
 	@BeforeEach
 	void Before() {
 		intGLL = new GenericLinkedList<Integer>();
 		strGLL = new GenericLinkedList<String>();
-		
-		num1 = 1;
-		num2 = 2;
-		num3 = 3;
-		num4 = 4;
-		num5 = 5;
-		
-		str1 = "a";
-		str2 = "b";
-		str3 = "c";
-		str4 = "d";
-		str5 = "e";
-		
-		intGLL.pushFront(num1);
-		intGLL.pushFront(num2);
-		intGLL.pushFront(num3);
-		intGLL.pushFront(num4);
-		intGLL.pushFront(num5);
-		
-		strGLL.pushFront(str1);
-		strGLL.pushFront(str2);
-		strGLL.pushFront(str3);
-		strGLL.pushFront(str4);
-		strGLL.pushFront(str5);
+
+		for (int i = 0; i < 5; ++i) {
+			intGLL.pushFront(intArray[i]);
+			strGLL.pushFront(strArray[i]);
+		}
+
 	}
 	
 	@Test
 	void pushIntTest() {	
-		assertEquals(num5, intGLL.popFront());
-		assertEquals(num4, intGLL.popFront());
-		assertEquals(num3, intGLL.popFront());
-		assertEquals(num2, intGLL.popFront());
-		assertEquals(num1, intGLL.popFront());
+		assertEquals(intArray[4], intGLL.popFront());
+		assertEquals(intArray[3], intGLL.popFront());
+		assertEquals(intArray[2], intGLL.popFront());
+		assertEquals(intArray[1], intGLL.popFront());
+		assertEquals(intArray[0], intGLL.popFront());
 		assertNull(intGLL.popFront());
 	}
 
 	@Test
 	void pushStrTest() {	
-		assertEquals(str5, strGLL.popFront());
-		assertEquals(str4, strGLL.popFront());
-		assertEquals(str3, strGLL.popFront());
-		assertEquals(str2, strGLL.popFront());
-		assertEquals(str1, strGLL.popFront());
+		assertEquals(strArray[4], strGLL.popFront());
+		assertEquals(strArray[3], strGLL.popFront());
+		assertEquals(strArray[2], strGLL.popFront());
+		assertEquals(strArray[1], strGLL.popFront());
+		assertEquals(strArray[0], strGLL.popFront());
 		assertNull(strGLL.popFront());
 	}
 	
 	
 	@Test 
 	void findIntTest() {
-		assertEquals(num5, intGLL.find(num5).next());
-		assertEquals(num4, intGLL.find(num4).next());
-		assertEquals(num3, intGLL.find(num3).next());
-		assertEquals(num2, intGLL.find(num2).next());
+		assertEquals(intArray[4], intGLL.find(intArray[4]).next());
+		assertEquals(intArray[3], intGLL.find(intArray[3]).next());
+		assertEquals(intArray[2], intGLL.find(intArray[2]).next());
+		assertEquals(intArray[1], intGLL.find(intArray[1]).next());
 		assertNull(intGLL.find(7));
 	}
 	
 	@Test
 	void sizeIntTest() {
-		assertEquals(num5, intGLL.getSize());
+		assertEquals(intArray[4], intGLL.getSize());
 		intGLL.popFront();
-		assertEquals(num4, intGLL.getSize());
+		assertEquals(intArray[3], intGLL.getSize());
 		assertFalse(intGLL.isEmpty());
 	}
 	

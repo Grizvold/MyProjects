@@ -2,8 +2,13 @@ public class NewClass {
 	
     public class superclass { 
     	int x = 6;
+    	{
+    		System.out.println(x);
+    	}
+    	
     	 superclass() {
 			System.out.println("default parent");
+			System.out.println(x);
 		}
     	
     	 superclass(int y) {
@@ -20,10 +25,14 @@ public class NewClass {
     
     public class subclass extends superclass { 
     	int x = 3;
+    	{
+    		System.out.println(x);
+    	}
     	
     	 subclass() {
     		this("something");
     		//super(2);
+    		System.out.println(x);
     		System.out.println("resume default ctor");
 		}
     	 

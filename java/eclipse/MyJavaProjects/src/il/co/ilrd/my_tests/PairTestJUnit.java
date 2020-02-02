@@ -20,14 +20,14 @@ class PairTestJUnit {
 	
 	@BeforeEach
 	void beforeEach() {
-		intInt1 = new Pair<Integer, Integer>(1, 1);
-		intInt2 = new Pair<Integer, Integer>(2, 2);
-		intInt3 = new Pair<Integer, Integer>(3, 3);
-		intInt4 = new Pair<Integer, Integer>(4, 5);
+		intInt1 = Pair.of(1, 1);
+		intInt2 = Pair.of(2, 2);
+		intInt3 = Pair.of(3, 3);
+		intInt4 = Pair.of(4, 5);
 		
-		intStr1 = new Pair<Integer, String>(1, "a");
-		intStr2 = new Pair<Integer, String>(2, "b");
-		intStr3 = new Pair<Integer, String>(3, "c");
+		intStr1 = Pair.of(1, "a");
+		intStr2 = Pair.of(2, "b");
+		intStr3 = Pair.of(3, "c");
 	}
 	
 

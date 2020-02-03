@@ -25,5 +25,11 @@ class MyMapTestJUnit {
 	void testIsEmpty() {
 		assertTrue(testMap.isEmpty());
 	}
+	
+	@Test
+	void testPut() {
+		testMap.put(1, "a");
+		
+	}
 
 }

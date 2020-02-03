@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import junit.extensions.TestSetup;
+
 
 public class MyMap<K, V> implements Map<K, V>{
 	
@@ -137,20 +139,37 @@ public class MyMap<K, V> implements Map<K, V>{
 
 	@Override
 	public boolean containsKey(Object key) {
-		// TODO Auto-generated method stub
+		LinkedList<Pair<K, V>> list = hashMap.get(getIndex(key));
+		
+		for (Pair<K, V> element : list) {
+			if(element.getKey().equals(key)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		// TODO Auto-generated method stub
+		for (V v : values()) {
+			if(v.equals(value)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public V get(Object key) {
-		// TODO Auto-generated method stub
-		return null;
+		V returnData = null;
+		LinkedList<Pair<K, V>> list = hashMap.get(getIndex(key));
+		for (Pair<K, V> elementPair : list) {
+			if(elementPair.getKey().equals(key)) {
+				returnData = elementPair.getValue();
+			}
+		}
+		
+		return returnData;
 	}
 
 	@Override
@@ -165,38 +184,40 @@ public class MyMap<K, V> implements Map<K, V>{
 
 	@Override
 	public Set<K> keySet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new KeysSet();
 	}
 
 	@Override
 	public V put(K key, V value) {
-		V oldValue = null;
 		LinkedList<Pair<K, V>> list = hashMap.get(getIndex(key));
-		Pair<K, V> newPair = Pair.of(key, value);
 		
 		for (Pair<K, V> pair : list) {
-			if(pair.getKey().equals(pair.getKey())) {
-				oldValue = pair.getValue();
-				list.remove(pair);
-				break;
+			if(pair.getKey().equals(key)) {
+				return pair.setValue(value);
 			}
 		}
-		
-		list.add(newPair);		
-		return oldValue;
+		list.add(Pair.of(key, value));		
+		return null;
 	}
 
 	@Override
 	public void putAll(Map<? extends K, ? extends V> m) {
-		// TODO Auto-generated method stub
-		
+		for (Map.Entry<? extends K, ? extends V> mEntry : m.entrySet()) {
+			put(mEntry.getKey(), mEntry.getValue());
+		}	
 	}
 
 	@Override
 	public V remove(Object key) {
-		// TODO Auto-generated method stub
-		return null;
+		V removedData = null;
+		LinkedList<Pair<K, V>> list = hashMap.get(getIndex(key));
+		for (Pair<K, V> elementPair : list) {
+			if(elementPair.getKey().equals(key)) {
+				removedData = elementPair.getValue();
+				list.remove(elementPair);
+			}
+		}
+		return removedData;
 	}
 
 	@Override
@@ -215,8 +236,7 @@ public class MyMap<K, V> implements Map<K, V>{
 	
 	@Override
 	public Collection<V> values() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Values();
 	}
 	
 	private int getIndex(Object key) {

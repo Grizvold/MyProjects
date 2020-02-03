@@ -74,8 +74,7 @@ public class MyMap<K, V> implements Map<K, V>{
 	
 	private class Values extends AbstractCollection<V> {
 
-		private EntrySet entry = new EntrySet();
-		private EntrySet.EntryIterator valIterator = entry.new EntryIterator();
+		private Iterator<Entry<K, V>> valIterator = new EntrySet().iterator();
 		
 		private class ValuesIterator implements Iterator<V> {
 
@@ -103,8 +102,7 @@ public class MyMap<K, V> implements Map<K, V>{
 	
 	private class KeysSet extends AbstractSet<K> {
 
-		private EntrySet entry = new EntrySet();
-		private EntrySet.EntryIterator keyIterator = entry.new EntryIterator();
+		private Iterator<Entry<K, V>> keyIterator = new EntrySet().iterator();
 		
 		private class KeysIterator implements Iterator<K> {
 
@@ -166,6 +164,7 @@ public class MyMap<K, V> implements Map<K, V>{
 		for (Pair<K, V> elementPair : list) {
 			if(elementPair.getKey().equals(key)) {
 				returnData = elementPair.getValue();
+				break;
 			}
 		}
 		
@@ -215,6 +214,7 @@ public class MyMap<K, V> implements Map<K, V>{
 			if(elementPair.getKey().equals(key)) {
 				removedData = elementPair.getValue();
 				list.remove(elementPair);
+				break;
 			}
 		}
 		return removedData;

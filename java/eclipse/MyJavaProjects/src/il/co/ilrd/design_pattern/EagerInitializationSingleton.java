@@ -1,4 +1,4 @@
-package il.co.ilrd.design_pattern.singleton;
+package il.co.ilrd.design_pattern;
 
 public class EagerInitializationSingleton {
 	private static final EagerInitializationSingleton instance = new EagerInitializationSingleton();

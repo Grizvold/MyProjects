@@ -6,8 +6,8 @@ import java.util.Map;
 public class FactoryPattern<T, K, A> {
 	private Map<K, FactoryInterface<T, A>> hashMap = new HashMap<>();
 	
-	public void add(K key, FactoryInterface<T, A> creationFactoryInterface) {
-		hashMap.put(key, creationFactoryInterface);
+	public void add(K key, FactoryInterface<T, A> lambda) {
+		hashMap.put(key, lambda);
 	}
 	
 	public T create(K key, A args) {

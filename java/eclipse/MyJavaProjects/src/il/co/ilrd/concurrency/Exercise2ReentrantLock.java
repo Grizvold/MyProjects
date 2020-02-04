@@ -1,15 +1,19 @@
 package il.co.ilrd.concurrency;
 
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Exercise2ReentrantLock{
 	
 	static ReentrantLock reentrantLock = new ReentrantLock();
+	static ReentrantReadWriteLock readerwriter = new ReentrantReadWriteLock();
 	
 	public static int counter = 0;
 	
 	public static void main(String[] args) {
 		Exercise2ReentrantLock exercise2 = new Exercise2ReentrantLock();
+		readerwriter.readLock().lock();
+		readerwriter.writeLock().lock();
 		
 		exercise2.startExecution();
 		System.out.println("Counter Value: " + exercise2.getCounter());

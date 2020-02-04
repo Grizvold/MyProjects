@@ -1,4 +1,4 @@
-package il.co.ilrd.design_pattern;
+package il.co.ilrd.design_pattern.singleton;
 
 public class DoubleCheckSingleton {
 	private static DoubleCheckSingleton instance = null;

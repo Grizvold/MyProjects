@@ -1,34 +1,54 @@
 package il.co.ilrd.my_tests;
 
 import java.util.ArrayList;
-import il.co.ilrd.design_pattern.FactoryPattern;
+
+import il.co.ilrd.design_pattern.factory.FactoryPattern;
 
 public class FactoryTest {
 
 	public static void main(String[] args) {
 		ArrayList<Object> dogArgs = new ArrayList<Object>();
 		ArrayList<Object> catArgs = new ArrayList<Object>();
+		ArrayList<Object> catByInstance = new ArrayList<Object>();
 		ArrayList<Object> chickenArgs = new ArrayList<Object>();
+		ArrayList<Object> dogStaticArgs = new ArrayList<Object>();
 		FactoryPattern<Animal, String, ArrayList<Object>> factory = new FactoryPattern<>();
 		
 		dogArgs.add(0, 4);
 		dogArgs.add(1, "Rexi");
+		dogStaticArgs.add(0, 4);
+		dogStaticArgs.add(1, "Garu");
 		catArgs.add(0, 4);
 		catArgs.add(1, "Yuki");
+		catByInstance.add(0, 3);
+		catByInstance.add(1, "CrippledCat");
 		chickenArgs.add(0, 2);
 		chickenArgs.add(1, "Kuki");
 		
-		factory.add("Dog", (arguments)->new Dog(dogArgs));
-		factory.add("Cat", (arguments)->new Cat(catArgs));
+		factory.add("Dog", arguments->new Dog(dogArgs));
+		factory.add("DogStatic", Dog::dogFactoryMethod);
+		factory.add("Cat", Cat::new);
 		factory.add("Chicken", (arguments)->new Chicken(chickenArgs));
 		
 		Animal dog = factory.create("Dog", dogArgs);
-		Animal cat = factory.create("Cat", catArgs);
+		Animal catByConstructor = factory.create("Cat", catArgs);
 		Animal chicken = factory.create("Chicken", chickenArgs);
+		Animal dogByStatic = factory.create("DogStatic", dogStaticArgs);
+
+		factory.add("CatCripple", ((Cat)catByConstructor)::instanceOfExisting);
+		Animal catCripple = factory.create("CatCripple", catByInstance);
 		
 		dog.makeSound();
-		cat.makeSound();
+		
+		System.out.println("\n" + catByConstructor.getName());
+		catByConstructor.makeSound();
+		
 		chicken.makeSound();
+		
+		System.out.println("\n" + dogByStatic.getName());
+		
+		System.out.println("\n" + catCripple.getName() + " num of legs: " + catCripple.getNumberOfLegs());
+		catCripple.makeSound();
 	}
 
 }
@@ -63,6 +83,10 @@ class Dog implements Animal{
 	public int getNumberOfLegs() {
 		return numOfLegs;
 	}
+	
+	public static Dog dogFactoryMethod(ArrayList<Object> args) {
+		return new Dog(args);
+	}
 }
 
 class Cat implements Animal{
@@ -87,6 +111,10 @@ class Cat implements Animal{
 	@Override
 	public int getNumberOfLegs() {
 		return numOfLegs;
+	}
+	
+	public Cat instanceOfExisting(ArrayList<Object> args) {
+		return new Cat(args);
 	}
 }
 

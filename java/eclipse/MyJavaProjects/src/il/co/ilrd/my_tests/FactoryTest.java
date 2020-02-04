@@ -1,6 +1,7 @@
 package il.co.ilrd.my_tests;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import il.co.ilrd.design_pattern.factory.FactoryPattern;
 
@@ -49,8 +50,32 @@ public class FactoryTest {
 		
 		System.out.println("\n" + catCripple.getName() + " num of legs: " + catCripple.getNumberOfLegs());
 		catCripple.makeSound();
+		
+		
+		Reference objReference = new Reference();
+		FactoryPattern<Reference, String, Reference> referenceFactory = new FactoryPattern<>();
+		referenceFactory.add("reference", Reference::createReference);
+		Reference reference = referenceFactory.create("reference", objReference);
+		reference.printInReference(" test");
+		
+		instanceReference(objReference::printInReference);
+		
 	}
+	
+	static void instanceReference(Function<String, Integer> args) {
+		args.apply("hello");
+	}
+}
 
+class Reference{
+	public Reference createReference() {
+		return new Reference();
+	}
+	
+	public int printInReference(String s) {
+		System.out.println("inside reference "+ s);
+		return 0;
+	}
 }
 
 interface Animal{

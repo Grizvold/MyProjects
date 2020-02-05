@@ -10,7 +10,6 @@ public class DispatcherTest {
 		Producer<String> server = new Producer();
 		String message = "first ping";
 		
-		System.out.println("\n" + "First broadcast");
 		server.registerClient(pc1);
 		server.registerClient(pc2);
 		server.registerClient(pc3);

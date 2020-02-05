@@ -1,5 +1,7 @@
 package il.co.ilrd.design_pattern.observer;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -65,7 +67,9 @@ class Client<T>{
 	}
 	
 	public void update(Object args) {
-		System.out.println("message received " + args);
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println("Receiving message " + "\"" + args + "\"" + " in " + dtf.format(now));
 	}
 	
 	private void notifyDispatcherDied() {

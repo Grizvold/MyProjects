@@ -7,7 +7,6 @@ public class MethodReferenceTest {
 		Consumer<String> d = System.out::println;
 		System.out.println(c);
 		System.out.println(d);
-//		(args) -> MethodReferenceTest.staticMethod(test);
 	}
 
 	public static void staticMethod(String arg) {

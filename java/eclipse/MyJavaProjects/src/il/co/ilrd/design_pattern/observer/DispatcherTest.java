@@ -35,11 +35,11 @@ class NotificationByTime<T> implements Runnable{
 	private volatile int notification_number = 0; 
 	private volatile boolean flag = true;
 	private Producer<String> server;
-	private String[] notificationMessage = {"first ping", 
-											"second ping", 
-											"third ping", 
-											"forth ping",
-											"fifth ping"};
+	private String[] notificationMessage = {"1st ping", 
+											"2nd ping", 
+											"3rd ping", 
+											"4th ping",
+											"5th ping"};
 	private long currentTime = System.currentTimeMillis();
 	
 	

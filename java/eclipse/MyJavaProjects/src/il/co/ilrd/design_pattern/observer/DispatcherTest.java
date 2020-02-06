@@ -3,11 +3,11 @@ package il.co.ilrd.design_pattern.observer;
 public class DispatcherTest {
 
 	public static void main(String[] args) throws InterruptedException {
-		Client<String> pc1 = new Client();
-		Client<String> pc2 = new Client();
-		Client<String> pc3 = new Client();
-		Client<String> pc4 = new Client();
-		Producer<String> server = new Producer();
+		Client<String> pc1 = new Client<>();
+		Client<String> pc2 = new Client<>();
+		Client<String> pc3 = new Client<>();
+		Client<String> pc4 = new Client<>();
+		Producer<String> server = new Producer<>();
 		String message = "first ping";
 		
 		server.registerClient(pc1);

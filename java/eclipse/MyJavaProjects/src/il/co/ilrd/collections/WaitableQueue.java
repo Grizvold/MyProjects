@@ -17,6 +17,10 @@ public class WaitableQueue<E> {
 		priorityQueue = new PriorityQueue<>(10, comparator);
 	}
 	
+	public boolean isEmpty() {
+		return priorityQueue.isEmpty();
+	}
+	
 	public void enqueue(E task) {
 		synchronized (monitor) {
 			priorityQueue.add(task);
@@ -27,30 +31,27 @@ public class WaitableQueue<E> {
 	public E dequeue() {
 		synchronized (monitor) {
 			try {
-				if(priorityQueue.isEmpty()) {					
+				while(priorityQueue.isEmpty()) {					
 					monitor.wait();
 				}
 			} catch (InterruptedException e) {
-				return null;
+				e.printStackTrace();
 			}
-			return priorityQueue.poll();
+		return priorityQueue.poll();
 		}
 	}
 	
-	public boolean isEmpty() {
-		return priorityQueue.isEmpty();
-	}
 	
 	public E dequeueTimeout(long time, TimeUnit timeUnit) {
 		synchronized (monitor) {
-			if(priorityQueue.isEmpty()) {
+			while(priorityQueue.isEmpty()) {
 				try {
 					timeUnit.timedWait(monitor, time);
 				} catch (InterruptedException e) {
-					return null;
+					e.printStackTrace();
 				}
 			}
-			return priorityQueue.poll();
+		return priorityQueue.poll();
 		}
 	}
 }

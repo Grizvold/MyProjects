@@ -61,7 +61,7 @@ public class StringQuizzes {
 		}
 		
 		return startSub;
-	}
+	}*/
 	
 	static public String reverseString(StringBuffer str) {
 		//StringBuffer stringBuffer = new StringBuffer(this.);
@@ -74,5 +74,5 @@ public class StringQuizzes {
 		}
 		
 		return str.toString();
-	}*/
+	}
 }

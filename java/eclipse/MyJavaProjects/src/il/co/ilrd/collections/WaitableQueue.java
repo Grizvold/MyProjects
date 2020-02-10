@@ -21,9 +21,9 @@ public class WaitableQueue<E> {
 		return priorityQueue.isEmpty();
 	}
 	
-	public void enqueue(E task) {
+	public void enqueue(E element) {
 		synchronized (monitor) {
-			priorityQueue.add(task);
+			priorityQueue.add(element);
 			monitor.notify();
 		}
 	}
@@ -52,6 +52,12 @@ public class WaitableQueue<E> {
 				}
 			}
 		return priorityQueue.poll();
+		}
+	}
+	
+	public boolean remove(E element) {
+		synchronized (monitor) {
+			return priorityQueue.remove(element);
 		}
 	}
 }

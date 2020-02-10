@@ -1,24 +1,20 @@
 package il.co.ilrd.design_pattern.thread_pool;
 
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import javax.naming.spi.DirStateFactory.Result;
-
-import org.junit.internal.runners.statements.RunAfters;
 
 import il.co.ilrd.collections.WaitableQueue;
 
 public class ThreadPool {
 	
-	private WaitableQueue<Task<?>> enqueQueue = new WaitableQueue<>();
-	private WaitableQueue<Task<?>> dequeQueue = enqueQueue;
+	private WaitableQueue<Task<?>> submitQueue = new WaitableQueue<>();
+	private WaitableQueue<Task<?>> managementQueue = submitQueue;
 	private volatile int numOfThreads = 0;
 	
 	private Semaphore semaphorePause = new Semaphore(0);
@@ -30,75 +26,103 @@ public class ThreadPool {
 		HIGH;
 	}
 	
-	private class Task<V> implements Comparable<V>{
+	private class Task<V> implements Comparable<Task<V>>{
 		int priority;
-		FutureTask futureTask;
+		FutureTask<V> futureTask;
 		
+		public Task(Callable<V> callableTask, Priority priority) {
+			this.priority = priority.ordinal();
+			futureTask = new FutureTask<V>(callableTask);
+		}
+
 		public Task(Runnable runnableTask, Priority priority, V value) {
 			this.priority = priority.ordinal(); //set enum value
-			this.futureTask = new FutureTask();
+			futureTask = new FutureTask<V>(runnableTask, value);
 		}
 		
 		public Task(Runnable runnableTask, int priority, boolean isRunning) {
 			this.priority = priority;
-			
+			futureTask = new FutureTask<V>(runnableTask, null, isRunning);
 		}
 		
-		public Task(Callable c, Priority priority) {
-			this.priority = priority.ordinal();
-		}
 		
 		@Override
-		public int compareTo(V o) {
-			return 0;
+		public int compareTo(Task<V> compareItem) {
+			return compareItem.priority - this.priority;
 		}
 		
-		private class FutureTask implements Future<V>{
-			V result = null;
-			Callable<V> callable = null;
+		private class FutureTask<U> implements Future<U>{
+			U result = null;
 			boolean isRunning = true;
+			boolean isDone = false;
+			boolean isCanceled = false;
+			Callable<U> callable = null;
 			
-			public FutureTask(Runnable runnableTask) {
-				
+			public FutureTask(Callable<U> callableTask) {
+				callable = callableTask;
 			}
 			
-			public FutureTask(Callable<V> callableTask) {
-				
+			public FutureTask(Runnable runnableTask, U value) {
+				callable = Executors.callable(runnableTask, value);
 			}
 			
-			public FutureTask(Runnable runnableTask, V value, boolean isRunning) {
-				
+			
+			public FutureTask(Runnable runnableTask, U value, boolean isRunning) {
+				callable = Executors.callable(runnableTask, value);
+				this.isRunning = isRunning;
+			}
+			
+			public boolean run() {
+				try {
+					result = callable.call();
+					synchronized (callable) {
+						callable.notify();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				isDone = true;
+				return isRunning;
 			}
 			
 			@Override
 			public boolean cancel(boolean mayInterruptIfRunning) {
-				// TODO Auto-generated method stub
-				return false;
+				if(managementQueue.remove(Task.this)) {
+					isCanceled = true;
+					return true;
+				}
+				return isCanceled;
 			}
 
 			@Override
-			public V get() throws InterruptedException, ExecutionException {
-				// TODO Auto-generated method stub
-				return null;
+			public U get() throws InterruptedException, ExecutionException {
+				synchronized (callable) {
+					if (!isDone) {
+						callable.wait();
+					}
+				}
+				return result;
 			}
 
 			@Override
-			public V get(long timeout, TimeUnit unit)
+			public U get(long timeout, TimeUnit unit)
 					throws InterruptedException, ExecutionException, TimeoutException {
-				// TODO Auto-generated method stub
-				return null;
+				synchronized (callable) {
+					if (!isDone) {
+						unit.timedWait(callable, timeout);
+					}
+				}
+				return result;
 			}
 
 			@Override
 			public boolean isCancelled() {
-				// TODO Auto-generated method stub
-				return false;
+				return isCanceled;
 			}
 
 			@Override
 			public boolean isDone() {
-				// TODO Auto-generated method stub
-				return false;
+				return isDone;
 			}
 			
 		}
@@ -109,19 +133,18 @@ public class ThreadPool {
 
 		@Override
 		public void run() {
-			/*while(isRunning) {
-				
-			}*/
+			while(isRunning) {
+				isRunning = managementQueue.dequeue().futureTask.run();
+			}
 		}
 	}
 	
-	class TerminatedThread implements Runnable{
+	class ShutDownThread implements Runnable{
 
 		@Override
 		public void run() {
 			semaphoreShutdown.release();
 		}
-		
 	}
 	
 
@@ -134,40 +157,77 @@ public class ThreadPool {
 	}
 	
 	public <T>Future<T> submit(Callable<T> c){
-		return null;
+		Task<T> task = new Task<>(c, Priority.MEDIUM);
+		try {
+			submitQueue.enqueue(task);
+			
+		} catch (NullPointerException e) {
+			throw new RejectedExecutionException();
+		}
+		
+		return task.futureTask;
 	}
 
-	public <T>Future<T> submit(Runnable r, Comparator<Callable<T>> priority){
-		return null;
+	public <T>Future<T> submit(Runnable r, Priority priority){
+		Task<T> task = new Task<>(r, priority, null);
+		try {
+			submitQueue.enqueue(task);
+			
+		} catch (NullPointerException e) {
+			throw new RejectedExecutionException();
+		}
+		
+		return task.futureTask;
 	}
 	
-	public <T>Future<T> submit(Runnable r, Comparator<Callable<T>> priority, T value){
-		return null;
+	public <T>Future<T> submit(Runnable r, Priority priority, T value){
+		Task<T> task = new Task<>(r, priority, value);
+		try {
+			submitQueue.enqueue(task);
+			
+		} catch (NullPointerException e) {
+			throw new RejectedExecutionException();
+		}
+		
+		return task.futureTask;
 	}
 	
 	
-	public <T>Future<T> submit(Callable<T> c, Comparator<Callable<T>> priority){
-		return null;
+	public <T>Future<T> submit(Callable<T> c, Priority priority){
+		Task<T> task = new Task<>(c, priority);
+		try {
+			submitQueue.enqueue(task);
+			
+		} catch (NullPointerException e) {
+			throw new RejectedExecutionException();
+		}
+		
+		return task.futureTask;
 	}
 	
 	public void setNumOfThreads(int newNumOfThreads) {
 		if(newNumOfThreads > numOfThreads) {
 			for (int i = 0; i < newNumOfThreads - numOfThreads; ++i) {
-					threadList.push(new WorkingThread());
-					new Thread(threadList.get(0)).start();
+				new Thread(new WorkingThread()).start();
 			}
 		}
 		else{
 			for (int i = 0; i < numOfThreads - newNumOfThreads; ++i) {
-				//taskQueue.enqueue(new Task<Runnable>(new TerminatedThread(), 4));
+				submitQueue.enqueue(new Task<Runnable>(()->{},4 ,false));
 			}
 		}
 		numOfThreads = newNumOfThreads;
 	}
 	
 	public void pause() {
+		Task<Runnable> pauseTask = new Task<>(()-> {try {
+			semaphorePause.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}}, 4, true);
+		
 		for (int i = 0; i < numOfThreads; ++i) {
-			
+			submitQueue.enqueue(pauseTask);
 		}
 	}
 	
@@ -176,7 +236,10 @@ public class ThreadPool {
 	}
 	
 	public void shutDown() {
-		
+		submitQueue = null;
+		for (int i = 0; i < numOfThreads; ++i) {			
+			managementQueue.enqueue(new Task<Runnable>(new ShutDownThread(), 4, false));
+		}
 	}
 	
 	public void awaitTermination() {

@@ -63,13 +63,14 @@ public class ThreadPool {
 			public boolean run() {
 				try {
 					result = callable.call();
-					synchronized (monitorObject) {
-						monitorObject.notify();
-					}
 				} catch (Exception e) {
 					e.printStackTrace();
+				}finally {					
+					synchronized (monitorObject) {
+						monitorObject.notifyAll();					
+					}
+					isDone = true;
 				}
-				isDone = true;
 				return isRunning;
 			}
 			

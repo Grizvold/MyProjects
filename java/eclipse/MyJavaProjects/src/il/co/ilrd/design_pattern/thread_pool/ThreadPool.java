@@ -16,6 +16,8 @@ public class ThreadPool {
 	private WaitableQueue<Task<?>> submitQueue = new WaitableQueue<>();
 	private WaitableQueue<Task<?>> managementQueue = submitQueue;
 	private volatile int numOfThreads = 0;
+	private boolean isPaused = false;
+	private Object monitorObject = new Object();
 	
 	private Semaphore semaphorePause = new Semaphore(0);
 	private Semaphore semaphoreShutdown = new Semaphore(0);
@@ -27,22 +29,19 @@ public class ThreadPool {
 	}
 	
 	private class Task<V> implements Comparable<Task<V>>{
-		int priority;
-		FutureTask<V> futureTask;
+		private int priority = 0;
+		private FutureTask<V> futureTask = null; 
+		private boolean isRunning = true;
 		
 		public Task(Callable<V> callableTask, Priority priority) {
 			this.priority = priority.ordinal();
 			futureTask = new FutureTask<V>(callableTask);
 		}
-
-		public Task(Runnable runnableTask, Priority priority, V value) {
-			this.priority = priority.ordinal(); //set enum value
-			futureTask = new FutureTask<V>(runnableTask, value);
-		}
 		
 		public Task(Runnable runnableTask, int priority, boolean isRunning) {
+			this.isRunning = isRunning;
 			this.priority = priority;
-			futureTask = new FutureTask<V>(runnableTask, null, isRunning);
+			futureTask = new FutureTask<V>(Executors.callable(runnableTask, null));
 		}
 		
 		
@@ -52,31 +51,20 @@ public class ThreadPool {
 		}
 		
 		private class FutureTask<U> implements Future<U>{
-			U result = null;
-			boolean isRunning = true;
-			boolean isDone = false;
-			boolean isCanceled = false;
-			Callable<U> callable = null;
+			private U result = null;
+			private boolean isDone = false;
+			private boolean isCanceled = false;
+			private Callable<U> callable = null;
 			
 			public FutureTask(Callable<U> callableTask) {
 				callable = callableTask;
 			}
 			
-			public FutureTask(Runnable runnableTask, U value) {
-				callable = Executors.callable(runnableTask, value);
-			}
-			
-			
-			public FutureTask(Runnable runnableTask, U value, boolean isRunning) {
-				callable = Executors.callable(runnableTask, value);
-				this.isRunning = isRunning;
-			}
-			
 			public boolean run() {
 				try {
 					result = callable.call();
-					synchronized (callable) {
-						callable.notify();
+					synchronized (monitorObject) {
+						monitorObject.notify();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -89,16 +77,19 @@ public class ThreadPool {
 			public boolean cancel(boolean mayInterruptIfRunning) {
 				if(managementQueue.remove(Task.this)) {
 					isCanceled = true;
-					return true;
+					isDone = true;
+					synchronized (monitorObject) {
+						monitorObject.notify();
+					}
 				}
 				return isCanceled;
 			}
 
 			@Override
 			public U get() throws InterruptedException, ExecutionException {
-				synchronized (callable) {
+				synchronized (monitorObject) {
 					if (!isDone) {
-						callable.wait();
+						monitorObject.wait();
 					}
 				}
 				return result;
@@ -107,9 +98,9 @@ public class ThreadPool {
 			@Override
 			public U get(long timeout, TimeUnit unit)
 					throws InterruptedException, ExecutionException, TimeoutException {
-				synchronized (callable) {
+				synchronized (monitorObject) {
 					if (!isDone) {
-						unit.timedWait(callable, timeout);
+						unit.timedWait(monitorObject, timeout);
 					}
 				}
 				return result;
@@ -128,7 +119,7 @@ public class ThreadPool {
 		}
 	}
 	
-	class WorkingThread implements Runnable{
+	private class WorkingThread implements Runnable{
 		private boolean isRunning = true;
 
 		@Override
@@ -139,15 +130,6 @@ public class ThreadPool {
 		}
 	}
 	
-	class ShutDownThread implements Runnable{
-
-		@Override
-		public void run() {
-			semaphoreShutdown.release();
-		}
-	}
-	
-
 	public ThreadPool(int numOfThreads) {
 		this.numOfThreads = numOfThreads;
 		
@@ -169,7 +151,7 @@ public class ThreadPool {
 	}
 
 	public <T>Future<T> submit(Runnable r, Priority priority){
-		Task<T> task = new Task<>(r, priority, null);
+		Task<T> task = new Task<>(Executors.callable(r, null), priority);
 		try {
 			submitQueue.enqueue(task);
 			
@@ -181,7 +163,7 @@ public class ThreadPool {
 	}
 	
 	public <T>Future<T> submit(Runnable r, Priority priority, T value){
-		Task<T> task = new Task<>(r, priority, value);
+		Task<T> task = new Task<>(Executors.callable(r, value), priority);
 		try {
 			submitQueue.enqueue(task);
 			
@@ -206,17 +188,22 @@ public class ThreadPool {
 	}
 	
 	public void setNumOfThreads(int newNumOfThreads) {
-		if(newNumOfThreads > numOfThreads) {
-			for (int i = 0; i < newNumOfThreads - numOfThreads; ++i) {
-				new Thread(new WorkingThread()).start();
+		if(!isPaused) {			
+			if(newNumOfThreads > numOfThreads) {
+				for (int i = numOfThreads; i < newNumOfThreads; ++i) {
+					new Thread(new WorkingThread()).start();
+				}
 			}
-		}
-		else{
-			for (int i = 0; i < numOfThreads - newNumOfThreads; ++i) {
-				submitQueue.enqueue(new Task<Runnable>(()->{},4 ,false));
+			else{
+				for (int i = newNumOfThreads; i < numOfThreads; ++i) {
+					submitQueue.enqueue(new Task<Runnable>(()->{}, 4, false));
+				}
 			}
+			numOfThreads = newNumOfThreads;
 		}
-		numOfThreads = newNumOfThreads;
+		else {
+			throw new IllegalStateException();
+		}
 	}
 	
 	public void pause() {
@@ -229,16 +216,21 @@ public class ThreadPool {
 		for (int i = 0; i < numOfThreads; ++i) {
 			submitQueue.enqueue(pauseTask);
 		}
+		isPaused = true;
 	}
 	
 	public void resume() {
 		semaphorePause.release(numOfThreads);
+		isPaused = false;
 	}
 	
 	public void shutDown() {
+		if (isPaused) {
+			resume();
+		}
 		submitQueue = null;
 		for (int i = 0; i < numOfThreads; ++i) {			
-			managementQueue.enqueue(new Task<Runnable>(new ShutDownThread(), 4, false));
+			managementQueue.enqueue(new Task<Runnable>(()->{semaphoreShutdown.release();}, -1, false));
 		}
 	}
 	

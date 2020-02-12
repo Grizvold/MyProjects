@@ -1,6 +1,6 @@
 package il.co.ilrd.quizzes;
 
-public class MirrorTree {
+public class QuizzMirrorTree {
 
 	class Node{
 		int data;
@@ -50,7 +50,7 @@ public class MirrorTree {
 	}
 	
 	public static void main(String[] args) {
-		MirrorTree quizz = new MirrorTree();
+		QuizzMirrorTree quizz = new QuizzMirrorTree();
  		BinaryTree tree = quizz.new BinaryTree();
 
  		tree.rootNode = quizz.new Node(10);

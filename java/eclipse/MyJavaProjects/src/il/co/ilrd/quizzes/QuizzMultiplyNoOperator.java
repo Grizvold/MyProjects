@@ -1,6 +1,6 @@
 package il.co.ilrd.quizzes;
 
-public class MultiplyNoOperator {
+public class QuizzMultiplyNoOperator {
 
 	public static int multiply(int x, int y) {
 		if (y == 1)

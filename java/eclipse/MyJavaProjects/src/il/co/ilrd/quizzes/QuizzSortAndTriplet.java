@@ -2,7 +2,7 @@ package il.co.ilrd.quizzes;
 
 import java.util.Arrays;
 
-public class QuizSortAndTripletRuslanGorbaty 
+public class QuizzSortAndTriplet 
 {
 	public static void sortArray(int[] arr)
 	{

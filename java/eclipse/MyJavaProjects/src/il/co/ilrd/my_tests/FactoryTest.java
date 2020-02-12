@@ -53,7 +53,7 @@ public class FactoryTest {
 		
 		
 		Reference objReference = new Reference();
-		FactoryPattern<Reference, String, Reference> referenceFactory = new FactoryPattern<>();
+		FactoryPattern<Reference, String, Reference> referenceFactory = new FactoryPattern<Reference, String, Reference>();
 		referenceFactory.add("reference", Reference::createReference);
 		Reference reference = referenceFactory.create("reference", objReference);
 		reference.printInReference(" test");

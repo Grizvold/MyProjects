@@ -1,0 +1,2 @@
+Feb 18 15:08:49 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 12402688/12402688/0, res+swap = 8065024/8065024/0
+Feb 18 15:08:26 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 11841536/11841536/0, res+swap = 7606272/7606272/0

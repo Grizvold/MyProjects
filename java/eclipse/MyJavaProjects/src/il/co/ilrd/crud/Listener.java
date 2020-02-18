@@ -17,6 +17,6 @@ public class Listener implements PropertyChangeListener{
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		this.crudFile.create((String) evt.getNewValue());
+		crudFile.create((String)evt.getNewValue());
 	}
 }

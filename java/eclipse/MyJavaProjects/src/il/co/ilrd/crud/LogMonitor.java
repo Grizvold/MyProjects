@@ -23,8 +23,7 @@ public class LogMonitor{
 	private ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
 	private Thread monitoringThead = null;
 	
-
-	public LogMonitor(String pathToDirectory, String fileName) {
+	public LogMonitor(String pathToDirectory, String fileName) throws IOException {
 		try {
 			monitoringThead = new Thread(new WatchedFileService(pathToDirectory));
 			readChannel = Files.newByteChannel(Paths.get(pathToDirectory + fileName), 
@@ -34,6 +33,7 @@ public class LogMonitor{
 		}
 		dispatcher = new PropertyChangeSupport(monitoringThead);
 		this.fileName = fileName;
+		readChannel.position(readChannel.size());
 	}
 	
 	public void startMonitoring() {
@@ -63,16 +63,15 @@ public class LogMonitor{
 		public void run() {
 			while(isRunning) {
 				try {
-					watchKey = watchService.poll(10, TimeUnit.SECONDS);
+					watchKey = watchService.poll(10, TimeUnit.MINUTES);
 					if(watchKey != null) {
 						for (WatchEvent<?> event: watchKey.pollEvents()) {
-							Path path = (Path)event.context();
-							if(path.endsWith(fileName)) {
+							if(((Path)event.context()).endsWith(fileName)) {
 								while(readChannel.read(byteBuffer) > 0){
 									byteBuffer.flip();
 									dispatcher.firePropertyChange("", 
 													null, 
-													Charset.forName("UTF-8").decode(byteBuffer));
+													Charset.forName("UTF-8").decode(byteBuffer).toString());
 									byteBuffer.clear();
 								}
 							}

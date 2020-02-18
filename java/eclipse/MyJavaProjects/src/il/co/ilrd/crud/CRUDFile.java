@@ -9,28 +9,29 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class CRUDFile implements CRUD<String, Long>{
-	private Path path;
+	private Path pathToFile;
 	public SeekableByteChannel writeChannel;
+	private Long position = 0l; 
 	
 	public CRUDFile(String path) throws IOException {
-		this.path = Paths.get(path);
-		writeChannel = Files.newByteChannel(this.path, StandardOpenOption.WRITE);
+		pathToFile = Paths.get(path);
+		writeChannel = Files.newByteChannel(pathToFile, StandardOpenOption.WRITE);
 	}
 	
 	@Override
 	public Long create(String dataToWrite) {
-		Long bufferSize = 0l;
 		try {
-			bufferSize = new Long(writeChannel.write(Charset.forName("UTF-8").encode(dataToWrite)));
+			position = writeChannel.position();
+			writeChannel.write(Charset.forName("UTF-8").encode(dataToWrite));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return bufferSize;
+		return position;
 	}
 
 	@Override
 	public void close() throws Exception {
-		// TODO Auto-generated method stub
+		writeChannel.close();
 	}
 
 

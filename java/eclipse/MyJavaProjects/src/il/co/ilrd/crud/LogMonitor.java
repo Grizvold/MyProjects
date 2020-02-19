@@ -22,17 +22,20 @@ public class LogMonitor{
 	private PropertyChangeSupport dispatcher = null;
 	private ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
 	private Thread monitoringThead = null;
+	private Path pathToFile = null;
+	private Path pathToDirectory = null;
 	
-	public LogMonitor(String pathToDirectory, String fileName) throws IOException {
+	public LogMonitor(String fileName) throws IOException {
+		pathToFile = Paths.get(fileName);
+		pathToDirectory = pathToFile.getParent();
+		this.fileName = pathToFile.getFileName().toString();
 		try {
 			monitoringThead = new Thread(new WatchedFileService(pathToDirectory));
-			readChannel = Files.newByteChannel(Paths.get(pathToDirectory + fileName), 
-												StandardOpenOption.READ);
+			readChannel = Files.newByteChannel(pathToFile, StandardOpenOption.READ);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		dispatcher = new PropertyChangeSupport(monitoringThead);
-		this.fileName = fileName;
 		readChannel.position(readChannel.size());
 	}
 	
@@ -53,8 +56,8 @@ public class LogMonitor{
 		private WatchKey watchKey = null;
 		private Path path = null;
 		
-		public WatchedFileService(String pathToDirectory) throws IOException {
-			path = Paths.get(pathToDirectory);
+		public WatchedFileService(Path pathOfDirectory) throws IOException {
+			path = pathOfDirectory;
 			watchService = path.getFileSystem().newWatchService();
 			path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
 		}
@@ -63,7 +66,7 @@ public class LogMonitor{
 		public void run() {
 			while(isRunning) {
 				try {
-					watchKey = watchService.poll(10, TimeUnit.MINUTES);
+					watchKey = watchService.poll(5, TimeUnit.SECONDS);
 					if(watchKey != null) {
 						for (WatchEvent<?> event: watchKey.pollEvents()) {
 							if(((Path)event.context()).endsWith(fileName)) {

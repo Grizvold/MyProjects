@@ -4,7 +4,8 @@ import java.util.Scanner;
 
 public class CRUDTest {
 	public static void main(String[] args) throws Exception {		
-		LogMonitor monitor = new LogMonitor("/var/log/", "syslog");
+		//LogMonitor monitor = new LogMonitor("/var/log/", "syslog");
+		LogMonitor monitor = new LogMonitor("/var/log/syslog");
 		Listener client = new Listener("/home/student/ruslan-gorbaty/files/logcopy.txt");
 		
 		monitor.addListeners(client);

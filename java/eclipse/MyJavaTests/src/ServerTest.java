@@ -1,20 +1,55 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerTest {
-
-	public static void main(String[] args) throws IOException {
-		ServerSocket serverSocket = new ServerSocket(5000);
+	
+	private static String messageString = "";
+	
+	public static void main(String[] args) throws IOException, InterruptedException {
+		int portNumber = 5000;
+		ServerSocket serverSocket = new ServerSocket(portNumber);
 		Socket connectionSocket = serverSocket.accept();
 		
 		System.out.println("Client connected succesfully");
-		InputStreamReader input = new InputStreamReader(connectionSocket.getInputStream());
-		BufferedReader reader = new BufferedReader(input);
-		String inputString = reader.readLine();
-		System.out.println("Message from client: " + inputString);
-	}
+		
+		PrintWriter writer = new PrintWriter(connectionSocket.getOutputStream(), true);
+		InputStreamReader inputStream = new InputStreamReader(connectionSocket.getInputStream());
+		BufferedReader readerBuffer = new BufferedReader(inputStream);
 
+		new Thread(new ReadBufferThread()).start();
+		
+		while(true) {
+			if(readerBuffer.ready()) {
+				System.out.println("Client message: " + readerBuffer.readLine());
+			}
+			
+			if(!messageString.isEmpty()) {
+				writer.println(messageString);
+				messageString = "";
+			}
+		}
+	}
+	
+	
+	public static class ReadBufferThread implements Runnable{
+
+		BufferedReader readingBuffer = new BufferedReader(new InputStreamReader(System.in));
+		
+		@Override
+		public void run() {
+			while(true) {
+					try {
+						messageString = readingBuffer.readLine();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 }
+

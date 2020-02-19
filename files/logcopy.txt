@@ -1,2 +1,7 @@
-Feb 18 15:08:49 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 12402688/12402688/0, res+swap = 8065024/8065024/0
-Feb 18 15:08:26 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 11841536/11841536/0, res+swap = 7606272/7606272/0
+Feb 19 09:14:11 ol767 nautilus-autostart.desktop[3403]: message repeated 29 times: [ Received invalid message: 'WebProcess::CreateWebPage']
+Feb 19 09:14:20 ol767 gnome-terminal-[16688]: void vte_terminal_watch_child(VteTerminal*, GPid): assertion 'impl->m_pty != NULL' failed
+7786496/0
+Feb 18 15:51:33 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 11788288/11788288/0, res+swap = 7573504/7573504/0
+Feb 18 15:51:34 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 12140544/12140544/0, res+swap = 7880704/7880704/0
+Feb 18 15:52:27 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 11952128/11952128/0, res+swap = 7610368/7610368/0
+Feb 18 15:52:29 ol767 nautilus-autostart.desktop[3403]: Memory pressure relief: Total: res = 11911168/11911168/0, res+swap = 7782400/7782400/0

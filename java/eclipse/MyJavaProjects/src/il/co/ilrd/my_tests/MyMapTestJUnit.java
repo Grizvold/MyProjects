@@ -1,13 +1,12 @@
 package il.co.ilrd.my_tests;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import il.co.ilrd.collections.MyMap;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class MyMapTestJUnit {
 	

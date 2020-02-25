@@ -17,45 +17,11 @@ public class ChatClient {
 	public static void main(String[] args) throws IOException {
 		Scanner scanner = new Scanner(System.in);
 		//InetAddress ipAddress = InetAddress.getByName("localhost");
-		Socket socket = new Socket("10.1.0.194", connectionPort);
+		Socket socket = new Socket("10.1.0.119", connectionPort);
 		
 		PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
 		InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
 		BufferedReader readBuffer = new BufferedReader(inputStream);
-		
-//		DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-//		DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-//		
-//		Thread sendMessageThread = new Thread(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-//				while(true) {
-//					String message = scanner.nextLine();
-//					try {
-//						//dataOutputStream.writeUTF(message);
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		});
-//		
-//		Thread readMessageThread = new Thread(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-//				try {
-//					String message = dataInputStream.readUTF();
-//					System.out.println(message);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//		
-//		sendMessageThread.start();
-//		readMessageThread.start();
 		
 		Thread sendMessageThread = new Thread(new Runnable() {
 			String groupName = "MyGroup";

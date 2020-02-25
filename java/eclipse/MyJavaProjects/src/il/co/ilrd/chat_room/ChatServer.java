@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.PrimitiveIterator.OfDouble;
 
 public class ChatServer {
 	HashMap<String, LinkedList<Client>> mapOfUsers;
@@ -54,9 +55,39 @@ class ChatSelector implements Runnable{
 	}
 	
 	private void parseMessage(String userMessage, SocketChannel socketChannel) {
-		//TODO protocol of message: STX.ID(of message).T(type).len.Group_Name.len.ETX
+		//TODO protocol of message: STX.ID(of message).T(type).len.Group_Name.len.name.len.msg.ETX
 		//TODO STX:0x02 ETX:0x03
+		char STX = 0x02;
+		char ETX = 0x03;
+		char typeOfMsg;
+		int lenghtOfGroupName;
+		int lenghtOfName;
+		int lenghtOfMsg;
+		int messageID;
+		int messageIndex = 0;
+		String userName;
+		String groupName;
+		String message;
 		
+		//if the packet is empty
+		if(userMessage.equals("")) {
+			sendUnACK(socketChannel);
+		}
+		
+		if(userMessage.charAt(messageIndex) != STX || userMessage.charAt(userMessage.length() - 1) != ETX) {
+			sendUnACK(socketChannel);
+		}
+		
+		messageID = userMessage.charAt(++messageIndex);//1
+		typeOfMsg = userMessage.charAt(++messageIndex);//2
+		lenghtOfGroupName = userMessage.charAt(++messageIndex);//3
+		groupName = userMessage.substring(++messageIndex, messageIndex + lenghtOfGroupName);//4
+		messageIndex += lenghtOfGroupName + 1;  
+		lenghtOfName = userMessage.charAt(messageIndex);
+		userName = userMessage.substring(++messageIndex, messageIndex + lenghtOfName);
+		messageIndex += lenghtOfName + 1;
+		lenghtOfMsg = userMessage.charAt(messageIndex);
+		message = userMessage.substring(++messageIndex, messageIndex + lenghtOfMsg);
 	}
 	
 	private void registerToChat(Selector selector, ServerSocketChannel serverSocketChannel) throws IOException {

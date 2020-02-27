@@ -1,12 +1,13 @@
 package il.co.ilrd.crud;
 
+import java.net.InetAddress;
 import java.util.Scanner;
 
 public class CRUDTest {
 	public static void main(String[] args) throws Exception {		
-		//LogMonitor monitor = new LogMonitor("/var/log/", "syslog");
 		LogMonitor monitor = new LogMonitor("/var/log/syslog");
-		Listener client = new Listener("/home/student/ruslan-gorbaty/files/logcopy.txt");
+		InetAddress clientAddress = InetAddress.getByName("10.1.0.134");
+		UDPClient client = new UDPClient(clientAddress, 4444);
 		
 		monitor.addListeners(client);
 		monitor.startMonitoring();

@@ -47,7 +47,7 @@ public class LogMonitor{
 		isRunning = false;
 	}
 	
-	public void addListeners(Listener listener) {
+	public void addListeners(UDPClient listener) {
 		dispatcher.addPropertyChangeListener(listener);
 	}
 	

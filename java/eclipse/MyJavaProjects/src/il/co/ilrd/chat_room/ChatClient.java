@@ -17,7 +17,7 @@ public class ChatClient {
 	public static void main(String[] args) throws IOException {
 		Scanner scanner = new Scanner(System.in);
 		//InetAddress ipAddress = InetAddress.getByName("localhost");
-		Socket socket = new Socket("10.1.0.119", connectionPort);
+		Socket socket = new Socket("10.1.0.7", connectionPort);//10.1.0.119
 		
 		PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
 		InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
@@ -62,13 +62,18 @@ public class ChatClient {
 			@Override
 			public void run() {
 				char[] buffer = new char[1024];
+				String message;
 				
 				while(true) {
 					try {
 						if(readBuffer.ready()) {
 							readBuffer.read(buffer);
-							System.out.println(String.valueOf(buffer));
-							Arrays.fill(buffer, '\u0000');
+							message = new String(buffer); 
+							if(message.charAt(2) != 0x06 && 
+									message.charAt(2) != 0x015) {
+								System.out.println(message);
+							}
+							buffer = new char [1024];
 						}
 					} catch (IOException e) {
 						e.printStackTrace();

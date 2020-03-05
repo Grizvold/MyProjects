@@ -10,7 +10,7 @@ import java.nio.file.StandardOpenOption;
 
 public class CRUDFile implements CRUD<String, Long>{
 	private Path pathToFile;
-	public SeekableByteChannel writeChannel;
+	private SeekableByteChannel writeChannel;
 	private Long position = 0l; 
 	
 	public CRUDFile(String path) throws IOException {

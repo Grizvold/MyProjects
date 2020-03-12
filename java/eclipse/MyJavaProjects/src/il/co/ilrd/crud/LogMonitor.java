@@ -20,7 +20,7 @@ public class LogMonitor{
 	private boolean isRunning = true;
 	private SeekableByteChannel readChannel = null;
 	private PropertyChangeSupport dispatcher = null;
-	private ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
+	private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
 	private Thread monitoringThead = null;
 	private Path pathToFile = null;
 	private Path pathToDirectory = null;

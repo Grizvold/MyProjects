@@ -33,6 +33,7 @@ public class UDPClient implements PropertyChangeListener{
 		buffer = ((String)evt.getNewValue()).getBytes(Charset.forName("UTF-8"));
 		packet = new DatagramPacket(buffer, buffer.length, address, port);
 		try {
+			System.out.println("sending message");
 			socket.send(packet);
 		} catch (IOException e) {
 			e.printStackTrace();

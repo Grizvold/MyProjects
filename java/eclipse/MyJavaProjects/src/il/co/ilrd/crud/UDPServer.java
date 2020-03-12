@@ -7,17 +7,15 @@ import java.net.SocketException;
 
 public class UDPServer extends Thread {
 	private DatagramSocket datagramSocket;
-	private boolean running;
+	private boolean running = true;
 	private byte[] buffer = new byte [4444];
-	private CRUDFile crudFile;
+	private CRUD<String, Long> database;
 	
-	public UDPServer() {
+	public UDPServer(CRUD<String, Long> db) {
 		try {
-			crudFile = new CRUDFile("/home/student/ruslan-gorbaty/files/udp_file_update.txt");
+			database = db;
 			datagramSocket = new DatagramSocket(4444);
 		} catch (SocketException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -27,10 +25,11 @@ public class UDPServer extends Thread {
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			try {
 				datagramSocket.receive(packet);
+				System.out.println("received message");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			crudFile.create(new String(packet.getData()));
+			database.create(new String(packet.getData()));
 		}
 	}
 }

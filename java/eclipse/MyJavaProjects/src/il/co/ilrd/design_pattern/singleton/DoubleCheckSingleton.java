@@ -3,6 +3,8 @@ package il.co.ilrd.design_pattern.singleton;
 public class DoubleCheckSingleton {
 	private static DoubleCheckSingleton instance = null;
 	
+	private DoubleCheckSingleton() {};
+	
 	public static DoubleCheckSingleton getInstance() {
 		if(instance == null)
 		{

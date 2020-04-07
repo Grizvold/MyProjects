@@ -39,6 +39,8 @@ public class QuizzLargestNumber {
 		QuizzLargestNumber test1 = new QuizzLargestNumber();
 		
 		int[] arr1 = {3, 1, 13, 34, 8};
+		int[] arr2 = {8, 89, 98, 0};
 		System.out.println(test1.largestNumber(arr1));
+		System.out.println(test1.largestNumber(arr2));
 	}
 }

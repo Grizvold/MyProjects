@@ -18,5 +18,8 @@
 !*.md
 !*.txt
 !*.mak
+!*.jpg
+!*.html
+!*.css
 !makefile
 !Makefile

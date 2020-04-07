@@ -9,6 +9,8 @@ public class QuizzPerfectNumber {
 		System.out.println("result of 11 is: " + perfectNumber(11)+ "\n");
 		System.out.println("result of 28 is: " + perfectNumber(28)+ "\n");
 		System.out.println("result of 29 is: " + perfectNumber(29)+ "\n");
+		System.out.println("result of 35 is: " + perfectNumber(35)+ "\n");
+		System.out.println("result of 98 is: " + perfectNumber(98)+ "\n");
 	}
 
 	public static int perfectNumber(int userNumber) {

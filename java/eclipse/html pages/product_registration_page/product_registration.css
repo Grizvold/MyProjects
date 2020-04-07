@@ -64,7 +64,8 @@ input {
   transition: background-color .3s;
 }
 
-.form input[type="text"]{
+.form input[type="text"],
+.form input[type="number"] {
   width: 100%;
 }
 .form input[type="submit"] {
@@ -74,6 +75,7 @@ input {
 
 .form-registration label,
 .form-registration input[type="text"],
+.form-registration input[type="number"],
 .form-registration input[type="submit"] {
   border-radius: 0.25rem;
   padding: 1rem;
@@ -90,13 +92,16 @@ input {
   width: 45%;
 }
 
-.form-registration input[type="text"] {
+.form-registration input[type="text"],
+.form-registration input[type="number"] {
   background-color: #ffffff;
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
 }
 .form-registration input[type="text"]:focus, 
-.form-registration input[type="text"]:hover {
+.form-registration input[type="text"]:hover,
+.form-registration input[type="number"]:focus, 
+.form-registration input[type="number"]:hover  {
   background-color: #95acaf;
 }
 

@@ -7,7 +7,7 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import sun.security.util.Length;
 
-public class DailyCode_ArraySplitsToTwoEqualArrays {
+public class DailyCode60_ArraySplitsToTwoEqualArrays {
 	
 	public static void main(String[] args) {
 		System.out.println(isPartitioned(new int[] {5,10,15,10,20,15,35}));

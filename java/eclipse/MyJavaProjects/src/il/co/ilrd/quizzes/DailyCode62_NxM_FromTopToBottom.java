@@ -1,6 +1,6 @@
 package il.co.ilrd.quizzes;
 
-public class DailyCode_NxM_FromTopToBottom {
+public class DailyCode62_NxM_FromTopToBottom {
 
 	public static void main(String[] args) {
 		//recursive solution

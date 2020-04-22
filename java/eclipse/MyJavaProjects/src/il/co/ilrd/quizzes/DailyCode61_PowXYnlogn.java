@@ -1,6 +1,6 @@
 package il.co.ilrd.quizzes;
 
-public class DailyCode_PowXYnlogn {
+public class DailyCode61_PowXYnlogn {
 
 	public static void main(String[] args) {
 		System.out.println("2 ^ 3 = " + pow(2, 3));

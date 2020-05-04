@@ -15,7 +15,7 @@ public class DailyCode58_FindIndexFastInRotatedArray {
 			return lowIndex;
 		}
 		
-		
+		return 0;
 	}
 
 }

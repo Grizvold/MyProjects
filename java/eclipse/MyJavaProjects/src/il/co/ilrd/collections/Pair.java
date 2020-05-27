@@ -56,7 +56,7 @@ public class Pair<K, V> implements Map.Entry<K, V>{
 	@Override
 	public String toString() {
 		
-		return "key value: " + key + "value: " + val;
+		return "key: " + key + ", value: " + val;
 	}
 	
 	public static <K,V> Pair<V, K> swap(Pair<K, V> pair){

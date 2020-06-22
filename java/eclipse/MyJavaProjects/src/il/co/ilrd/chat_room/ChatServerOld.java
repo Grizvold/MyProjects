@@ -16,8 +16,9 @@ public class ChatServerOld {
 	public static void main(String[] args) throws IOException {
 		ServerSocket serverSocket = new ServerSocket(5000);
 		Socket socket;
+		boolean flag = true;
 		
-		while(true) {
+		while(flag) {
 			socket = serverSocket.accept();
 			System.out.println("New client request received: " + socket);
 			
@@ -36,6 +37,8 @@ public class ChatServerOld {
 			registrationThread.start();
 			++clientCounter;
 		}
+		
+		serverSocket.close();
 	}
 
 }

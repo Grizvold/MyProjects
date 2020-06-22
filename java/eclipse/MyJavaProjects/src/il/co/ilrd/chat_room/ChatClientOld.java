@@ -53,5 +53,7 @@ public class ChatClientOld {
 		
 		sendMessage.start();
 		readMessage.start();
+		scan.close();
+		socket.close();
 	}
 }

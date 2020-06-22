@@ -1,5 +1,4 @@
-package il.co.ilrd.htpp_server;
-
+package co.il.ilrd;
 import java.io.FileWriter;
 import java.io.IOException;
 import org.json.JSONException;
@@ -11,7 +10,7 @@ public class HTTPServerTest {
 		
 		Command<Object> wl = (Object data)->{
 		try {
-			FileWriter myWriter = new FileWriter("/home/ruslan/ruslan-gorbaty/logfile.txt", true);
+			FileWriter myWriter = new FileWriter("/home/student/ruslan-gorbatylogfile.txt", true);
 			try {
 				myWriter.write(((JSONObject)data).getString("data"));
 			} catch (JSONException e) {

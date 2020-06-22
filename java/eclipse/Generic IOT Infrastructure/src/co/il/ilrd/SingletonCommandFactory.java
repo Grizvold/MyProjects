@@ -1,5 +1,4 @@
-package il.co.ilrd.htpp_server;
-
+package co.il.ilrd;
 public class SingletonCommandFactory {
     private FactoryPattern<Command<Object>, String, Void> factory = new FactoryPattern<>();
     

@@ -1,7 +1,5 @@
 package il.co.ilrd.quizzes;
 
-import java.util.Arrays;
-
 public class QuizzReverseRemoveFibonacci {
 
 	public static void main(String[] args) {

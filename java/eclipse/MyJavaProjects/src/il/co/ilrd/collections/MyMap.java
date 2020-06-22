@@ -9,9 +9,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import junit.extensions.TestSetup;
-
-
 public class MyMap<K, V> implements Map<K, V>{
 	
 	private ArrayList<LinkedList<Pair<K, V>>> hashMap;

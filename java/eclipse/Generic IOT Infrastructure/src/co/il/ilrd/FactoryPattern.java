@@ -1,5 +1,4 @@
-package il.co.ilrd.htpp_server;
-
+package co.il.ilrd;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -11,7 +10,10 @@ public class FactoryPattern<T, K, A> {
 		hashMap.put(key, lambda);
 	}
 	
-	public T create(K key, A args) {		
+	public T create(K key, A args) throws IllegalStateException{	
+		if(hashMap.get(key) == null) {
+			throw new IllegalStateException();
+		}
 		return hashMap.get(key).apply(args);
 	}
 }

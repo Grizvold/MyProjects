@@ -10,8 +10,17 @@ public class QuizzSLLPlay {
 			private Node next;
 			
 			private Node(int nodeData, Node nextNode) {
-				data = nodeData;
+				setData(nodeData);
 				next = nextNode;
+			}
+
+			@SuppressWarnings("unused")
+			public int getData() {
+				return data;
+			}
+
+			public void setData(int data) {
+				this.data = data;
 			}
 		}
 		
@@ -40,6 +49,7 @@ public class QuizzSLLPlay {
 			return temp_Node;
 		}
 		
+		@SuppressWarnings("unused")
 		public Node nThNodeFromLast_By2Pointers(LinkedList userList, int k) {
 			Node temp_Node = userList.headNode;
 			Node head_Node = userList.headNode;
@@ -57,6 +67,7 @@ public class QuizzSLLPlay {
 		}
 		
 
+		@SuppressWarnings("unused")
 		public Node findLoopStart(LinkedList userList) {
 			Node fast_runner = userList.headNode;
 			Node slow_runner = userList.headNode;

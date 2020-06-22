@@ -2,12 +2,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.WriteAbortedException;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,8 +29,8 @@ public class WatchServiceTest {
 	
 	public static void main(String[] args) throws IOException {
 		WatchServiceTest wst = new WatchServiceTest();
-		wst.readChannel = Files.newByteChannel(Paths.get(filePath1), StandardOpenOption.READ);
-		wst.writeChannel = Files.newByteChannel(Paths.get(filePath2), StandardOpenOption.WRITE);
+		WatchServiceTest.readChannel = Files.newByteChannel(Paths.get(filePath1), StandardOpenOption.READ);
+		WatchServiceTest.writeChannel = Files.newByteChannel(Paths.get(filePath2), StandardOpenOption.WRITE);
 		
 		File watchTest1 = new File(filePath1);
 		File watchTest2 = new File(filePath2);

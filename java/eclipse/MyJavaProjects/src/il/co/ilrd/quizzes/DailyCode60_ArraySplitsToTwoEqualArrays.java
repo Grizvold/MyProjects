@@ -3,12 +3,9 @@ package il.co.ilrd.quizzes;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
-import sun.security.util.Length;
-
 public class DailyCode60_ArraySplitsToTwoEqualArrays {
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.out.println(isPartitioned(new int[] {5,10,15,10,20,15,35}));
         System.out.println(isPartitioned(new int[] {5,10,15,10,20,10,40}));
@@ -20,7 +17,7 @@ public class DailyCode60_ArraySplitsToTwoEqualArrays {
         System.out.println(isPartitioned(new int[] {0, 10, 7, 3}));
         
         System.out.println("\nfinding marker");
-        int resultOfMarker;
+        int resultOfMarker = 0;
         System.out.println(resultOfMarker = findMark(new int[] {1, 2, 1}));
         System.out.println(resultOfMarker = findMark(new int[] {1, 2, 5, 2, 1}));
         System.out.println(resultOfMarker = findMark(new int[] {1, 2, 2, 1}));

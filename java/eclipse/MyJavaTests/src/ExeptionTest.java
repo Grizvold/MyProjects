@@ -1,6 +1,7 @@
 
 public class ExeptionTest {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		try {
 			Thread thread = new Thread(new Runnable() {

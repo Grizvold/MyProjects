@@ -98,7 +98,6 @@ class Cat extends Animal{
 	public Cat(){
 		this("black");
 		System.out.println("Cat Ctor");
-		this.num_masters = 2;
 	}
 	
 	static {
@@ -122,7 +121,6 @@ class Cat extends Animal{
 	}
 	
 	private String colors;
-	private int num_masters = 5;
 }
 
 class LegendaryAnimal extends Cat{
@@ -156,6 +154,7 @@ public class Java2c {
 		System.out.println(a.toString());
 	}
 	//@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "unused" })
 	public static void main(String[] args){
 		Object obj;
 		Animal animal = new Animal();

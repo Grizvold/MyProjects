@@ -1,5 +1,6 @@
 package net.codejava.javaee;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -8,6 +9,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Servlet implementation class HelloServlet
@@ -42,5 +46,49 @@ public class HelloServlet extends HttpServlet {
 		PrintWriter writer = resp.getWriter();
 		writer.println("<h1>Hello " + nameString + "</h1>");
 		writer.close();
+	}
+	
+	protected void doPost1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		StringBuffer sb = new StringBuffer();
+	    BufferedReader bufferedReader = null;
+
+	    try {
+	        //InputStream inputStream = request.getInputStream();
+	        //inputStream.available();
+	        //if (inputStream != null) {
+	        bufferedReader =  request.getReader(); //new BufferedReader(new InputStreamReader(inputStream));
+	        char[] charBuffer = new char[128];
+	        int bytesRead;
+	        while ( (bytesRead = bufferedReader.read(charBuffer)) != -1 ) {
+	            sb.append(charBuffer, 0, bytesRead);
+	        }
+	        //} else {
+	        //        sb.append("");
+	        //}
+
+	    } catch (IOException ex) {
+	        throw ex;
+	    } finally {
+	        if (bufferedReader != null) {
+	            try {
+	                bufferedReader.close();
+	            } catch (IOException ex) {
+	                throw ex;
+	            }
+	        }
+	    }
+
+	    String test = sb.toString();
+	    @SuppressWarnings("unused")
+		JSONObject obj;
+	    try {
+			obj = new JSONObject(test);
+			PrintWriter writer = response.getWriter();
+			writer.println("<h1> Hello " + test + "</h1>");
+			writer.close();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	   
 	}
 }

@@ -1,7 +1,5 @@
 package il.co.ilrd.data_structure_exam;
 
-import java.util.Arrays;
-
 public class Ex1a {
 	
 	private int[] intArray;

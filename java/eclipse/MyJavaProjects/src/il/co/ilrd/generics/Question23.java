@@ -1,6 +1,5 @@
 package il.co.ilrd.generics;
 
-import java.util.Set;
 
 public class Question23 {
 

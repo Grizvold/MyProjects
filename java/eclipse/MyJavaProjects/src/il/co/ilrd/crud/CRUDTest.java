@@ -1,7 +1,6 @@
 package il.co.ilrd.crud;
 
 import java.net.InetAddress;
-import java.util.Scanner;
 
 public class CRUDTest {
 	public static void main(String[] args) throws Exception {		

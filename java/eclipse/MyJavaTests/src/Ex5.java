@@ -25,7 +25,7 @@ class SomeClass implements SomeInterface{
 	static int x = 5;
 	
 	static int bar() {
-		final int x = 10;
+//		final int x = 10;
 		
 		return --SomeClass.x;
 	}

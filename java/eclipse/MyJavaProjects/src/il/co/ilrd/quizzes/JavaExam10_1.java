@@ -32,6 +32,7 @@ public class JavaExam10_1 extends Base{
 		return this.ds1;
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Base ab = new JavaExam10_1();
 	}

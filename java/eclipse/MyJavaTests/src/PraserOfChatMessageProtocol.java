@@ -32,6 +32,8 @@ public class PraserOfChatMessageProtocol {
 							+ (char)message.length() 
 							+ message 
 							+ ETX);
+		
+		scanner.close();
 	}
 	
 	public static void parsingMessage(String userMessage) {

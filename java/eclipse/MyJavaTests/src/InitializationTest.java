@@ -9,7 +9,7 @@ public class InitializationTest {
 	//constructor
 	public InitializationTest() 
 	{
-		this.z = y + 1;
+		this.setZ(y + 1);
 		this.x = 1;
 		this.y = x + 1;
 		System.out.println("constructor called");
@@ -49,8 +49,16 @@ public class InitializationTest {
 //		System.out.println(intArr.length);
 		//new InitializationTest();
 		
-		ChildOfInitializer random = new ChildOfInitializer();
+//		ChildOfInitializer random = new ChildOfInitializer();
 		
+	}
+
+	public int getZ() {
+		return z;
+	}
+
+	public void setZ(int z) {
+		this.z = z;
 	}
 }
 

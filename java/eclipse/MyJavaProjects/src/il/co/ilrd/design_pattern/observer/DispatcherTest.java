@@ -2,6 +2,7 @@ package il.co.ilrd.design_pattern.observer;
 
 public class DispatcherTest {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws InterruptedException {
 		Client<String> pc1 = new Client<>();
 		Client<String> pc2 = new Client<>();

@@ -49,11 +49,11 @@ public class Ex1
 			
 			Method firstMethod;
 			firstMethod = instanceFirstWay.getClass().getMethod("firstFunc");
-			firstMethod.invoke(instanceFirstWay, args);
+			firstMethod.invoke(instanceFirstWay);
 			
 			Method secondMethod;
 			secondMethod = instanceSecondWay.getClass().getMethod("secondFunc");
-			secondMethod.invoke(instanceSecondWay, args);
+			secondMethod.invoke(instanceSecondWay);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

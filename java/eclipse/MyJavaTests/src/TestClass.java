@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 
 /**
  * 
@@ -44,6 +42,7 @@ class RandomClass{
 
 public class TestClass {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
 		Parent xParent = new Child();
 		System.out.println(((Child)xParent).cityString);
@@ -52,8 +51,8 @@ public class TestClass {
 		superclass A = new superclass();
 		subclass B = new subclass();
 		
-		A.print();
-		B.print();
+		superclass.print();
+		subclass.print();
 		
 		File linuxDictionary = new File("/home/student/linux_dictionary");
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(linuxDictionary));
@@ -65,5 +64,7 @@ public class TestClass {
 		}
 		/*dictionaryLineString.replaceAll("\r", "").replaceAll("\n", "");
 		System.out.println(dictionaryLineString);*/
+		
+		bufferedReader.close();
 	}	
 }

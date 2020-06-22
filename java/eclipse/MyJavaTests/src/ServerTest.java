@@ -10,6 +10,7 @@ public class ServerTest {
 	private static String messageString = "";
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
+		boolean flag = true;
 		int portNumber = 5000;
 		ServerSocket serverSocket = new ServerSocket(portNumber);
 		Socket connectionSocket = serverSocket.accept();
@@ -22,7 +23,7 @@ public class ServerTest {
 
 		new Thread(new ReadBufferThread()).start();
 		
-		while(true) {
+		while(flag) {
 			if(readerBuffer.ready()) {
 				System.out.println("Client message: " + readerBuffer.readLine());
 			}
@@ -32,6 +33,8 @@ public class ServerTest {
 				messageString = "";
 			}
 		}
+		
+		serverSocket.close();
 	}
 	
 	

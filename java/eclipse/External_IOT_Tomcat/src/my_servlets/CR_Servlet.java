@@ -3,6 +3,11 @@ package my_servlets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -12,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+
+import com.mysql.cj.jdbc.Driver;
 
 /**
  * Servlet implementation class CR_Servlet
@@ -38,15 +45,80 @@ public class CR_Servlet extends HttpServlet {
 		JSONObject parsedObject = new JSONObject(requestAsJSONString);
 		
 		
-		
 		try { 
 			company_id = parsedObject.getString("company_id");
 			company_name = parsedObject.getString("company_name");
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
 		
+		//System.out.println(company_id + " " + company_name);
+		boolean status = dataBase_Establishment(company_name + company_id);
+		int status_Code = status ? 200 : 400;
+		response.setStatus(status_Code);
+		response.sendError(status_Code);
 	}
 
+	private static boolean dataBase_Establishment(String dbName) {
+		final String DB_URL = "jdbc:mysql://127.0.0.1/";
+		Connection dbConnection = null;
+		Statement statement = null;
+		Driver driver = null; 
+		Properties properties = null;
+		boolean isSuccess = false;
+		
+		try {
+			driver = new com.mysql.cj.jdbc.Driver();
+			DriverManager.registerDriver(driver);
+		} catch (SQLException e) {
+			//e.printStackTrace();
+			return isSuccess;
+		}
+		
+		properties = new Properties();
+		properties.put("user", "root");
+		properties.put("password", "");
+		
+		try {
+			dbConnection = DriverManager.getConnection(DB_URL, properties);
+			statement = dbConnection.createStatement();
+		} catch (SQLException e) {
+			return isSuccess;
+		}
+		
+		isSuccess = dataBase_Creation(dbName, statement);
+		
+		return isSuccess;
+	}
+	
+	private static boolean dataBase_Creation(String dbNameString, Statement statement) {
+		boolean isSuccess = false;
+		final String sqlCreateProductsTable = "CREATE TABLE products_Table (product_instance_id INT NOT NULL AUTO_INCREMENT,"
+				+ " product_type_id INT,"
+				+ " serial_number VARCHAR(20),"
+				+ " user_id VARCHAR(20),"
+				+ " PRIMARY KEY ( product_instance_id ));";
+		
+		final String sqlCreateEndUserTable = "CREATE TABLE end_users_Table (user_id INT NOT NULL AUTO_INCREMENT,"
+				+ " first_name VARCHAR(20),"
+				+ " last_name VARCHAR(20),"
+				+ " email VARCHAR(30),"
+				+ " phone VARCHAR(30),"
+				+ " location VARCHAR(30),"
+				+ " PRIMARY KEY ( user_id ));";
+		
+		String createDB = "CREATE DATABASE " + dbNameString;
+		String useDB = "USE " + dbNameString;
+		
+		try {
+			statement.executeUpdate(createDB);
+			statement.executeUpdate(useDB);
+			statement.executeUpdate(sqlCreateProductsTable);
+			statement.executeUpdate(sqlCreateEndUserTable);
+		} catch (SQLException e) {
+			return isSuccess;
+		}
+		
+		return isSuccess;
+	}
 }

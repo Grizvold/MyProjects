@@ -2,6 +2,8 @@ package il.co.ilrd.quizzes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QuizzNestedListSum {
 
@@ -12,14 +14,16 @@ public class QuizzNestedListSum {
 		NestedInteger nestedInteger_List_2 = testCase.new NestedInteger();
 		NestedInteger nestedInteger_List_3 = testCase.new NestedInteger();
 		
-		nestedInteger_List_1.add(testCase.new NestedInteger(1));
-		nestedInteger_List_1.add(testCase.new NestedInteger(1));
+		nestedInteger_List_1.add(testCase.new NestedInteger(5));
+		nestedInteger_List_1.add(testCase.new NestedInteger(10));
 		nestedInteger_List_2.add(testCase.new NestedInteger(2));
-		nestedInteger_List_2.add(testCase.new NestedInteger(2));
+		nestedInteger_List_2.add(testCase.new NestedInteger(3));
 		nestedInteger_List_3.add(testCase.new NestedInteger(1));
-		nestedInteger_List_3.add(testCase.new NestedInteger(1));
+		nestedInteger_List_3.add(testCase.new NestedInteger(2));
 		nestedInteger_List_1.add(nestedInteger_List_2);
 		nestedInteger_List_1.add(nestedInteger_List_3);
+		nestedInteger_List_2.add(nestedInteger_List_3);
+		nestedInteger_List_1.add(nestedInteger_List_2);
 		
 		System.out.println(nestedListSum(nestedInteger_List_1.getList()));
 		System.out.println(nestedInteger_List_1.printNestedInteger(nestedInteger_List_1, nestedBuilder));
@@ -97,6 +101,7 @@ public class QuizzNestedListSum {
 			}
 			
 			stringBuilder.append("[");
+			
 			for (NestedInteger nestedInteger : thisNestedInteger.nestedList) {
 				if(nestedInteger.isInteger()) {
 					stringBuilder.append(nestedInteger.regularInteger);
@@ -106,8 +111,26 @@ public class QuizzNestedListSum {
 					printNestedInteger(nestedInteger, stringBuilder);
 				}
 			}
-//			stringBuilder.append(",");
 			stringBuilder.append("]");
+			
+			return getCleanNestedInteger(stringBuilder);
+		}
+		
+		private String getCleanNestedInteger(StringBuilder stringBuilder) {
+			String regex_1 = "(\\,\\[)";
+			Pattern pattern = Pattern.compile(regex_1, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(stringBuilder.toString());
+			stringBuilder = new StringBuilder(matcher.replaceAll(" [")); 
+			
+			String regex_2 = "(\\,\\])";
+			pattern = Pattern.compile(regex_2, Pattern.CASE_INSENSITIVE);
+			matcher = pattern.matcher(stringBuilder.toString());
+			stringBuilder = new StringBuilder(matcher.replaceAll("]")); 
+			
+			String regex_3 = "(\\]\\[)";
+			pattern = Pattern.compile(regex_3, Pattern.CASE_INSENSITIVE);
+			matcher = pattern.matcher(stringBuilder.toString());
+			stringBuilder = new StringBuilder(matcher.replaceAll("] [")); 
 			
 			return stringBuilder.toString();
 		}

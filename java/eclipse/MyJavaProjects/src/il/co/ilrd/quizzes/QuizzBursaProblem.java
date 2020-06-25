@@ -6,9 +6,9 @@ public class QuizzBursaProblem {
 
 	public static void main(String[] args) {
 		System.out.println(String.format("Testing solutions for bursa problem:" + 
-						"\nFor {9, 11, 8, 5, 7, 10} result: %s" + 
+						"\nFor {11, 8, 9, 5, 7, 10} result: %s" + 
 						"\nFor {7, -7, 1, 1, 7, 1} result: %s", 
-						Arrays.toString(bursa_problem(new int[] {9, 11, 8, 5, 7, 10})),
+						Arrays.toString(bursa_problem(new int[] {11, 8, 9, 5, 7, 10})),
 						Arrays.toString(bursa_problem(new int[] {7, -7, 1, 1, 7, 1}))));
 	}
 	

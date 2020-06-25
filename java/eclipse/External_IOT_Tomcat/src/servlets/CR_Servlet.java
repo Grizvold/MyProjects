@@ -1,4 +1,4 @@
-package my_servlets;
+package servlets;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,7 +44,6 @@ public class CR_Servlet extends HttpServlet {
 		String company_name = "";
 		JSONObject parsedObject = new JSONObject(requestAsJSONString);
 		
-		
 		try { 
 			company_id = parsedObject.getString("company_id");
 			company_name = parsedObject.getString("company_name");
@@ -52,7 +51,6 @@ public class CR_Servlet extends HttpServlet {
 			// TODO: handle exception
 		}
 		
-		//System.out.println(company_id + " " + company_name);
 		boolean status = dataBase_Establishment(company_name + company_id);
 		int status_Code = status ? 200 : 400;
 		response.setStatus(status_Code);
@@ -71,7 +69,7 @@ public class CR_Servlet extends HttpServlet {
 			driver = new com.mysql.cj.jdbc.Driver();
 			DriverManager.registerDriver(driver);
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			return isSuccess;
 		}
 		
@@ -83,10 +81,19 @@ public class CR_Servlet extends HttpServlet {
 			dbConnection = DriverManager.getConnection(DB_URL, properties);
 			statement = dbConnection.createStatement();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return isSuccess;
 		}
 		
 		isSuccess = dataBase_Creation(dbName, statement);
+		
+		try {
+			statement.close();
+			dbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 		
 		return isSuccess;
 	}
@@ -110,15 +117,18 @@ public class CR_Servlet extends HttpServlet {
 		String createDB = "CREATE DATABASE " + dbNameString;
 		String useDB = "USE " + dbNameString;
 		
+		
 		try {
 			statement.executeUpdate(createDB);
 			statement.executeUpdate(useDB);
 			statement.executeUpdate(sqlCreateProductsTable);
 			statement.executeUpdate(sqlCreateEndUserTable);
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return isSuccess;
 		}
 		
+		isSuccess = true;
 		return isSuccess;
 	}
 }

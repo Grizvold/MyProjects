@@ -27,7 +27,7 @@ private Thread serverManager;
 				try {
 					Selector selector = Selector.open();
 					ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-					serverSocketChannel.bind(new InetSocketAddress("10.1.0.212", 5555));
+					serverSocketChannel.bind(new InetSocketAddress("10.1.0.97", 5555));
 					serverSocketChannel.configureBlocking(false);
 					serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 					ByteBuffer buffer = ByteBuffer.allocate(1024);

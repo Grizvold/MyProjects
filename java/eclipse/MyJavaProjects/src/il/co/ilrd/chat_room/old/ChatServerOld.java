@@ -1,4 +1,4 @@
-package il.co.ilrd.chat_room;
+package il.co.ilrd.chat_room.old;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,7 +14,7 @@ public class ChatServerOld {
 	static int clientCounter = 0;
 	
 	public static void main(String[] args) throws IOException {
-		ServerSocket serverSocket = new ServerSocket(5000);
+		ServerSocket serverSocket = new ServerSocket(5555);
 		Socket socket;
 		boolean flag = true;
 		

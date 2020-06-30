@@ -1,4 +1,4 @@
-package il.co.ilrd.chat_room;
+package il.co.ilrd.chat_room.old;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,12 +9,12 @@ import java.util.Scanner;
 
 
 public class ChatClientOld {
-	final static int serverPort = 5000;
+	final static int serverPort = 5555;
 	
 	public static void main(String[] args) throws IOException {
 		Scanner scan = new Scanner(System.in);
 		InetAddress ipAddress = InetAddress.getByName("localhost");
-		Socket socket = new Socket(ipAddress, serverPort);
+		Socket socket = new Socket("127.0.0.1", serverPort);
 		
 		DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 		DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());

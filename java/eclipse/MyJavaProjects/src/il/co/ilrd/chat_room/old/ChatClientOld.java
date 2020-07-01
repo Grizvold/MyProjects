@@ -3,7 +3,7 @@ package il.co.ilrd.chat_room.old;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
+//import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -13,7 +13,7 @@ public class ChatClientOld {
 	
 	public static void main(String[] args) throws IOException {
 		Scanner scan = new Scanner(System.in);
-		InetAddress ipAddress = InetAddress.getByName("localhost");
+		//InetAddress ipAddress = InetAddress.getByName("localhost");
 		Socket socket = new Socket("127.0.0.1", serverPort);
 		
 		DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
